@@ -1,0 +1,15 @@
+{
+  "default": "krv",
+  "items": [
+    {
+      "id": "krv",
+      "label": "개역개정",
+      "shortLabel": "개역"
+    },
+    {
+      "id": "rnksv",
+      "label": "표준새번역",
+      "shortLabel": "표준"
+    }
+  ]
+}

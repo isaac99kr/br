@@ -1,5 +1,6 @@
 import type { BibleBook, Verse } from '../types'
 import { parseReadingRange, type RangeSegment } from './rangeParser'
+import type { TranslationId } from './settings'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -10,6 +11,10 @@ type BooksMeta = {
 
 let metaCache: BooksMeta | null = null
 const bookCache = new Map<string, BibleBook>()
+
+function cacheKey(translationId: TranslationId, abbr: string): string {
+  return `${translationId}:${abbr}`
+}
 
 async function loadMeta(): Promise<BooksMeta> {
   if (metaCache) return metaCache
@@ -23,12 +28,18 @@ function resolveAbbr(csvAbbr: string, aliases: Record<string, string>): string {
   return aliases[csvAbbr] ?? csvAbbr
 }
 
-async function loadBook(abbr: string): Promise<BibleBook | null> {
-  if (bookCache.has(abbr)) return bookCache.get(abbr)!
-  const res = await fetch(`${BASE}data/bible/${encodeURIComponent(abbr)}.json`)
+async function loadBook(
+  translationId: TranslationId,
+  abbr: string,
+): Promise<BibleBook | null> {
+  const key = cacheKey(translationId, abbr)
+  if (bookCache.has(key)) return bookCache.get(key)!
+  const res = await fetch(
+    `${BASE}data/bible/${encodeURIComponent(translationId)}/${encodeURIComponent(abbr)}.json`,
+  )
   if (!res.ok) return null
   const book = (await res.json()) as BibleBook
-  bookCache.set(abbr, book)
+  bookCache.set(key, book)
   return book
 }
 
@@ -53,7 +64,10 @@ function versesFromSegment(book: BibleBook, seg: RangeSegment): Verse[] {
   return out
 }
 
-export async function loadVersesForRange(range: string): Promise<{
+export async function loadVersesForRange(
+  range: string,
+  translationId: TranslationId = 'krv',
+): Promise<{
   verses: Verse[]
   linked: boolean
   missing: string[]
@@ -69,7 +83,7 @@ export async function loadVersesForRange(range: string): Promise<{
 
   for (const seg of segments) {
     const fileAbbr = resolveAbbr(seg.abbr, meta.aliases)
-    const book = await loadBook(fileAbbr)
+    const book = await loadBook(translationId, fileAbbr)
     if (!book) {
       missing.push(seg.abbr)
       continue

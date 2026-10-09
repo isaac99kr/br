@@ -9,32 +9,32 @@ import {
   useMatch,
   useNavigate,
 } from 'react-router-dom'
-import { ReaderModal } from './components/ReaderModal'
+import { ReaderScreen } from './components/ReaderScreen'
 import { useProgress } from './hooks/useProgress'
+import { useSettings } from './hooks/useSettings'
 import { loadSchedule } from './lib/schedule'
 import { FindPage } from './pages/FindPage'
 import { HomePage } from './pages/HomePage'
+import { SettingsPage } from './pages/SettingsPage'
 import type { ScheduleItem } from './types'
 import './styles.css'
 
 function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
   const progress = useProgress(schedule.length)
+  const { fontSize, setFontSize, translationId, setTranslationId } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
   const readMatch = useMatch('/read/:day')
+  const settingsMatch = useMatch('/settings')
   const rawDay = readMatch ? Number(readMatch.params.day) : NaN
   const readerDay =
     Number.isInteger(rawDay) && rawDay >= 1 && rawDay <= schedule.length ? rawDay : null
 
-  const showFind =
-    readerDay != null
-      ? (location.state as { from?: string } | null)?.from === '/find' ||
-        location.pathname.startsWith('/find')
-      : location.pathname.startsWith('/find')
+  const showFind = location.pathname.startsWith('/find')
+  const showSettings = settingsMatch != null
 
   const openReader = (day: number) => {
-    const from = location.pathname.startsWith('/find') ? '/find' : '/'
-    navigate(`/read/${day}`, { state: { from } })
+    navigate(`/read/${day}`, { state: { from: showFind ? '/find' : '/' } })
   }
 
   const closeReader = () => {
@@ -42,48 +42,67 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
     navigate(from === '/find' ? '/find' : '/')
   }
 
+  if (readerDay != null) {
+    return (
+      <ReaderScreen
+        day={readerDay}
+        schedule={schedule}
+        progress={progress}
+        translationId={translationId}
+        onClose={closeReader}
+        onChangeDay={(d) =>
+          navigate(`/read/${d}`, { replace: true, state: location.state })
+        }
+      />
+    )
+  }
+
+  const title = showSettings
+    ? '설정'
+    : showFind
+      ? '날짜별 읽기 일정'
+      : '오늘의 말씀, 한 걸음씩'
+  const sub = showSettings
+    ? '성경 종류와 글자 크기를 조정하세요.'
+    : showFind
+      ? '구약과 신약을 주차별로 확인하세요.'
+      : '읽던 곳에서 이어서 읽어보세요.'
+
   return (
     <>
       <div className="app">
         <header className="top">
-          <div className="brand">BIBLE READING JOURNEY</div>
-          <h1>{showFind ? '날짜별 읽기 일정' : '오늘의 말씀, 한 걸음씩'}</h1>
-          <p className="sub">
-            {showFind
-              ? '구약과 신약을 주차별로 확인하세요.'
-              : '읽던 곳에서 이어서 읽어보세요.'}
-          </p>
+          <div className="top-row">
+            <div className="brand">BIBLE READING JOURNEY</div>
+            {!showSettings && (
+              <NavLink to="/settings" className="settings-link">
+                설정
+              </NavLink>
+            )}
+          </div>
+          <h1>{title}</h1>
+          <p className="sub">{sub}</p>
         </header>
 
-        <nav className="tabs" aria-label="주요 메뉴">
-          <NavLink
-            to="/"
-            end
-            className={() => (!showFind ? 'tab active' : 'tab')}
-            onClick={(e) => {
-              if (readerDay != null) {
-                e.preventDefault()
-                navigate('/')
-              }
-            }}
-          >
-            홈
-          </NavLink>
-          <NavLink
-            to="/find"
-            className={() => (showFind ? 'tab active' : 'tab')}
-            onClick={(e) => {
-              if (readerDay != null) {
-                e.preventDefault()
-                navigate('/find')
-              }
-            }}
-          >
-            날짜 찾기
-          </NavLink>
-        </nav>
+        {!showSettings && (
+          <nav className="tabs" aria-label="주요 메뉴">
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'tab active' : 'tab')}>
+              홈
+            </NavLink>
+            <NavLink to="/find" className={({ isActive }) => (isActive ? 'tab active' : 'tab')}>
+              날짜 찾기
+            </NavLink>
+          </nav>
+        )}
 
-        {showFind ? (
+        {showSettings ? (
+          <SettingsPage
+            fontSize={fontSize}
+            translationId={translationId}
+            onFontSizeChange={setFontSize}
+            onTranslationChange={setTranslationId}
+          />
+        ) : showFind ? (
           <FindPage schedule={schedule} progress={progress} onOpenReader={openReader} />
         ) : (
           <HomePage schedule={schedule} progress={progress} onOpenReader={openReader} />
@@ -93,19 +112,10 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
       <Routes>
         <Route path="/" element={null} />
         <Route path="/find" element={null} />
+        <Route path="/settings" element={null} />
         <Route path="/read/:day" element={null} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
-      <ReaderModal
-        day={readerDay}
-        schedule={schedule}
-        progress={progress}
-        onClose={closeReader}
-        onChangeDay={(d) =>
-          navigate(`/read/${d}`, { replace: true, state: location.state })
-        }
-      />
     </>
   )
 }

@@ -22,7 +22,7 @@
 | 지금 얼마나 읽었는지 알고 싶다 | 홈 진행률·완료 일수 |
 | 이어서 읽고 싶다 | 이어 읽기 → 마지막 읽기 날짜 |
 | 특정 날짜를 찾고 싶다 | 구약/신약 → 주차 → 날짜 카드 |
-| 본문을 읽고 싶다 | 날짜별 읽기 화면 (본문은 개역개정 txt 연결, 후속) |
+| 본문을 읽고 싶다 | 날짜별 읽기 화면 (개역개정 / 표준새번역 선택) |
 
 ## 화면 구성 (요약)
 
@@ -38,7 +38,7 @@
 |---|---|
 | 제품/기술 요구사항 원본 | [`cursor_bible_reading_development_guide.md`](../cursor_bible_reading_development_guide.md) |
 | 일정 | [`asset/schedule/`](../asset/schedule/) |
-| 성경 본문 | [`asset/bible/개역개정-text/`](../asset/bible/개역개정-text/) |
+| 성경 본문 | [`asset/bible/`](../asset/bible/) (개역개정·표준새번역) |
 | UI 프로토타입·스크린샷 | [`asset/design/`](../asset/design/) |
 
 ## 이번 단계의 완료 기준

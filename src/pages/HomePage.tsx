@@ -37,11 +37,7 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
         <div className="bar" aria-hidden="true">
           <div className="fill" style={{ width: `${percent}%` }} />
         </div>
-        <button
-          type="button"
-          className="continue"
-          onClick={() => onOpenReader(continueDay)}
-        >
+        <button type="button" className="continue" onClick={() => onOpenReader(continueDay)}>
           {allDone ? '✓ 모두 읽었어요' : '▶ 이어 읽기'}
         </button>
         <div className="nextline">
@@ -68,9 +64,14 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
             <p className="muted">날짜 찾기에서 읽을 날짜를 선택할 수 있어요.</p>
           </>
         )}
-        <Link to="/find" className="pill link-pill">
-          날짜 찾기 →
-        </Link>
+        <div className="home-actions">
+          <Link to="/find" className="pill link-pill">
+            날짜 찾기 →
+          </Link>
+          <Link to="/settings" className="pill link-pill">
+            글자 크기 설정
+          </Link>
+        </div>
       </section>
     </main>
   )
