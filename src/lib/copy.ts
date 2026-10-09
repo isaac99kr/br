@@ -3,7 +3,12 @@ import type { Verse } from '../types'
 export function formatVersesForCopy(verses: Verse[]): string {
   if (!verses.length) return ''
   const ref = formatVerseReference(verses)
-  const body = verses.map((v) => stripHeading(v.text)).filter(Boolean).join('\n')
+  const body = verses
+    .map((v) => {
+      const text = stripHeading(v.text)
+      return text ? `${v.verse} ${text}` : String(v.verse)
+    })
+    .join('\n')
   return body ? `${ref}\n${body}` : ref
 }
 
