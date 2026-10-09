@@ -4,7 +4,8 @@ import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
-import type { TranslationId } from '../lib/settings'
+import type { FontSize, TranslationId } from '../lib/settings'
+import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
 import type { useProgress } from '../hooks/useProgress'
 
@@ -15,6 +16,9 @@ type Props = {
   schedule: ScheduleItem[]
   progress: ProgressApi
   translationId: TranslationId
+  fontSize: FontSize
+  onFontSizeChange: (size: FontSize) => void
+  onTranslationChange: (id: TranslationId) => void
   onClose: () => void
   onChangeDay: (day: number) => void
 }
@@ -28,6 +32,9 @@ export function ReaderScreen({
   schedule,
   progress,
   translationId,
+  fontSize,
+  onFontSizeChange,
+  onTranslationChange,
   onClose,
   onChangeDay,
 }: Props) {
@@ -39,9 +46,31 @@ export function ReaderScreen({
   const [chromeHidden, setChromeHidden] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [toast, setToast] = useState<string | null>(null)
-  const bodyRef = useRef<HTMLDivElement>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const completedRef = useRef(false)
-  const lastScrollTop = useRef(0)
+  const lastScrollY = useRef(0)
+
+  useEffect(() => {
+    document.documentElement.classList.add('reader-open')
+    document.body.classList.add('reader-open')
+    window.scrollTo(0, 0)
+    lastScrollY.current = 0
+    return () => {
+      document.documentElement.classList.remove('reader-open')
+      document.body.classList.remove('reader-open')
+      document.body.classList.remove('settings-overlay-open')
+      window.scrollTo(0, 0)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (settingsOpen) {
+      document.body.classList.add('settings-overlay-open')
+    } else {
+      document.body.classList.remove('settings-overlay-open')
+    }
+    return () => document.body.classList.remove('settings-overlay-open')
+  }, [settingsOpen])
 
   useEffect(() => {
     if (!item) return
@@ -49,8 +78,11 @@ export function ReaderScreen({
     completedRef.current = progress.statusOf(day) === 'completed'
     setSelected(new Set())
     setChromeHidden(false)
+    setSettingsOpen(false)
     setLoading(true)
     setError(null)
+    window.scrollTo(0, 0)
+    lastScrollY.current = 0
     let cancelled = false
     loadVersesForRange(item.range, translationId)
       .then((res) => {
@@ -74,15 +106,14 @@ export function ReaderScreen({
   }, [day, item?.range, translationId])
 
   useEffect(() => {
-    const el = bodyRef.current
-    if (!el) return
-
-    lastScrollTop.current = el.scrollTop
+    lastScrollY.current = window.scrollY
 
     const onScroll = () => {
-      const top = el.scrollTop
-      const delta = top - lastScrollTop.current
-      lastScrollTop.current = top
+      if (document.body.classList.contains('settings-overlay-open')) return
+
+      const top = window.scrollY
+      const delta = top - lastScrollY.current
+      lastScrollY.current = top
 
       if (top < 24) {
         setChromeHidden(false)
@@ -93,16 +124,17 @@ export function ReaderScreen({
       }
 
       if (!linked || completedRef.current) return
-      if (el.scrollHeight <= el.clientHeight + 8) return
-      const remaining = el.scrollHeight - el.scrollTop - el.clientHeight
+      const doc = document.documentElement
+      if (doc.scrollHeight <= window.innerHeight + 8) return
+      const remaining = doc.scrollHeight - window.scrollY - window.innerHeight
       if (remaining <= 24) {
         completedRef.current = true
         progress.setDayStatus(day, 'completed')
       }
     }
 
-    el.addEventListener('scroll', onScroll, { passive: true })
-    return () => el.removeEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [linked, verses, day, progress])
 
   useEffect(() => {
@@ -147,12 +179,17 @@ export function ReaderScreen({
             {item.range}
           </div>
         </div>
-        <button type="button" className="reader-icon-btn" onClick={onClose} aria-label="닫기">
-          ×
+        <button
+          type="button"
+          className="reader-icon-btn reader-settings-btn"
+          onClick={() => setSettingsOpen(true)}
+          aria-label="설정"
+        >
+          설정
         </button>
       </header>
 
-      <div className="reader-scroll" ref={bodyRef}>
+      <div className="reader-scroll">
         <div className="reader-meta-block">
           <p className="reader-meta-line">
             {item.testament} · {item.week}주차 · {weekdayLabel} · {statusLabel(status)}
@@ -260,6 +297,32 @@ export function ReaderScreen({
       </footer>
 
       {toast && <div className="toast">{toast}</div>}
+
+      {settingsOpen && (
+        <div
+          className="settings-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="설정"
+        >
+          <button
+            type="button"
+            className="settings-overlay-backdrop"
+            aria-label="설정 닫기"
+            onClick={() => setSettingsOpen(false)}
+          />
+          <div className="settings-overlay-sheet">
+            <SettingsPage
+              embedded
+              fontSize={fontSize}
+              translationId={translationId}
+              onFontSizeChange={onFontSizeChange}
+              onTranslationChange={onTranslationChange}
+              onClose={() => setSettingsOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

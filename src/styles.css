@@ -62,6 +62,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html.reader-open,
+html.reader-open body {
+  background: var(--reader-bg);
+}
+
+html.reader-open body.settings-overlay-open {
+  overflow: hidden;
+}
+
 button,
 a.pill,
 .font-opt {
@@ -479,31 +488,29 @@ p {
   font-size: var(--text-ui);
 }
 
-/* ===== Dark immersive reader ===== */
+/* ===== Dark immersive reader (document scroll for Safari chrome collapse) ===== */
 .reader-screen {
   --reader-chrome-top-h: calc(84px + env(safe-area-inset-top));
   --reader-chrome-bottom-h: calc(118px + env(safe-area-inset-bottom));
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 30;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--reader-bg);
   color: var(--reader-fg);
   font-family: var(--font);
   max-width: 480px;
   margin: 0 auto;
-  overflow: hidden;
 }
 
 .reader-chrome {
-  position: absolute;
-  left: 0;
-  right: 0;
   background: var(--reader-chrome);
   transition: transform 0.22s ease, opacity 0.22s ease;
   z-index: 2;
 }
 
 .reader-chrome-top {
+  position: sticky;
   top: 0;
   display: grid;
   grid-template-columns: 44px 1fr 44px;
@@ -519,7 +526,12 @@ p {
 }
 
 .reader-chrome-bottom {
+  position: fixed;
+  left: 50%;
   bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  transform: translateX(-50%);
   padding: 10px 12px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--reader-line);
@@ -532,7 +544,7 @@ p {
 }
 
 .reader-screen.chrome-hidden .reader-chrome-bottom {
-  transform: translateY(110%);
+  transform: translateX(-50%) translateY(110%);
   opacity: 0;
   pointer-events: none;
 }
@@ -548,6 +560,15 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.reader-settings-btn {
+  width: auto;
+  min-width: 44px;
+  padding: 0 10px;
+  border-radius: 22px;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .reader-chrome-title {
@@ -576,21 +597,14 @@ p {
 }
 
 .reader-scroll {
-  position: absolute;
-  inset: 0;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
   padding: 18px;
-  padding-top: calc(var(--reader-chrome-top-h) + 8px);
   padding-bottom: calc(var(--reader-chrome-bottom-h) + 12px);
   font-size: var(--text-base);
   line-height: 1.8;
-  transition: padding 0.22s ease;
 }
 
 .reader-screen.chrome-hidden .reader-scroll {
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding-bottom: max(28px, calc(20px + env(safe-area-inset-bottom)));
 }
 
 .reader-meta-block {
@@ -702,9 +716,11 @@ p {
 }
 
 .copy-bar {
-  position: absolute;
-  left: 12px;
-  right: 12px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  max-width: 456px;
   bottom: calc(108px + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
@@ -714,7 +730,7 @@ p {
   background: #2a2438;
   border: 1px solid #3d3558;
   z-index: 3;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: bottom 0.22s ease;
 }
 
 .reader-screen.chrome-hidden .copy-bar {
@@ -748,7 +764,7 @@ p {
 }
 
 .toast {
-  position: absolute;
+  position: fixed;
   left: 50%;
   bottom: calc(160px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -765,6 +781,51 @@ p {
 
 .reader-screen.chrome-hidden .toast {
   bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+/* Settings overlay on reader */
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.settings-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+
+.settings-overlay-sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(88dvh, 720px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 18px 18px 0 0;
+  padding: 8px 0 calc(16px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.settings-panel {
+  padding: 8px 16px 4px;
+}
+
+.settings-panel .section-title {
+  margin-top: 4px;
+}
+
+.settings-panel .panel {
+  background: white;
 }
 
 .boot-loading,

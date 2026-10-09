@@ -68,9 +68,6 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
           <Link to="/find" className="pill link-pill">
             날짜 찾기 →
           </Link>
-          <Link to="/settings" className="pill link-pill">
-            글자 크기 설정
-          </Link>
         </div>
       </section>
     </main>

@@ -37,7 +37,14 @@ npm run preview
 - 라우팅: **HashRouter** (`/#/`, `/#/find`, `/#/read/1`) — Pages에서 새로고침·직접 접근에 안전
 - 워크플로: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 
-저장소 Settings → Pages → Source를 **GitHub Actions**로 두면 `main` 푸시 시 배포됩니다.
+저장소 Settings → Pages → Source를 **GitHub Actions**로 두면 `main` 푸시 시 자동 배포됩니다.
+
+수동 배포(이미 `main`에 반영된 코드 기준):
+
+```bash
+npm run pages          # Deploy to GitHub Pages 워크플로 실행
+npm run pages:status   # 최근 배포 실행 목록
+```
 
 예상 URL: `https://isaac99kr.github.io/br/`
 
@@ -47,7 +54,7 @@ npm run preview
 |---|---|
 | `/#/` | 홈 — 진행률, 이어 읽기 |
 | `/#/find` | 날짜 찾기 — 구약/신약·주차별 |
-| `/#/read/:day` | 읽기 화면 (모달) |
+| `/#/read/:day` | 읽기 화면 (설정 오버레이 포함) |
 
 ## 진행 상태
 

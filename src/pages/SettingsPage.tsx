@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import {
   FONT_SIZE_OPTIONS,
   TRANSLATION_OPTIONS,
@@ -11,6 +10,8 @@ type Props = {
   translationId: TranslationId
   onFontSizeChange: (size: FontSize) => void
   onTranslationChange: (id: TranslationId) => void
+  onClose?: () => void
+  embedded?: boolean
 }
 
 export function SettingsPage({
@@ -18,14 +19,18 @@ export function SettingsPage({
   translationId,
   onFontSizeChange,
   onTranslationChange,
+  onClose,
+  embedded = false,
 }: Props) {
   return (
-    <main className="page">
-      <div className="settings-back">
-        <Link to="/" className="pill">
-          ← 홈
-        </Link>
-      </div>
+    <main className={embedded ? 'settings-panel' : 'page'}>
+      {onClose && (
+        <div className="settings-back">
+          <button type="button" className="pill" onClick={onClose}>
+            닫기
+          </button>
+        </div>
+      )}
 
       <h2 className="section-title">설정</h2>
       <p className="section-desc">성경 종류와 글자 크기를 고르세요. 앱 전체에 바로 적용됩니다.</p>
