@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
-  applyFontSize,
+  applyReadingLayout,
   loadSettings,
   saveSettings,
   type AppSettings,
   type FontSize,
+  type SpacingSize,
   type TranslationId,
 } from '../lib/settings'
 
@@ -12,12 +13,20 @@ export function useSettings() {
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
 
   useEffect(() => {
-    applyFontSize(settings.fontSize)
+    applyReadingLayout(settings)
     saveSettings(settings)
   }, [settings])
 
   const setFontSize = useCallback((fontSize: FontSize) => {
     setSettings((prev) => ({ ...prev, fontSize }))
+  }, [])
+
+  const setVerseGap = useCallback((verseGap: SpacingSize) => {
+    setSettings((prev) => ({ ...prev, verseGap }))
+  }, [])
+
+  const setLineHeight = useCallback((lineHeight: SpacingSize) => {
+    setSettings((prev) => ({ ...prev, lineHeight }))
   }, [])
 
   const setTranslationId = useCallback((translationId: TranslationId) => {
@@ -27,8 +36,12 @@ export function useSettings() {
   return {
     settings,
     setFontSize,
+    setVerseGap,
+    setLineHeight,
     setTranslationId,
     fontSize: settings.fontSize,
+    verseGap: settings.verseGap,
+    lineHeight: settings.lineHeight,
     translationId: settings.translationId,
   }
 }

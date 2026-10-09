@@ -20,7 +20,16 @@ import './styles.css'
 
 function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
   const progress = useProgress(schedule.length)
-  const { fontSize, setFontSize, translationId, setTranslationId } = useSettings()
+  const {
+    fontSize,
+    setFontSize,
+    verseGap,
+    setVerseGap,
+    lineHeight,
+    setLineHeight,
+    translationId,
+    setTranslationId,
+  } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
   const readMatch = useMatch('/read/:day')
@@ -47,7 +56,11 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
         progress={progress}
         translationId={translationId}
         fontSize={fontSize}
+        verseGap={verseGap}
+        lineHeight={lineHeight}
         onFontSizeChange={setFontSize}
+        onVerseGapChange={setVerseGap}
+        onLineHeightChange={setLineHeight}
         onTranslationChange={setTranslationId}
         onClose={closeReader}
         onChangeDay={(d) =>

@@ -4,7 +4,7 @@ import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
-import type { FontSize, TranslationId } from '../lib/settings'
+import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
 import type { useProgress } from '../hooks/useProgress'
@@ -17,7 +17,11 @@ type Props = {
   progress: ProgressApi
   translationId: TranslationId
   fontSize: FontSize
+  verseGap: SpacingSize
+  lineHeight: SpacingSize
   onFontSizeChange: (size: FontSize) => void
+  onVerseGapChange: (size: SpacingSize) => void
+  onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
   onClose: () => void
   onChangeDay: (day: number) => void
@@ -33,7 +37,11 @@ export function ReaderScreen({
   progress,
   translationId,
   fontSize,
+  verseGap,
+  lineHeight,
   onFontSizeChange,
+  onVerseGapChange,
+  onLineHeightChange,
   onTranslationChange,
   onClose,
   onChangeDay,
@@ -315,8 +323,12 @@ export function ReaderScreen({
             <SettingsPage
               embedded
               fontSize={fontSize}
+              verseGap={verseGap}
+              lineHeight={lineHeight}
               translationId={translationId}
               onFontSizeChange={onFontSizeChange}
+              onVerseGapChange={onVerseGapChange}
+              onLineHeightChange={onLineHeightChange}
               onTranslationChange={onTranslationChange}
               onClose={() => setSettingsOpen(false)}
             />

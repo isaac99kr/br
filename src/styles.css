@@ -17,6 +17,8 @@
   --reader-chrome: #1c1c1f;
   --reader-line: #2c2c32;
   --reader-selected: #2a2438;
+  --verse-gap: 4px;
+  --reader-line-height: 1.8;
 }
 
 html[data-font-size='S'] {
@@ -41,6 +43,38 @@ html[data-font-size='XL'] {
   --text-base: 22px;
   --text-ui: 16px;
   --text-title: 1.85rem;
+}
+
+html[data-verse-gap='S'] {
+  --verse-gap: 0;
+}
+
+html[data-verse-gap='M'] {
+  --verse-gap: 4px;
+}
+
+html[data-verse-gap='L'] {
+  --verse-gap: 12px;
+}
+
+html[data-verse-gap='XL'] {
+  --verse-gap: 20px;
+}
+
+html[data-line-height='S'] {
+  --reader-line-height: 1.5;
+}
+
+html[data-line-height='M'] {
+  --reader-line-height: 1.8;
+}
+
+html[data-line-height='L'] {
+  --reader-line-height: 2.05;
+}
+
+html[data-line-height='XL'] {
+  --reader-line-height: 2.3;
 }
 
 * {
@@ -600,7 +634,7 @@ p {
   padding: 18px;
   padding-bottom: calc(var(--reader-chrome-bottom-h) + 12px);
   font-size: var(--text-base);
-  line-height: 1.8;
+  line-height: var(--reader-line-height);
 }
 
 .reader-screen.chrome-hidden .reader-scroll {
@@ -632,7 +666,7 @@ p {
 .verses {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--verse-gap);
 }
 
 .book-header {
@@ -659,7 +693,7 @@ p {
   padding: 10px 8px;
   border-radius: 10px;
   font-size: var(--text-base);
-  line-height: 1.8;
+  line-height: var(--reader-line-height);
 }
 
 .verse-num {

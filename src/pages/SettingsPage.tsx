@@ -1,14 +1,21 @@
 import {
   FONT_SIZE_OPTIONS,
+  LINE_HEIGHT_OPTIONS,
   TRANSLATION_OPTIONS,
+  VERSE_GAP_OPTIONS,
   type FontSize,
+  type SpacingSize,
   type TranslationId,
 } from '../lib/settings'
 
 type Props = {
   fontSize: FontSize
+  verseGap: SpacingSize
+  lineHeight: SpacingSize
   translationId: TranslationId
   onFontSizeChange: (size: FontSize) => void
+  onVerseGapChange: (size: SpacingSize) => void
+  onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
   onClose?: () => void
   embedded?: boolean
@@ -16,8 +23,12 @@ type Props = {
 
 export function SettingsPage({
   fontSize,
+  verseGap,
+  lineHeight,
   translationId,
   onFontSizeChange,
+  onVerseGapChange,
+  onLineHeightChange,
   onTranslationChange,
   onClose,
   embedded = false,
@@ -33,7 +44,7 @@ export function SettingsPage({
       )}
 
       <h2 className="section-title">설정</h2>
-      <p className="section-desc">성경 종류와 글자 크기를 고르세요. 앱 전체에 바로 적용됩니다.</p>
+      <p className="section-desc">성경 종류·글자 크기·간격을 고르세요. 앱 전체에 바로 적용됩니다.</p>
 
       <section className="panel">
         <div className="eyebrow">성경 종류</div>
@@ -70,6 +81,44 @@ export function SettingsPage({
               <span className="font-opt-sample" data-preview={opt.value}>
                 태초에 하나님이 천지를 창조하시니라
               </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="eyebrow">절 간 간격</div>
+        <div className="font-size-options" role="radiogroup" aria-label="절 간 간격">
+          {VERSE_GAP_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={verseGap === opt.value}
+              className={verseGap === opt.value ? 'font-opt active' : 'font-opt'}
+              onClick={() => onVerseGapChange(opt.value)}
+            >
+              <span className="font-opt-label">{opt.label}</span>
+              <span className="font-opt-sample">{opt.sample}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="eyebrow">행간</div>
+        <div className="font-size-options" role="radiogroup" aria-label="행간">
+          {LINE_HEIGHT_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={lineHeight === opt.value}
+              className={lineHeight === opt.value ? 'font-opt active' : 'font-opt'}
+              onClick={() => onLineHeightChange(opt.value)}
+            >
+              <span className="font-opt-label">{opt.label}</span>
+              <span className="font-opt-sample">{opt.sample}</span>
             </button>
           ))}
         </div>

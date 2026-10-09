@@ -1,10 +1,14 @@
 export type FontSize = 'S' | 'M' | 'L' | 'XL'
 
+export type SpacingSize = 'S' | 'M' | 'L' | 'XL'
+
 export type TranslationId = 'krv' | 'rnksv'
 
 export type AppSettings = {
   version: number
   fontSize: FontSize
+  verseGap: SpacingSize
+  lineHeight: SpacingSize
   translationId: TranslationId
 }
 
@@ -15,6 +19,20 @@ export const FONT_SIZE_OPTIONS: { value: FontSize; label: string; sample: string
   { value: 'M', label: '보통', sample: '17px' },
   { value: 'L', label: '크게', sample: '19px' },
   { value: 'XL', label: '아주 크게', sample: '22px' },
+]
+
+export const VERSE_GAP_OPTIONS: { value: SpacingSize; label: string; sample: string }[] = [
+  { value: 'S', label: '좁게', sample: '붙임' },
+  { value: 'M', label: '보통', sample: '기본' },
+  { value: 'L', label: '넓게', sample: '여유' },
+  { value: 'XL', label: '아주 넓게', sample: '넉넉' },
+]
+
+export const LINE_HEIGHT_OPTIONS: { value: SpacingSize; label: string; sample: string }[] = [
+  { value: 'S', label: '좁게', sample: '1.5' },
+  { value: 'M', label: '보통', sample: '1.8' },
+  { value: 'L', label: '넓게', sample: '2.05' },
+  { value: 'XL', label: '아주 넓게', sample: '2.3' },
 ]
 
 export const TRANSLATION_OPTIONS: {
@@ -34,10 +52,20 @@ export const TRANSLATION_OPTIONS: {
   },
 ]
 
-const DEFAULT: AppSettings = { version: 1, fontSize: 'M', translationId: 'krv' }
+const DEFAULT: AppSettings = {
+  version: 1,
+  fontSize: 'M',
+  verseGap: 'M',
+  lineHeight: 'M',
+  translationId: 'krv',
+}
+
+function isSpacingSize(v: unknown): v is SpacingSize {
+  return v === 'S' || v === 'M' || v === 'L' || v === 'XL'
+}
 
 function isFontSize(v: unknown): v is FontSize {
-  return v === 'S' || v === 'M' || v === 'L' || v === 'XL'
+  return isSpacingSize(v)
 }
 
 function isTranslationId(v: unknown): v is TranslationId {
@@ -52,6 +80,8 @@ export function loadSettings(): AppSettings {
     return {
       version: 1,
       fontSize: isFontSize(parsed.fontSize) ? parsed.fontSize : 'M',
+      verseGap: isSpacingSize(parsed.verseGap) ? parsed.verseGap : 'M',
+      lineHeight: isSpacingSize(parsed.lineHeight) ? parsed.lineHeight : 'M',
       translationId: isTranslationId(parsed.translationId) ? parsed.translationId : 'krv',
     }
   } catch {
@@ -69,4 +99,11 @@ export function saveSettings(settings: AppSettings): void {
 
 export function applyFontSize(size: FontSize): void {
   document.documentElement.dataset.fontSize = size
+}
+
+export function applyReadingLayout(settings: Pick<AppSettings, 'fontSize' | 'verseGap' | 'lineHeight'>): void {
+  const root = document.documentElement
+  root.dataset.fontSize = settings.fontSize
+  root.dataset.verseGap = settings.verseGap
+  root.dataset.lineHeight = settings.lineHeight
 }
