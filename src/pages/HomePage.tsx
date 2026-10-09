@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { copyText } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
-import { buildShareUrl } from '../lib/share'
+import { formatShareClipboard } from '../lib/share'
 import type { ScheduleItem } from '../types'
 import type { useProgress } from '../hooks/useProgress'
 
@@ -31,7 +31,7 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
   }, [toast])
 
   const handleShare = async () => {
-    const ok = await copyText(buildShareUrl('/'))
+    const ok = await copyText(formatShareClipboard('246일 성경 읽기 — 진행 확인과 이어 읽기', '/'))
     setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
   }
 

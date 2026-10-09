@@ -4,7 +4,7 @@ import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
-import { buildShareUrl } from '../lib/share'
+import { formatDayShareTitle, formatShareClipboard } from '../lib/share'
 import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
@@ -176,7 +176,9 @@ export function ReaderScreen({
   }
 
   const handleShare = async () => {
-    const ok = await copyText(buildShareUrl(`/read/${day}`))
+    if (!item) return
+    const text = formatShareClipboard(formatDayShareTitle(item.day, item.range), `/read/${day}`)
+    const ok = await copyText(text)
     setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
   }
 
