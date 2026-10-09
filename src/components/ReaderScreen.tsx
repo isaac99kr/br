@@ -231,9 +231,7 @@ export function ReaderScreen({
                     onClick={() => toggleVerse(v)}
                     aria-pressed={isOn}
                   >
-                    <span className="verse-num">
-                      {v.chapter}:{v.verse}
-                    </span>
+                    <span className="verse-num">{v.verse}</span>
                     <span className="verse-text">{v.text}</span>
                   </button>
                 </Fragment>

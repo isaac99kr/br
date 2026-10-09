@@ -3,8 +3,8 @@ import type { Verse } from '../types'
 export function formatVersesForCopy(verses: Verse[]): string {
   if (!verses.length) return ''
   const ref = formatVerseReference(verses)
-  const body = verses.map((v) => stripHeading(v.text)).filter(Boolean).join(' ')
-  return body ? `${ref} ${body}` : ref
+  const body = verses.map((v) => stripHeading(v.text)).filter(Boolean).join('\n')
+  return body ? `${ref}\n${body}` : ref
 }
 
 /** Compress selection into refs like `요20:2`, `요20:2-4`, `요20:1-2, 4-6, 8`. */
