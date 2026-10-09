@@ -5,10 +5,15 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "error: uncommitted changes. Commit first, then run: npm run pages"
-  git status --short
+# Only tracked modifications block deploy (ignore untracked docs screenshots etc.)
+if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+  echo "error: uncommitted changes to tracked files. Commit first, then run: npm run pages"
+  git status --short --untracked-files=no
   exit 1
+fi
+if [[ -n "$(git status --porcelain --untracked-files=normal | grep '^??' || true)" ]]; then
+  echo "note: untracked files are present and will not be deployed:"
+  git status --short --untracked-files=normal | grep '^??' || true
 fi
 
 branch="$(git branch --show-current)"
