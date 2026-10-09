@@ -154,7 +154,6 @@ export function ReaderScreen({
   if (!item) return null
 
   const status = progress.statusOf(day)
-  const weekdayLabel = `${item.weekday}요일`
   const selectedVerses = verses.filter((v) => selected.has(verseKey(v)))
 
   const toggleVerse = (v: Verse) => {
@@ -200,7 +199,7 @@ export function ReaderScreen({
       <div className="reader-scroll">
         <div className="reader-meta-block">
           <p className="reader-meta-line">
-            {item.testament} · {item.week}주차 · {weekdayLabel} · {statusLabel(status)}
+            {item.testament} · {item.week}주차 · {statusLabel(status)}
           </p>
         </div>
 
