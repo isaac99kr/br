@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { copyText } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
+import { buildShareUrl } from '../lib/share'
 import type { ScheduleItem } from '../types'
 import type { useProgress } from '../hooks/useProgress'
 
@@ -19,6 +22,18 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
   const status = statusOf(continueDay)
   const allDone = completedCount === total && total > 0
   const hasHistory = progress.lastReadDay != null || completedCount > 0 || status !== 'unread'
+  const [toast, setToast] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!toast) return
+    const t = window.setTimeout(() => setToast(null), 1800)
+    return () => window.clearTimeout(t)
+  }, [toast])
+
+  const handleShare = async () => {
+    const ok = await copyText(buildShareUrl('/'))
+    setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
+  }
 
   return (
     <main className="page">
@@ -82,8 +97,12 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
           <Link to="/find" className="pill link-pill">
             날짜 찾기 →
           </Link>
+          <button type="button" className="pill link-pill" onClick={handleShare}>
+            공유
+          </button>
         </div>
       </section>
+      {toast && <div className="toast page-toast">{toast}</div>}
     </main>
   )
 }

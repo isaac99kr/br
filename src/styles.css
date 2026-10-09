@@ -561,12 +561,18 @@ p {
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 44px 1fr auto;
   align-items: start;
   gap: 8px;
   padding: 10px 12px;
   padding-top: max(10px, env(safe-area-inset-top));
   border-bottom: 1px solid var(--reader-line);
+}
+
+.reader-chrome-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .reader-chrome-top .reader-icon-btn {
@@ -825,6 +831,11 @@ p {
   white-space: nowrap;
   z-index: 4;
   transition: bottom 0.22s ease;
+}
+
+.page-toast {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  z-index: 20;
 }
 
 .reader-screen.chrome-hidden .toast {

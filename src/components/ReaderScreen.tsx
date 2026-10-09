@@ -4,6 +4,7 @@ import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
+import { buildShareUrl } from '../lib/share'
 import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
@@ -174,6 +175,11 @@ export function ReaderScreen({
     setToast(ok ? `${selectedVerses.length}개 구절을 복사했어요` : '복사에 실패했습니다')
   }
 
+  const handleShare = async () => {
+    const ok = await copyText(buildShareUrl(`/read/${day}`))
+    setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
+  }
+
   return (
     <div className={`reader-screen${chromeHidden ? ' chrome-hidden' : ''}`}>
       <header className="reader-chrome reader-chrome-top">
@@ -186,14 +192,24 @@ export function ReaderScreen({
             {item.range}
           </div>
         </div>
-        <button
-          type="button"
-          className="reader-icon-btn reader-settings-btn"
-          onClick={() => setSettingsOpen(true)}
-          aria-label="설정"
-        >
-          설정
-        </button>
+        <div className="reader-chrome-actions">
+          <button
+            type="button"
+            className="reader-icon-btn reader-settings-btn"
+            onClick={handleShare}
+            aria-label="공유"
+          >
+            공유
+          </button>
+          <button
+            type="button"
+            className="reader-icon-btn reader-settings-btn"
+            onClick={() => setSettingsOpen(true)}
+            aria-label="설정"
+          >
+            설정
+          </button>
+        </div>
       </header>
 
       <div className="reader-scroll">
