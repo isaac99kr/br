@@ -1,0 +1,340 @@
+{
+  "books": [
+    {
+      "abbr": "창",
+      "file": "1-01창세기.txt",
+      "chapterCount": 50
+    },
+    {
+      "abbr": "출",
+      "file": "1-02출애굽기.txt",
+      "chapterCount": 40
+    },
+    {
+      "abbr": "레",
+      "file": "1-03레위기.txt",
+      "chapterCount": 27
+    },
+    {
+      "abbr": "민",
+      "file": "1-04민수기.txt",
+      "chapterCount": 36
+    },
+    {
+      "abbr": "신",
+      "file": "1-05신명기.txt",
+      "chapterCount": 34
+    },
+    {
+      "abbr": "수",
+      "file": "1-06여호수아.txt",
+      "chapterCount": 24
+    },
+    {
+      "abbr": "삿",
+      "file": "1-07사사기.txt",
+      "chapterCount": 21
+    },
+    {
+      "abbr": "룻",
+      "file": "1-08룻기.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "삼상",
+      "file": "1-09사무엘상.txt",
+      "chapterCount": 31
+    },
+    {
+      "abbr": "삼하",
+      "file": "1-10사무엘하.txt",
+      "chapterCount": 24
+    },
+    {
+      "abbr": "왕상",
+      "file": "1-11열왕기상.txt",
+      "chapterCount": 22
+    },
+    {
+      "abbr": "왕하",
+      "file": "1-12열왕기하.txt",
+      "chapterCount": 25
+    },
+    {
+      "abbr": "대상",
+      "file": "1-13역대상.txt",
+      "chapterCount": 29
+    },
+    {
+      "abbr": "대하",
+      "file": "1-14역대하.txt",
+      "chapterCount": 36
+    },
+    {
+      "abbr": "스",
+      "file": "1-15에스라.txt",
+      "chapterCount": 10
+    },
+    {
+      "abbr": "느",
+      "file": "1-16느헤미야.txt",
+      "chapterCount": 13
+    },
+    {
+      "abbr": "에",
+      "file": "1-17에스더.txt",
+      "chapterCount": 10
+    },
+    {
+      "abbr": "욥",
+      "file": "1-18욥기.txt",
+      "chapterCount": 42
+    },
+    {
+      "abbr": "시",
+      "file": "1-19시편.txt",
+      "chapterCount": 150
+    },
+    {
+      "abbr": "잠",
+      "file": "1-20잠언.txt",
+      "chapterCount": 31
+    },
+    {
+      "abbr": "전",
+      "file": "1-21전도서.txt",
+      "chapterCount": 12
+    },
+    {
+      "abbr": "아",
+      "file": "1-22아가.txt",
+      "chapterCount": 8
+    },
+    {
+      "abbr": "사",
+      "file": "1-23이사야.txt",
+      "chapterCount": 66
+    },
+    {
+      "abbr": "렘",
+      "file": "1-24예레미야.txt",
+      "chapterCount": 52
+    },
+    {
+      "abbr": "애",
+      "file": "1-25예레미야애가.txt",
+      "chapterCount": 5
+    },
+    {
+      "abbr": "겔",
+      "file": "1-26에스겔.txt",
+      "chapterCount": 48
+    },
+    {
+      "abbr": "단",
+      "file": "1-27다니엘.txt",
+      "chapterCount": 12
+    },
+    {
+      "abbr": "호",
+      "file": "1-28호세아.txt",
+      "chapterCount": 14
+    },
+    {
+      "abbr": "욜",
+      "file": "1-29요엘.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "암",
+      "file": "1-30아모스.txt",
+      "chapterCount": 9
+    },
+    {
+      "abbr": "옵",
+      "file": "1-31오바댜.txt",
+      "chapterCount": 1
+    },
+    {
+      "abbr": "욘",
+      "file": "1-32요나.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "미",
+      "file": "1-33미가.txt",
+      "chapterCount": 7
+    },
+    {
+      "abbr": "나",
+      "file": "1-34나훔.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "합",
+      "file": "1-35하박국.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "습",
+      "file": "1-36스바냐.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "학",
+      "file": "1-37학개.txt",
+      "chapterCount": 2
+    },
+    {
+      "abbr": "슥",
+      "file": "1-38스가랴.txt",
+      "chapterCount": 14
+    },
+    {
+      "abbr": "말",
+      "file": "1-39말라기.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "마",
+      "file": "2-01마태복음.txt",
+      "chapterCount": 28
+    },
+    {
+      "abbr": "막",
+      "file": "2-02마가복음.txt",
+      "chapterCount": 16
+    },
+    {
+      "abbr": "눅",
+      "file": "2-03누가복음.txt",
+      "chapterCount": 24
+    },
+    {
+      "abbr": "요",
+      "file": "2-04요한복음.txt",
+      "chapterCount": 21
+    },
+    {
+      "abbr": "행",
+      "file": "2-05사도행전.txt",
+      "chapterCount": 28
+    },
+    {
+      "abbr": "롬",
+      "file": "2-06로마서.txt",
+      "chapterCount": 16
+    },
+    {
+      "abbr": "고전",
+      "file": "2-07고린도전서.txt",
+      "chapterCount": 16
+    },
+    {
+      "abbr": "고후",
+      "file": "2-08고린도후서.txt",
+      "chapterCount": 13
+    },
+    {
+      "abbr": "갈",
+      "file": "2-09갈라디아서.txt",
+      "chapterCount": 6
+    },
+    {
+      "abbr": "엡",
+      "file": "2-10에베소서.txt",
+      "chapterCount": 6
+    },
+    {
+      "abbr": "빌",
+      "file": "2-11빌립보서.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "골",
+      "file": "2-12골로새서.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "살전",
+      "file": "2-13데살로니가전서.txt",
+      "chapterCount": 5
+    },
+    {
+      "abbr": "살후",
+      "file": "2-14데살로니가후서.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "딤전",
+      "file": "2-15디모데전서.txt",
+      "chapterCount": 6
+    },
+    {
+      "abbr": "딤후",
+      "file": "2-16디모데후서.txt",
+      "chapterCount": 4
+    },
+    {
+      "abbr": "딛",
+      "file": "2-17디도서.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "몬",
+      "file": "2-18빌레몬서.txt",
+      "chapterCount": 1
+    },
+    {
+      "abbr": "히",
+      "file": "2-19히브리서.txt",
+      "chapterCount": 13
+    },
+    {
+      "abbr": "약",
+      "file": "2-20야고보서.txt",
+      "chapterCount": 5
+    },
+    {
+      "abbr": "벧전",
+      "file": "2-21베드로전서.txt",
+      "chapterCount": 5
+    },
+    {
+      "abbr": "벧후",
+      "file": "2-22베드로후서.txt",
+      "chapterCount": 3
+    },
+    {
+      "abbr": "요일",
+      "file": "2-23요한일서.txt",
+      "chapterCount": 5
+    },
+    {
+      "abbr": "요이",
+      "file": "2-24요한이서.txt",
+      "chapterCount": 1
+    },
+    {
+      "abbr": "요삼",
+      "file": "2-25요한삼서.txt",
+      "chapterCount": 1
+    },
+    {
+      "abbr": "유",
+      "file": "2-26유다서.txt",
+      "chapterCount": 1
+    },
+    {
+      "abbr": "계",
+      "file": "2-27요한계시록.txt",
+      "chapterCount": 22
+    }
+  ],
+  "aliases": {
+    "라": "스",
+    "스": "슥",
+    "나훔": "나",
+    "스바냐": "습"
+  }
+}
