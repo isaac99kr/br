@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "data": "python3 scripts/build-data.py",
-    "pages": "gh workflow run \"Deploy to GitHub Pages\" --ref main",
+    "pages": "bash scripts/deploy-pages.sh",
     "pages:status": "gh run list --workflow=\"Deploy to GitHub Pages\" --limit 5"
   },
   "dependencies": {

@@ -40,6 +40,12 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
   const showFind = location.pathname.startsWith('/find')
 
   const openReader = (day: number) => {
+    if (day > 1 && progress.needsBulkCompleteBefore(day)) {
+      const ok = window.confirm(
+        `이전 날짜(1~${day - 1}일)를 모두 읽은 것으로 표시할까요?`,
+      )
+      if (ok) progress.completeDaysBefore(day)
+    }
     navigate(`/read/${day}`, { state: { from: showFind ? '/find' : '/' } })
   }
 

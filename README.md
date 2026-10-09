@@ -39,12 +39,14 @@ npm run preview
 
 저장소 Settings → Pages → Source를 **GitHub Actions**로 두면 `main` 푸시 시 자동 배포됩니다.
 
-수동 배포(이미 `main`에 반영된 코드 기준):
+로컬 변경을 Pages에 반영하려면 **먼저 커밋**한 뒤:
 
 ```bash
-npm run pages          # Deploy to GitHub Pages 워크플로 실행
+npm run pages          # origin/main 푸시 → 해당 커밋 배포 완료까지 대기
 npm run pages:status   # 최근 배포 실행 목록
 ```
+
+> `npm run pages`는 미커밋 변경이 있으면 중단합니다. 원격만 다시 돌리는 `workflow_dispatch`가 아니라, **방금 푸시한 커밋**의 Actions 배포를 기다립니다.
 
 예상 URL: `https://isaac99kr.github.io/br/`
 

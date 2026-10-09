@@ -2,9 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   countCompleted,
   getStatus,
+  hasIncompleteBefore,
   loadProgress,
   resumeDay,
   saveProgress,
+  withClearedCompleted,
+  withCompletedThrough,
   withLastRead,
   withStatus,
 } from '../lib/progress'
@@ -34,6 +37,19 @@ export function useProgress(totalDays = 246) {
     })
   }, [])
 
+  const completeDaysBefore = useCallback((day: number) => {
+    setStore((prev) => withCompletedThrough(prev, day))
+  }, [])
+
+  const clearAllCompleted = useCallback(() => {
+    setStore((prev) => withClearedCompleted(prev))
+  }, [])
+
+  const needsBulkCompleteBefore = useCallback(
+    (day: number) => hasIncompleteBefore(store, day),
+    [store],
+  )
+
   const completedCount = countCompleted(store, totalDays)
   const percent = totalDays ? Math.round((completedCount / totalDays) * 100) : 0
   const continueDay = resumeDay(store)
@@ -43,6 +59,9 @@ export function useProgress(totalDays = 246) {
     statusOf,
     setDayStatus,
     markOpened,
+    completeDaysBefore,
+    clearAllCompleted,
+    needsBulkCompleteBefore,
     completedCount,
     percent,
     continueDay,

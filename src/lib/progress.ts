@@ -123,6 +123,37 @@ export function withLastRead(store: ProgressStore, day: number): ProgressStore {
   return { ...store, lastReadDay: day }
 }
 
+/** Mark days 1 .. untilDayExclusive-1 as completed. */
+export function withCompletedThrough(
+  store: ProgressStore,
+  untilDayExclusive: number,
+): ProgressStore {
+  const last = Math.max(1, untilDayExclusive) - 1
+  if (last < 1) return store
+  const now = new Date().toISOString()
+  const progress = { ...store.progress }
+  for (let d = 1; d <= last; d++) {
+    progress[String(d)] = { status: 'completed', updatedAt: now }
+  }
+  return { version: 1, lastReadDay: store.lastReadDay, progress }
+}
+
+export function hasIncompleteBefore(store: ProgressStore, day: number): boolean {
+  for (let d = 1; d < day; d++) {
+    if (getStatus(store, d) !== 'completed') return true
+  }
+  return false
+}
+
+/** Clear all completed days back to unread (keeps in_progress and lastReadDay). */
+export function withClearedCompleted(store: ProgressStore): ProgressStore {
+  const progress: Record<string, DayProgress> = {}
+  for (const [k, v] of Object.entries(store.progress)) {
+    if (v.status !== 'completed') progress[k] = v
+  }
+  return { version: 1, lastReadDay: store.lastReadDay, progress }
+}
+
 export function resumeDay(store: ProgressStore): number {
   if (store.lastReadDay && store.lastReadDay >= 1 && store.lastReadDay <= 246) {
     return store.lastReadDay

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { groupByTestamentWeek } from '../lib/schedule'
 import { statusLabel } from '../lib/progress'
 import type { ScheduleItem } from '../types'
@@ -38,6 +38,15 @@ export function FindPage({ schedule, progress, onOpenReader }: Props) {
       .filter((g) => g.weeks.length > 0)
   }, [grouped, testamentFilter, onlyIncomplete, progress])
 
+  useEffect(() => {
+    const target = progress.continueDay
+    const id = window.requestAnimationFrame(() => {
+      const el = document.querySelector<HTMLElement>(`[data-day="${target}"]`)
+      el?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    })
+    return () => window.cancelAnimationFrame(id)
+  }, [progress.continueDay, testamentFilter, onlyIncomplete, visible])
+
   return (
     <main className="page">
       <h2 className="section-title">읽을 날짜 찾기</h2>
@@ -61,6 +70,20 @@ export function FindPage({ schedule, progress, onOpenReader }: Props) {
         >
           미완료만
         </button>
+        {progress.completedCount > 0 && (
+          <button
+            type="button"
+            className="pill"
+            onClick={() => {
+              const ok = window.confirm(
+                `완료로 표시된 ${progress.completedCount}일을 모두 안읽음으로 되돌릴까요?`,
+              )
+              if (ok) progress.clearAllCompleted()
+            }}
+          >
+            일괄 완료 해제
+          </button>
+        )}
       </div>
 
       <div id="schedule">
@@ -94,6 +117,7 @@ export function FindPage({ schedule, progress, onOpenReader }: Props) {
                           key={d.day}
                           type="button"
                           className={cls}
+                          data-day={d.day}
                           title={`${d.day}일차 ${d.range} · ${statusLabel(s)}`}
                           onClick={() => onOpenReader(d.day)}
                         >

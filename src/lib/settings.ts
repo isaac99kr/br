@@ -16,13 +16,13 @@ export const SETTINGS_KEY = 'bibleReadingSettings:v1'
 
 export const FONT_SIZE_OPTIONS: { value: FontSize; label: string; sample: string }[] = [
   { value: 'S', label: '작게', sample: '15px' },
-  { value: 'M', label: '보통', sample: '17px' },
-  { value: 'L', label: '크게', sample: '19px' },
-  { value: 'XL', label: '아주 크게', sample: '22px' },
+  { value: 'M', label: '보통', sample: '18px' },
+  { value: 'L', label: '크게', sample: '23px' },
+  { value: 'XL', label: '아주 크게', sample: '28px' },
 ]
 
 export const VERSE_GAP_OPTIONS: { value: SpacingSize; label: string; sample: string }[] = [
-  { value: 'S', label: '좁게', sample: '붙임' },
+  { value: 'S', label: '붙임', sample: '간격 없음' },
   { value: 'M', label: '보통', sample: '기본' },
   { value: 'L', label: '넓게', sample: '여유' },
   { value: 'XL', label: '아주 넓게', sample: '넉넉' },

@@ -45,6 +45,20 @@ export function HomePage({ schedule, progress, onOpenReader }: Props) {
             ? `다음 읽기: ${item.day}일차 · ${item.range}`
             : '첫 번째 읽기 일정부터 시작해보세요.'}
         </div>
+        {completedCount > 0 && (
+          <button
+            type="button"
+            className="pill link-pill clear-completed"
+            onClick={() => {
+              const ok = window.confirm(
+                `완료로 표시된 ${completedCount}일을 모두 안읽음으로 되돌릴까요?`,
+              )
+              if (ok) progress.clearAllCompleted()
+            }}
+          >
+            일괄 완료 해제
+          </button>
+        )}
       </section>
 
       <section className="panel">
