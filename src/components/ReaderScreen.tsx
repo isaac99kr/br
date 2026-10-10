@@ -43,7 +43,10 @@ function verseKey(v: Verse): string {
 }
 
 const CHROME_HIDE_DELAY_MS = 1500
-const AUTO_SCROLL_MS = 4000
+/** Base dwell time per verse at 1x auto-scroll rate. */
+const AUTO_SCROLL_BASE_MS = 4000
+const AUTO_SCROLL_RATES = [0.75, 1, 1.25, 1.5, 2] as const
+type AutoScrollRate = (typeof AUTO_SCROLL_RATES)[number]
 
 function verseToCue(v: Verse): AudioVerseCue {
   return { abbr: v.abbr, chapter: v.chapter, verse: v.verse, startMs: 0 }
@@ -97,6 +100,7 @@ export function ReaderScreen({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
   const [autoScrollOn, setAutoScrollOn] = useState(false)
+  const [autoScrollRate, setAutoScrollRate] = useState<AutoScrollRate>(1)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const [activeChapter, setActiveChapter] = useState<AudioChapterCue | null>(null)
   const [activeVerse, setActiveVerse] = useState<AudioVerseCue | null>(null)
@@ -108,20 +112,14 @@ export function ReaderScreen({
   const audioPlayingRef = useRef(false)
   const autoScrollOnRef = useRef(false)
   const autoScrollIndexRef = useRef(0)
+  const settingsOpenRef = useRef(settingsOpen)
+  settingsOpenRef.current = settingsOpen
   const versesRef = useRef(verses)
   versesRef.current = verses
   const activeVerseRef = useRef(activeVerse)
   activeVerseRef.current = activeVerse
   const lastScrolledVerse = useRef<string | null>(null)
   const lastScrolledChapter = useRef<string | null>(null)
-
-  const stopAutoScroll = (clearHighlight: boolean) => {
-    autoScrollOnRef.current = false
-    setAutoScrollOn(false)
-    if (clearHighlight && !audioPlayingRef.current) {
-      setActiveVerse(null)
-    }
-  }
 
   const clearChromeHideTimer = () => {
     if (chromeHideTimer.current != null) {
@@ -130,19 +128,31 @@ export function ReaderScreen({
     }
   }
 
+  const immersiveActive = () => audioPlayingRef.current || autoScrollOnRef.current
+
   const scheduleChromeHide = () => {
     clearChromeHideTimer()
-    if (settingsOpen || !audioPlayingRef.current) return
+    if (settingsOpenRef.current || !immersiveActive()) return
     chromeHideTimer.current = window.setTimeout(() => {
       setChromeHidden(true)
       chromeHideTimer.current = null
     }, CHROME_HIDE_DELAY_MS)
   }
 
-  /** Show chrome; if audio still playing, hide again after a short delay. */
+  /** Show chrome; if audio/auto-scroll still active, hide again after a short delay. */
   const revealChrome = () => {
     setChromeHidden(false)
-    if (audioPlayingRef.current) scheduleChromeHide()
+    if (immersiveActive()) scheduleChromeHide()
+  }
+
+  const stopAutoScroll = (clearHighlight: boolean) => {
+    autoScrollOnRef.current = false
+    setAutoScrollOn(false)
+    if (clearHighlight && !audioPlayingRef.current) {
+      setActiveVerse(null)
+    }
+    clearChromeHideTimer()
+    if (!audioPlayingRef.current) setChromeHidden(false)
   }
 
   useEffect(() => {
@@ -237,11 +247,12 @@ export function ReaderScreen({
 
       if (autoScrollOnRef.current && Math.abs(delta) > 10) {
         stopAutoScroll(true)
+        return
       }
 
-      // While audio plays, chrome stays hidden until the user taps — ignore scroll toggles
-      // (verse auto-scroll would otherwise keep flashing the menus).
-      if (!audioPlayingRef.current) {
+      // While audio/auto-scroll runs, chrome stays hidden until the user taps —
+      // ignore scroll toggles (verse auto-scroll would otherwise keep flashing menus).
+      if (!immersiveActive()) {
         if (top < 24) {
           setChromeHidden(false)
         } else if (delta > 10) {
@@ -285,6 +296,7 @@ export function ReaderScreen({
   useEffect(() => {
     if (!autoScrollOn || audioPlaying) return
 
+    const intervalMs = Math.max(500, Math.round(AUTO_SCROLL_BASE_MS / autoScrollRate))
     const tick = () => {
       const list = versesRef.current
       const next = autoScrollIndexRef.current + 1
@@ -296,9 +308,9 @@ export function ReaderScreen({
       setActiveVerse(verseToCue(list[next]))
     }
 
-    const id = window.setInterval(tick, AUTO_SCROLL_MS)
+    const id = window.setInterval(tick, intervalMs)
     return () => window.clearInterval(id)
-  }, [autoScrollOn, audioPlaying])
+  }, [autoScrollOn, audioPlaying, autoScrollRate])
 
   useEffect(() => {
     if (Date.now() < userScrollLock.current) return
@@ -361,6 +373,8 @@ export function ReaderScreen({
     setActiveVerse(verseToCue(verses[idx]))
     autoScrollOnRef.current = true
     setAutoScrollOn(true)
+    clearChromeHideTimer()
+    scheduleChromeHide()
   }
 
   const handleCopy = async () => {
@@ -381,13 +395,14 @@ export function ReaderScreen({
     if (audioOpen) {
       setAudioOpen(false)
       clearChromeHideTimer()
-      setChromeHidden(false)
       setActiveChapter(null)
       if (!autoScrollOnRef.current) {
         setActiveVerse(null)
+        setChromeHidden(false)
       } else {
         const v = versesRef.current[autoScrollIndexRef.current]
         if (v) setActiveVerse(verseToCue(v))
+        scheduleChromeHide()
       }
       return
     }
@@ -405,6 +420,8 @@ export function ReaderScreen({
     setAudioPlaying(playing)
     clearChromeHideTimer()
     if (playing) {
+      scheduleChromeHide()
+    } else if (autoScrollOnRef.current) {
       scheduleChromeHide()
     } else {
       setChromeHidden(false)
@@ -537,6 +554,27 @@ export function ReaderScreen({
             onPlayingChange={handlePlayingChange}
             onUnavailable={(message) => setToast(message)}
           />
+        )}
+        {autoScrollOn && (
+          <div className="auto-scroll-controls">
+            <label className="audio-rate">
+              <span className="audio-rate-label">속도</span>
+              <select
+                value={autoScrollRate}
+                onChange={(e) => {
+                  setAutoScrollRate(Number(e.target.value) as AutoScrollRate)
+                  revealChrome()
+                }}
+                aria-label="자동스크롤 속도"
+              >
+                {AUTO_SCROLL_RATES.map((r) => (
+                  <option key={r} value={r}>
+                    {r}x
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         )}
         <div className="reader-actions">
           <button

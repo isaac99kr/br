@@ -772,6 +772,20 @@ p {
   color: white;
 }
 
+.auto-scroll-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #222228;
+  border: 1px solid var(--reader-line);
+}
+
+.auto-scroll-controls .audio-rate {
+  margin-left: 0;
+}
+
 .audio-player {
   margin-bottom: 10px;
   padding: 10px 10px 8px;
