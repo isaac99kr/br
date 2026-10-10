@@ -33,7 +33,8 @@ from tts_text import (  # noqa: E402
 
 CONFIG_PATH = ROOT / "config" / "voice-selection.json"
 WORK_DAYS = ROOT / "work" / "days"
-PUBLIC_AUDIO = REPO / "public" / "audio"
+# Legacy offline publish target (not served by the web app / Pages).
+PUBLIC_AUDIO = REPO / "tts" / "legacy-audio"
 MAX_CHUNK_CHARS = 120  # Supertonic ko default chunk size
 DEFAULT_ANNOUNCE_SILENCE = 0.4
 DEFAULT_CHUNK_GAP = 0.12

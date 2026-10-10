@@ -27,10 +27,14 @@ dist-ssr
 tts/.venv/
 tts/work/
 tts/models/
+tts/legacy-audio/
 tts/**/*.wav
 tts/**/*.mp3
 tts/**/*.ogg
 tts/**/*.flac
+
+# Prebuilt day MP3s are legacy-only under tts/legacy-audio/ (not shipped)
+public/audio/
 
 __pycache__/
 *.py[cod]

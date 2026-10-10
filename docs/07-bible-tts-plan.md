@@ -75,8 +75,9 @@ TTS와 별개로 **개역개정 본문**은 대한성서공회 저작권 이슈�
 ## 6. 기술·용량 요약
 
 - 앱·본문(krv/rnksv)·Pages(`base: '/br/'`)는 **이미 구현**.
-- **재생 경로(앱):** 브라우저 **Web Speech API** 실시간 낭독 + **현재 절 하이라이트·스크롤**. 사전 생성 MP3는 보관만(앱 미사용).
-- Supertonic 3 — 로컬 배치 생성용(선택). Pages 1GB 한도 이슈로 전체 배포와는 분리.
+- **재생 경로(앱):** 브라우저 **Web Speech API** 실시간 낭독 + **현재 절 하이라이트·스크롤**.
+- **사전 생성 MP3(레거시):** [`tts/legacy-audio/`](../tts/legacy-audio/)에만 보관. git·`public/`·Pages에 포함하지 않음. `generate_day.py` publish도 이 경로로 기록.
+- Supertonic 3 — 로컬 배치 생성용(선택).
 - 분할 생성(선택): [`tts/scripts/generate_day.py`](../tts/scripts/generate_day.py)
 
 상세: [08](08-bible-tts-investigation.md).
@@ -109,8 +110,8 @@ TTS와 별개로 **개역개정 본문**은 대한성서공회 저작권 이슈�
 
 | 번역 | 음원 | 생성 | 길이 |
 |---|---|---|---|
-| `krv` | `public/audio/krv/female/day-213.mp3` | ~549s | ~18.3분 |
-| `rnksv` | `public/audio/rnksv/female/day-213.mp3` | ~660s | ~23.7분 |
+| `krv` | `tts/legacy-audio/krv/female/day-213.mp3` | ~549s | ~18.3분 |
+| `rnksv` | `tts/legacy-audio/rnksv/female/day-213.mp3` | ~660s | ~23.7분 |
 
 2프로세스 벽시계 ≈ **11분** (`SUPERTONIC_INTRA_OP_THREADS=4`). 장 안내 예: `요한복음 이십장 말씀입니다.`
 
