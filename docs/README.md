@@ -22,7 +22,7 @@
 | 자료 | 경로 |
 |---|---|
 | 원본 개발 지시서 | [`../cursor_bible_reading_development_guide.md`](../cursor_bible_reading_development_guide.md) |
-| 일정 CSV | [`../asset/schedule/bible_reading_schedule.csv`](../asset/schedule/bible_reading_schedule.csv) |
+| 일정 CSV | [`../asset/schedule/`](../asset/schedule/) (`chrono-246`, `yearly-365`) |
 | 성경 본문 | [`../asset/bible/개역개정-text/`](../asset/bible/개역개정-text/) |
 | 화면 HTML | [`../asset/design/bible_reading_screen_design_v2.html`](../asset/design/bible_reading_screen_design_v2.html) |
 | 스크린샷 | [`../asset/design/screenshots/`](../asset/design/screenshots/) |

@@ -1,0 +1,20 @@
+{
+  "defaultId": "chrono-246",
+  "schedules": [
+    {
+      "id": "chrono-246",
+      "title": "연대기순 246일",
+      "description": "구약·신약 연대기 순서 통독",
+      "dayCount": 246,
+      "groupMode": "testament-week"
+    },
+    {
+      "id": "yearly-365",
+      "title": "1년 1독",
+      "description": "날짜별 통독표 (1월 1일~12월 31일)",
+      "dayCount": 365,
+      "groupMode": "month",
+      "source": "성서유니온 일년일독 통독표"
+    }
+  ]
+}

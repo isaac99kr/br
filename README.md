@@ -1,10 +1,12 @@
 # 성경 읽기 (Bible Reading Journey)
 
-246일 성경 읽기 일정을 따라가며 **진행 상황을 확인하고 이어 읽는** React 웹앱입니다.
+여러 성경 읽기 일정 중 하나를 골라 **진행 상황을 확인하고 이어 읽는** React 웹앱입니다.
 
-- 일정: `asset/schedule/bible_reading_schedule.csv` (1~246일, 구약 31주 / 신약 11주)
+- 일정: `asset/schedule/` → `public/data/schedules.json` + `schedules/{id}.json`
+  - `chrono-246` 연대기순 246일 (기본)
+  - `yearly-365` 1년 1독 (날짜별 365일)
 - 본문: 개역개정 / 표준새번역 (`asset/bible/…` → `public/data/bible/{krv|rnksv}/*.json`)
-- 진행 기록: 브라우저 `localStorage` (`bibleReadingProgress:v1`)
+- 진행 기록: 브라우저 `localStorage` (`bibleReadingProgress:v2:{scheduleId}`)
 - 서버/DB/로그인 없음
 - 배포 대상: GitHub Pages (`/br/`)
 
@@ -54,8 +56,8 @@ npm run pages:status   # 최근 배포 실행 목록
 
 | 경로 | 설명 |
 |---|---|
-| `/#/` | 홈 — 진행률, 이어 읽기 |
-| `/#/find` | 날짜 찾기 — 구약/신약·주차별 |
+| `/#/` | 홈 — 일정 선택, 진행률, 이어 읽기 |
+| `/#/find` | 날짜 찾기 — 주차 또는 월별 |
 | `/#/read/:day` | 읽기 화면 (설정 오버레이 포함) |
 
 ## 진행 상태
@@ -77,6 +79,6 @@ npm run pages:status   # 최근 배포 실행 목록
 ```text
 asset/     원본 일정·본문·디자인
 docs/      기획 문서
-public/data/  앱이 읽는 JSON (schedule, books, translations, bible/{krv|rnksv})
+public/data/  앱이 읽는 JSON (schedules, books, translations, bible/{krv|rnksv})
 src/       React 앱
 ```

@@ -11,17 +11,39 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public" / "data"
 BIBLE_OUT = PUBLIC / "bible"
-CSV_PATH = ROOT / "asset" / "schedule" / "bible_reading_schedule.csv"
+SCHEDULE_DIR = ROOT / "asset" / "schedule"
 KRV_DIR = ROOT / "asset" / "bible" / "개역개정-text"
 RNKSV_PATH = ROOT / "asset" / "bible" / "표준새번역개정판.txt"
 
 # CSV abbreviation -> file-internal abbreviation
 ALIASES = {
-    "라": "스",  # Ezra
-    "스": "슥",  # Zechariah
+    "라": "스",  # Ezra (chrono schedule)
     "나훔": "나",
     "스바냐": "습",
 }
+
+# Registry of reading schedules. Add a CSV + entry here to ship a new plan.
+SCHEDULES = [
+    {
+        "id": "chrono-246",
+        "title": "연대기순 246일",
+        "description": "구약·신약 연대기 순서 통독",
+        "dayCount": 246,
+        "groupMode": "testament-week",
+        "csv": "chrono-246.csv",
+        "default": True,
+    },
+    {
+        "id": "yearly-365",
+        "title": "1년 1독",
+        "description": "날짜별 통독표 (1월 1일~12월 31일)",
+        "dayCount": 365,
+        "groupMode": "month",
+        "csv": "yearly-365.csv",
+        "source": "성서유니온 일년일독 통독표",
+        "default": False,
+    },
+]
 
 TRANSLATIONS = [
     {
@@ -60,24 +82,97 @@ def write_json(path: Path, data: object, *, indent: int | None = None) -> None:
     )
 
 
-def build_schedule() -> None:
-    rows = list(csv.DictReader(CSV_PATH.open(encoding="utf-8"), delimiter=";"))
-    schedule = [
-        {
+def _optional_int(row: dict[str, str], key: str) -> int | None:
+    raw = (row.get(key) or "").strip()
+    if not raw:
+        return None
+    return int(raw)
+
+
+def _optional_str(row: dict[str, str], key: str) -> str | None:
+    raw = (row.get(key) or "").strip()
+    return raw or None
+
+
+def build_one_schedule(spec: dict) -> list[dict]:
+    csv_path = SCHEDULE_DIR / spec["csv"]
+    if not csv_path.is_file():
+        raise SystemExit(f"Missing schedule CSV: {csv_path}")
+
+    rows = list(csv.DictReader(csv_path.open(encoding="utf-8"), delimiter=";"))
+    schedule: list[dict] = []
+    for r in rows:
+        item: dict = {
             "day": int(r["reading_day"]),
-            "weekday": r["weekday"],
-            "testament": r["testament"],
-            "week": int(r["week_no"]),
-            "range": r["reading_range"],
+            "range": r["reading_range"].strip(),
         }
-        for r in rows
-    ]
+        weekday = _optional_str(r, "weekday")
+        if weekday is not None:
+            item["weekday"] = weekday
+        testament = _optional_str(r, "testament")
+        if testament is not None:
+            item["testament"] = testament
+        week = _optional_int(r, "week_no")
+        if week is not None:
+            item["week"] = week
+        month = _optional_int(r, "month")
+        if month is not None:
+            item["month"] = month
+        month_day = _optional_int(r, "month_day")
+        if month_day is not None:
+            item["monthDay"] = month_day
+        schedule.append(item)
+
     days = [x["day"] for x in schedule]
-    if days != list(range(1, 247)):
-        raise SystemExit(f"Invalid schedule days: count={len(days)}")
+    expected = list(range(1, int(spec["dayCount"]) + 1))
+    if days != expected:
+        raise SystemExit(
+            f"Invalid schedule {spec['id']}: expected days 1..{spec['dayCount']}, got count={len(days)}"
+        )
+    if any(not x["range"] for x in schedule):
+        raise SystemExit(f"Empty reading_range in schedule {spec['id']}")
+    return schedule
+
+
+def build_schedules() -> None:
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    write_json(PUBLIC / "schedule.json", schedule, indent=2)
-    print(f"schedule.json: {len(schedule)} days")
+    out_dir = PUBLIC / "schedules"
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    default_id = next((s["id"] for s in SCHEDULES if s.get("default")), SCHEDULES[0]["id"])
+    catalog_items: list[dict] = []
+    default_days: list[dict] | None = None
+
+    for spec in SCHEDULES:
+        days = build_one_schedule(spec)
+        write_json(out_dir / f"{spec['id']}.json", days, indent=2)
+        print(f"schedules/{spec['id']}.json: {len(days)} days")
+
+        entry = {
+            "id": spec["id"],
+            "title": spec["title"],
+            "description": spec.get("description", ""),
+            "dayCount": spec["dayCount"],
+            "groupMode": spec["groupMode"],
+        }
+        if spec.get("source"):
+            entry["source"] = spec["source"]
+        catalog_items.append(entry)
+
+        if spec["id"] == default_id:
+            default_days = days
+
+    catalog = {"defaultId": default_id, "schedules": catalog_items}
+    write_json(PUBLIC / "schedules.json", catalog, indent=2)
+    print(f"schedules.json: {len(catalog_items)} schedules, default={default_id}")
+
+    # Legacy path for TTS scripts that still read schedule.json
+    if default_days is None:
+        raise SystemExit("No default schedule days to write schedule.json")
+    write_json(PUBLIC / "schedule.json", default_days, indent=2)
+    print(f"schedule.json: {len(default_days)} days (compat copy of {default_id})")
 
 
 def write_book(out_dir: Path, abbr: str, file_name: str, chapters: dict[str, dict[str, str]]) -> None:
@@ -245,7 +340,7 @@ def build_bible() -> None:
 
 
 def main() -> None:
-    build_schedule()
+    build_schedules()
     build_bible()
 
 

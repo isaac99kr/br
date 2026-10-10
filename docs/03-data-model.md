@@ -1,35 +1,35 @@
 # 03. 데이터 모델
 
-## 1. 읽기 일정 CSV
+## 1. 읽기 일정 (다중 스케줄)
 
-경로: [`asset/schedule/bible_reading_schedule.csv`](../asset/schedule/bible_reading_schedule.csv)
+원본: [`asset/schedule/`](../asset/schedule/)  
+빌드: `npm run data` → `public/data/schedules.json` + `public/data/schedules/{id}.json`  
+하위 호환: `public/data/schedule.json`은 기본 스케줄(`chrono-246`) 복사본 (TTS 스크립트용)
 
-### 컬럼
+### 등록된 스케줄
 
-| 컬럼 | 의미 | 예시 |
+| ID | 제목 | 일수 | 그룹 | CSV |
+|---|---|---|---|---|
+| `chrono-246` | 연대기순 246일 | 246 | `testament-week` | [`chrono-246.csv`](../asset/schedule/chrono-246.csv) |
+| `yearly-365` | 1년 1독 | 365 | `month` | [`yearly-365.csv`](../asset/schedule/yearly-365.csv) |
+
+새 스케줄: CSV 추가 → [`scripts/build-data.py`](../scripts/build-data.py)의 `SCHEDULES` 레지스트리에 항목 추가 → `npm run data`.
+
+### 공통 / 선택 컬럼
+
+| 컬럼 | 의미 | 사용 |
 |---|---|---|
-| `reading_day` | 일정 번호 (1~246) | `1` |
-| `weekday` | 요일 약어 | `월` |
-| `testament` | 권역 | `구약` / `신약` |
-| `week_no` | 권역 내 주차 | `1` |
-| `reading_range` | 그날 읽을 범위 표시 문자열 | `창1-3장` |
+| `reading_day` | 일정 번호 (1…N) | 공통 |
+| `reading_range` | 그날 읽을 범위 | 공통 |
+| `weekday` | 요일 약어 | `chrono-246` |
+| `testament` | 권역 | 공통(표시) |
+| `week_no` | 권역 내 주차 | `chrono-246` |
+| `month` / `month_day` | 달력 월·일 | `yearly-365` |
 
-- 구분자: **세미콜론 (`;`)**
-- 인코딩: UTF-8
+- 구분자: **세미콜론 (`;`)**, UTF-8
+- 검증: 각 스케줄 `reading_day`가 `1…dayCount` 연속. 실패 시 빌드 오류
 
-### 검증 결과 (원본 기준)
-
-| 항목 | 결과 |
-|---|---|
-| 데이터 행 수 | 246 |
-| `reading_day` 범위 | 1 ~ 246 |
-| 누락·중복 | 없음 |
-| 구약 | 183일, 주차 1~31 |
-| 신약 | 63일, 주차 1~11 |
-
-구현 시에도 CSV를 파싱한 뒤 동일 검증을 수행합니다. 검증 실패 시 임의 일정을 만들지 말고 오류를 표시합니다.
-
-### 일정 레코드 (정규화 후 권장 형태)
+### 일정 레코드 (정규화 후)
 
 ```json
 {
@@ -41,7 +41,17 @@
 }
 ```
 
-CSV 원본은 수정하지 않습니다. 앱에서는 정적 JSON/모듈로 변환해 쓸 수 있으나 내용은 동일해야 합니다.
+달력형 예시:
+
+```json
+{
+  "day": 32,
+  "month": 2,
+  "monthDay": 1,
+  "testament": "구약",
+  "range": "레11-14장"
+}
+```
 
 ### `reading_range` 복잡 패턴 예시
 

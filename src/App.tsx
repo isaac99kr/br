@@ -13,14 +13,38 @@ import { ReaderScreen } from './components/ReaderScreen'
 import { useProgress } from './hooks/useProgress'
 import { useSettings } from './hooks/useSettings'
 import { hasIncompleteBefore } from './lib/progress'
-import { loadSchedule } from './lib/schedule'
+import {
+  getScheduleMeta,
+  loadSchedule,
+  loadScheduleCatalog,
+  resolveScheduleId,
+} from './lib/schedule'
 import { FindPage } from './pages/FindPage'
 import { HomePage } from './pages/HomePage'
-import type { ScheduleItem } from './types'
+import type { ScheduleCatalog, ScheduleItem, ScheduleMeta } from './types'
 import './styles.css'
 
-function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
-  const progress = useProgress(schedule.length)
+type LoadedSchedule = {
+  catalog: ScheduleCatalog
+  scheduleId: string
+  meta: ScheduleMeta
+  schedule: ScheduleItem[]
+}
+
+function AppRoutes({
+  catalog,
+  meta,
+  schedule,
+  scheduleId,
+  settings,
+}: {
+  catalog: ScheduleCatalog
+  meta: ScheduleMeta
+  schedule: ScheduleItem[]
+  scheduleId: string
+  settings: ReturnType<typeof useSettings>
+}) {
+  const progress = useProgress(scheduleId, schedule.length)
   const {
     fontSize,
     setFontSize,
@@ -30,9 +54,10 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
     setLineHeight,
     translationId,
     setTranslationId,
+    setScheduleId,
     ttsVoiceUri,
     setTtsVoiceUri,
-  } = useSettings()
+  } = settings
   const navigate = useNavigate()
   const location = useLocation()
   const readMatch = useMatch('/read/:day')
@@ -43,7 +68,6 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
   const showFind = location.pathname.startsWith('/find')
 
   const openReader = (day: number) => {
-    // Skip the prompt when every previous day is already ✓ 완료.
     if (day > 1 && hasIncompleteBefore(progress.store, day)) {
       const ok = window.confirm(
         `이전 날짜(1~${day - 1}일)를 모두 읽은 것으로 표시할까요?`,
@@ -63,6 +87,8 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
       <ReaderScreen
         day={readerDay}
         schedule={schedule}
+        scheduleMeta={meta}
+        scheduleOptions={catalog.schedules}
         progress={progress}
         translationId={translationId}
         ttsVoiceUri={ttsVoiceUri}
@@ -74,6 +100,7 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
         onVerseGapChange={setVerseGap}
         onLineHeightChange={setLineHeight}
         onTranslationChange={setTranslationId}
+        onScheduleChange={setScheduleId}
         onClose={closeReader}
         onChangeDay={(d) =>
           navigate(`/read/${d}`, { replace: true, state: location.state })
@@ -84,7 +111,9 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
 
   const title = showFind ? '날짜별 읽기 일정' : '오늘의 말씀, 한 걸음씩'
   const sub = showFind
-    ? '구약과 신약을 주차별로 확인하세요.'
+    ? meta.groupMode === 'month'
+      ? '월별로 일정을 확인하고 날짜를 고르세요.'
+      : '구약과 신약을 주차별로 확인하세요.'
     : '읽던 곳에서 이어서 읽어보세요.'
 
   return (
@@ -108,9 +137,30 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
         </nav>
 
         {showFind ? (
-          <FindPage schedule={schedule} progress={progress} onOpenReader={openReader} />
+          <FindPage
+            schedule={schedule}
+            scheduleMeta={meta}
+            progress={progress}
+            onOpenReader={openReader}
+          />
         ) : (
-          <HomePage schedule={schedule} progress={progress} onOpenReader={openReader} />
+          <HomePage
+            schedule={schedule}
+            scheduleMeta={meta}
+            scheduleOptions={catalog.schedules}
+            scheduleId={scheduleId}
+            onScheduleChange={setScheduleId}
+            progress={progress}
+            onOpenReader={openReader}
+            fontSize={fontSize}
+            verseGap={verseGap}
+            lineHeight={lineHeight}
+            translationId={translationId}
+            onFontSizeChange={setFontSize}
+            onVerseGapChange={setVerseGap}
+            onLineHeightChange={setLineHeight}
+            onTranslationChange={setTranslationId}
+          />
         )}
       </div>
 
@@ -126,14 +176,35 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
 }
 
 export default function App() {
-  const [schedule, setSchedule] = useState<ScheduleItem[] | null>(null)
+  const settings = useSettings()
+  const { scheduleId: preferredScheduleId, setScheduleId } = settings
+  const [loaded, setLoaded] = useState<LoadedSchedule | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadSchedule()
-      .then(setSchedule)
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : '일정 로드 실패'))
-  }, [])
+    let cancelled = false
+    ;(async () => {
+      try {
+        const catalog = await loadScheduleCatalog()
+        const scheduleId = resolveScheduleId(catalog, preferredScheduleId)
+        if (scheduleId !== preferredScheduleId) {
+          setScheduleId(scheduleId)
+        }
+        const meta = getScheduleMeta(catalog, scheduleId)
+        if (!meta) throw new Error(`알 수 없는 일정: ${scheduleId}`)
+        const schedule = await loadSchedule(scheduleId)
+        if (cancelled) return
+        setLoaded({ catalog, scheduleId, meta, schedule })
+        setError(null)
+      } catch (e: unknown) {
+        if (cancelled) return
+        setError(e instanceof Error ? e.message : '일정 로드 실패')
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [preferredScheduleId, setScheduleId])
 
   if (error) {
     return (
@@ -144,7 +215,7 @@ export default function App() {
     )
   }
 
-  if (!schedule) {
+  if (!loaded) {
     return (
       <div className="boot-loading">
         <p>일정을 불러오는 중…</p>
@@ -154,7 +225,13 @@ export default function App() {
 
   return (
     <HashRouter>
-      <AppRoutes schedule={schedule} />
+      <AppRoutes
+        catalog={loaded.catalog}
+        meta={loaded.meta}
+        schedule={loaded.schedule}
+        scheduleId={loaded.scheduleId}
+        settings={settings}
+      />
     </HashRouter>
   )
 }

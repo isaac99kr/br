@@ -1,0 +1,2557 @@
+[
+  {
+    "day": 1,
+    "range": "창1-3장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 1
+  },
+  {
+    "day": 2,
+    "range": "창4-6장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 2
+  },
+  {
+    "day": 3,
+    "range": "창7-9장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 3
+  },
+  {
+    "day": 4,
+    "range": "창10-13장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 4
+  },
+  {
+    "day": 5,
+    "range": "창14-17장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 5
+  },
+  {
+    "day": 6,
+    "range": "창18-20장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 6
+  },
+  {
+    "day": 7,
+    "range": "창21-23장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 7
+  },
+  {
+    "day": 8,
+    "range": "창24-26장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 8
+  },
+  {
+    "day": 9,
+    "range": "창27-30장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 9
+  },
+  {
+    "day": 10,
+    "range": "창31-33장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 10
+  },
+  {
+    "day": 11,
+    "range": "창34-36장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 11
+  },
+  {
+    "day": 12,
+    "range": "창37-40장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 12
+  },
+  {
+    "day": 13,
+    "range": "창41-45장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 13
+  },
+  {
+    "day": 14,
+    "range": "창46-48장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 14
+  },
+  {
+    "day": 15,
+    "range": "창49-50장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 15
+  },
+  {
+    "day": 16,
+    "range": "출1-4장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 16
+  },
+  {
+    "day": 17,
+    "range": "출5-7장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 17
+  },
+  {
+    "day": 18,
+    "range": "출8-11장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 18
+  },
+  {
+    "day": 19,
+    "range": "출12-14장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 19
+  },
+  {
+    "day": 20,
+    "range": "출15-17장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 20
+  },
+  {
+    "day": 21,
+    "range": "출18-20장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 21
+  },
+  {
+    "day": 22,
+    "range": "출21-23장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 22
+  },
+  {
+    "day": 23,
+    "range": "출24-26장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 23
+  },
+  {
+    "day": 24,
+    "range": "출27-29장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 24
+  },
+  {
+    "day": 25,
+    "range": "출30-32장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 25
+  },
+  {
+    "day": 26,
+    "range": "출33-35장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 26
+  },
+  {
+    "day": 27,
+    "range": "출36-38장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 27
+  },
+  {
+    "day": 28,
+    "range": "출39-40장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 28
+  },
+  {
+    "day": 29,
+    "range": "레1-4장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 29
+  },
+  {
+    "day": 30,
+    "range": "레5-7장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 30
+  },
+  {
+    "day": 31,
+    "range": "레8-10장",
+    "testament": "구약",
+    "month": 1,
+    "monthDay": 31
+  },
+  {
+    "day": 32,
+    "range": "레11-14장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 1
+  },
+  {
+    "day": 33,
+    "range": "레15-17장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 2
+  },
+  {
+    "day": 34,
+    "range": "레18-20장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 3
+  },
+  {
+    "day": 35,
+    "range": "레21-24장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 4
+  },
+  {
+    "day": 36,
+    "range": "레25-27장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 5
+  },
+  {
+    "day": 37,
+    "range": "민1-4장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 6
+  },
+  {
+    "day": 38,
+    "range": "민5-7장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 7
+  },
+  {
+    "day": 39,
+    "range": "민8-10장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 8
+  },
+  {
+    "day": 40,
+    "range": "민11-14장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 9
+  },
+  {
+    "day": 41,
+    "range": "민15-17장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 10
+  },
+  {
+    "day": 42,
+    "range": "민18-20장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 11
+  },
+  {
+    "day": 43,
+    "range": "민21-23장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 12
+  },
+  {
+    "day": 44,
+    "range": "민24-27장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 13
+  },
+  {
+    "day": 45,
+    "range": "민28-30장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 14
+  },
+  {
+    "day": 46,
+    "range": "민31-33장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 15
+  },
+  {
+    "day": 47,
+    "range": "민34-36장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 16
+  },
+  {
+    "day": 48,
+    "range": "신1-4장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 17
+  },
+  {
+    "day": 49,
+    "range": "신5-7장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 18
+  },
+  {
+    "day": 50,
+    "range": "신8-10장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 19
+  },
+  {
+    "day": 51,
+    "range": "신11-14장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 20
+  },
+  {
+    "day": 52,
+    "range": "신15-17장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 21
+  },
+  {
+    "day": 53,
+    "range": "신18-20장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 22
+  },
+  {
+    "day": 54,
+    "range": "신21-23장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 23
+  },
+  {
+    "day": 55,
+    "range": "신24-27장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 24
+  },
+  {
+    "day": 56,
+    "range": "신28-30장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 25
+  },
+  {
+    "day": 57,
+    "range": "신31-34장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 26
+  },
+  {
+    "day": 58,
+    "range": "수1-4장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 27
+  },
+  {
+    "day": 59,
+    "range": "수5-7장",
+    "testament": "구약",
+    "month": 2,
+    "monthDay": 28
+  },
+  {
+    "day": 60,
+    "range": "수8-10장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 1
+  },
+  {
+    "day": 61,
+    "range": "수11-13장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 2
+  },
+  {
+    "day": 62,
+    "range": "수14-17장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 3
+  },
+  {
+    "day": 63,
+    "range": "수18-21장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 4
+  },
+  {
+    "day": 64,
+    "range": "수22-24장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 5
+  },
+  {
+    "day": 65,
+    "range": "삿1-3장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 6
+  },
+  {
+    "day": 66,
+    "range": "삿4-8장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 7
+  },
+  {
+    "day": 67,
+    "range": "삿9-10장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 8
+  },
+  {
+    "day": 68,
+    "range": "삿11-12장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 9
+  },
+  {
+    "day": 69,
+    "range": "삿13-16장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 10
+  },
+  {
+    "day": 70,
+    "range": "삿17-18장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 11
+  },
+  {
+    "day": 71,
+    "range": "삿19-21장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 12
+  },
+  {
+    "day": 72,
+    "range": "룻1-4장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 13
+  },
+  {
+    "day": 73,
+    "range": "삼상1-3장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 14
+  },
+  {
+    "day": 74,
+    "range": "삼상4-7장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 15
+  },
+  {
+    "day": 75,
+    "range": "삼상8-10장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 16
+  },
+  {
+    "day": 76,
+    "range": "삼상11-13장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 17
+  },
+  {
+    "day": 77,
+    "range": "삼상14-16장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 18
+  },
+  {
+    "day": 78,
+    "range": "삼상17-20장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 19
+  },
+  {
+    "day": 79,
+    "range": "삼상21-23장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 20
+  },
+  {
+    "day": 80,
+    "range": "삼상24-26장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 21
+  },
+  {
+    "day": 81,
+    "range": "삼상27-29장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 22
+  },
+  {
+    "day": 82,
+    "range": "삼상30-31장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 23
+  },
+  {
+    "day": 83,
+    "range": "삼하1-3장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 24
+  },
+  {
+    "day": 84,
+    "range": "삼하4-6장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 25
+  },
+  {
+    "day": 85,
+    "range": "삼하7-9장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 26
+  },
+  {
+    "day": 86,
+    "range": "삼하10-12장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 27
+  },
+  {
+    "day": 87,
+    "range": "삼하13-15장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 28
+  },
+  {
+    "day": 88,
+    "range": "삼하16-19장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 29
+  },
+  {
+    "day": 89,
+    "range": "삼하20-22장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 30
+  },
+  {
+    "day": 90,
+    "range": "삼하23-24장",
+    "testament": "구약",
+    "month": 3,
+    "monthDay": 31
+  },
+  {
+    "day": 91,
+    "range": "왕상1-3장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 1
+  },
+  {
+    "day": 92,
+    "range": "왕상4-7장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 2
+  },
+  {
+    "day": 93,
+    "range": "왕상8-10장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 3
+  },
+  {
+    "day": 94,
+    "range": "왕상11-14장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 4
+  },
+  {
+    "day": 95,
+    "range": "왕상15-17장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 5
+  },
+  {
+    "day": 96,
+    "range": "왕상18-20장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 6
+  },
+  {
+    "day": 97,
+    "range": "왕상21-22장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 7
+  },
+  {
+    "day": 98,
+    "range": "왕하1-4장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 8
+  },
+  {
+    "day": 99,
+    "range": "왕하5-7장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 9
+  },
+  {
+    "day": 100,
+    "range": "왕하8-10장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 10
+  },
+  {
+    "day": 101,
+    "range": "왕하11-13장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 11
+  },
+  {
+    "day": 102,
+    "range": "왕하14-17장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 12
+  },
+  {
+    "day": 103,
+    "range": "왕하18-20장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 13
+  },
+  {
+    "day": 104,
+    "range": "왕하21-25장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 14
+  },
+  {
+    "day": 105,
+    "range": "대상1-4장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 15
+  },
+  {
+    "day": 106,
+    "range": "대상5-8장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 16
+  },
+  {
+    "day": 107,
+    "range": "대상9-12장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 17
+  },
+  {
+    "day": 108,
+    "range": "대상13-16장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 18
+  },
+  {
+    "day": 109,
+    "range": "대상17-19장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 19
+  },
+  {
+    "day": 110,
+    "range": "대상20-22장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 20
+  },
+  {
+    "day": 111,
+    "range": "대상23-25장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 21
+  },
+  {
+    "day": 112,
+    "range": "대상26-29장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 22
+  },
+  {
+    "day": 113,
+    "range": "대하1-3장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 23
+  },
+  {
+    "day": 114,
+    "range": "대하4-7장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 24
+  },
+  {
+    "day": 115,
+    "range": "대하8-9장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 25
+  },
+  {
+    "day": 116,
+    "range": "대하10-12장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 26
+  },
+  {
+    "day": 117,
+    "range": "대하13-15장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 27
+  },
+  {
+    "day": 118,
+    "range": "대하16-18장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 28
+  },
+  {
+    "day": 119,
+    "range": "대하19-21장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 29
+  },
+  {
+    "day": 120,
+    "range": "대하22-24장",
+    "testament": "구약",
+    "month": 4,
+    "monthDay": 30
+  },
+  {
+    "day": 121,
+    "range": "대하25-28장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 1
+  },
+  {
+    "day": 122,
+    "range": "대하29-32장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 2
+  },
+  {
+    "day": 123,
+    "range": "대하33-36장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 3
+  },
+  {
+    "day": 124,
+    "range": "스1-4장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 4
+  },
+  {
+    "day": 125,
+    "range": "스5-7장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 5
+  },
+  {
+    "day": 126,
+    "range": "스8-10장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 6
+  },
+  {
+    "day": 127,
+    "range": "느1-2장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 7
+  },
+  {
+    "day": 128,
+    "range": "느3-5장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 8
+  },
+  {
+    "day": 129,
+    "range": "느6-9장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 9
+  },
+  {
+    "day": 130,
+    "range": "느10-13장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 10
+  },
+  {
+    "day": 131,
+    "range": "에1-3장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 11
+  },
+  {
+    "day": 132,
+    "range": "에4-7장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 12
+  },
+  {
+    "day": 133,
+    "range": "에8-10장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 13
+  },
+  {
+    "day": 134,
+    "range": "욥1-3장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 14
+  },
+  {
+    "day": 135,
+    "range": "욥4-7장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 15
+  },
+  {
+    "day": 136,
+    "range": "욥8-10장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 16
+  },
+  {
+    "day": 137,
+    "range": "욥11-14장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 17
+  },
+  {
+    "day": 138,
+    "range": "욥15-17장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 18
+  },
+  {
+    "day": 139,
+    "range": "욥18-20장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 19
+  },
+  {
+    "day": 140,
+    "range": "욥21-24장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 20
+  },
+  {
+    "day": 141,
+    "range": "욥25-28장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 21
+  },
+  {
+    "day": 142,
+    "range": "욥29-31장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 22
+  },
+  {
+    "day": 143,
+    "range": "욥32-34장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 23
+  },
+  {
+    "day": 144,
+    "range": "욥35-37장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 24
+  },
+  {
+    "day": 145,
+    "range": "욥38-42장",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 25
+  },
+  {
+    "day": 146,
+    "range": "시1-3편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 26
+  },
+  {
+    "day": 147,
+    "range": "시4-6편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 27
+  },
+  {
+    "day": 148,
+    "range": "시7-9편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 28
+  },
+  {
+    "day": 149,
+    "range": "시10-12편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 29
+  },
+  {
+    "day": 150,
+    "range": "시13-15편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 30
+  },
+  {
+    "day": 151,
+    "range": "시16-18편",
+    "testament": "구약",
+    "month": 5,
+    "monthDay": 31
+  },
+  {
+    "day": 152,
+    "range": "시19-21편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 1
+  },
+  {
+    "day": 153,
+    "range": "시22-24편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 2
+  },
+  {
+    "day": 154,
+    "range": "시25-27편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 3
+  },
+  {
+    "day": 155,
+    "range": "시28-30편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 4
+  },
+  {
+    "day": 156,
+    "range": "시31-33편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 5
+  },
+  {
+    "day": 157,
+    "range": "시34-36편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 6
+  },
+  {
+    "day": 158,
+    "range": "시37-39편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 7
+  },
+  {
+    "day": 159,
+    "range": "시40-42편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 8
+  },
+  {
+    "day": 160,
+    "range": "시43-46편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 9
+  },
+  {
+    "day": 161,
+    "range": "시47-50편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 10
+  },
+  {
+    "day": 162,
+    "range": "시51-54편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 11
+  },
+  {
+    "day": 163,
+    "range": "시55-57편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 12
+  },
+  {
+    "day": 164,
+    "range": "시58-61편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 13
+  },
+  {
+    "day": 165,
+    "range": "시62-64편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 14
+  },
+  {
+    "day": 166,
+    "range": "시65-67편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 15
+  },
+  {
+    "day": 167,
+    "range": "시68-70편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 16
+  },
+  {
+    "day": 168,
+    "range": "시71-73편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 17
+  },
+  {
+    "day": 169,
+    "range": "시74-76편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 18
+  },
+  {
+    "day": 170,
+    "range": "시77-79편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 19
+  },
+  {
+    "day": 171,
+    "range": "시80-82편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 20
+  },
+  {
+    "day": 172,
+    "range": "시83-85편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 21
+  },
+  {
+    "day": 173,
+    "range": "시86-88편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 22
+  },
+  {
+    "day": 174,
+    "range": "시89-91편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 23
+  },
+  {
+    "day": 175,
+    "range": "시92-94편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 24
+  },
+  {
+    "day": 176,
+    "range": "시95-97편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 25
+  },
+  {
+    "day": 177,
+    "range": "시98-100편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 26
+  },
+  {
+    "day": 178,
+    "range": "시101-103편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 27
+  },
+  {
+    "day": 179,
+    "range": "시104-106편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 28
+  },
+  {
+    "day": 180,
+    "range": "시107-110편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 29
+  },
+  {
+    "day": 181,
+    "range": "시111-114편",
+    "testament": "구약",
+    "month": 6,
+    "monthDay": 30
+  },
+  {
+    "day": 182,
+    "range": "시115-118편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 1
+  },
+  {
+    "day": 183,
+    "range": "시119편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 2
+  },
+  {
+    "day": 184,
+    "range": "시120-123편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 3
+  },
+  {
+    "day": 185,
+    "range": "시124-127편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 4
+  },
+  {
+    "day": 186,
+    "range": "시128-131편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 5
+  },
+  {
+    "day": 187,
+    "range": "시132-135편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 6
+  },
+  {
+    "day": 188,
+    "range": "시136-138편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 7
+  },
+  {
+    "day": 189,
+    "range": "시139-141편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 8
+  },
+  {
+    "day": 190,
+    "range": "시142-144편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 9
+  },
+  {
+    "day": 191,
+    "range": "시145-147편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 10
+  },
+  {
+    "day": 192,
+    "range": "시148-150편",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 11
+  },
+  {
+    "day": 193,
+    "range": "잠1-3장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 12
+  },
+  {
+    "day": 194,
+    "range": "잠4-6장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 13
+  },
+  {
+    "day": 195,
+    "range": "잠7-9장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 14
+  },
+  {
+    "day": 196,
+    "range": "잠10-12장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 15
+  },
+  {
+    "day": 197,
+    "range": "잠13-15장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 16
+  },
+  {
+    "day": 198,
+    "range": "잠16-18장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 17
+  },
+  {
+    "day": 199,
+    "range": "잠19-21장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 18
+  },
+  {
+    "day": 200,
+    "range": "잠22-24장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 19
+  },
+  {
+    "day": 201,
+    "range": "잠25-27장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 20
+  },
+  {
+    "day": 202,
+    "range": "잠28-31장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 21
+  },
+  {
+    "day": 203,
+    "range": "전1-3장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 22
+  },
+  {
+    "day": 204,
+    "range": "전4-6장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 23
+  },
+  {
+    "day": 205,
+    "range": "전7-9장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 24
+  },
+  {
+    "day": 206,
+    "range": "전10-12장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 25
+  },
+  {
+    "day": 207,
+    "range": "아1-4장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 26
+  },
+  {
+    "day": 208,
+    "range": "아5-8장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 27
+  },
+  {
+    "day": 209,
+    "range": "사1-3장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 28
+  },
+  {
+    "day": 210,
+    "range": "사4-6장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 29
+  },
+  {
+    "day": 211,
+    "range": "사7-9장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 30
+  },
+  {
+    "day": 212,
+    "range": "사10-12장",
+    "testament": "구약",
+    "month": 7,
+    "monthDay": 31
+  },
+  {
+    "day": 213,
+    "range": "사13-16장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 1
+  },
+  {
+    "day": 214,
+    "range": "사17-20장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 2
+  },
+  {
+    "day": 215,
+    "range": "사21-23장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 3
+  },
+  {
+    "day": 216,
+    "range": "사24-26장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 4
+  },
+  {
+    "day": 217,
+    "range": "사27-29장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 5
+  },
+  {
+    "day": 218,
+    "range": "사30-32장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 6
+  },
+  {
+    "day": 219,
+    "range": "사33-35장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 7
+  },
+  {
+    "day": 220,
+    "range": "사36-39장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 8
+  },
+  {
+    "day": 221,
+    "range": "사40-43장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 9
+  },
+  {
+    "day": 222,
+    "range": "사44-46장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 10
+  },
+  {
+    "day": 223,
+    "range": "사47-49장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 11
+  },
+  {
+    "day": 224,
+    "range": "사50-52장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 12
+  },
+  {
+    "day": 225,
+    "range": "사53-55장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 13
+  },
+  {
+    "day": 226,
+    "range": "사56-58장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 14
+  },
+  {
+    "day": 227,
+    "range": "사59-62장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 15
+  },
+  {
+    "day": 228,
+    "range": "사63-66장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 16
+  },
+  {
+    "day": 229,
+    "range": "렘1-3장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 17
+  },
+  {
+    "day": 230,
+    "range": "렘4-6장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 18
+  },
+  {
+    "day": 231,
+    "range": "렘7-9장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 19
+  },
+  {
+    "day": 232,
+    "range": "렘10-12장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 20
+  },
+  {
+    "day": 233,
+    "range": "렘13-15장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 21
+  },
+  {
+    "day": 234,
+    "range": "렘16-17장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 22
+  },
+  {
+    "day": 235,
+    "range": "렘18-20장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 23
+  },
+  {
+    "day": 236,
+    "range": "렘21-23장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 24
+  },
+  {
+    "day": 237,
+    "range": "렘24-26장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 25
+  },
+  {
+    "day": 238,
+    "range": "렘27-29장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 26
+  },
+  {
+    "day": 239,
+    "range": "렘30-31장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 27
+  },
+  {
+    "day": 240,
+    "range": "렘32-34장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 28
+  },
+  {
+    "day": 241,
+    "range": "렘35-37장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 29
+  },
+  {
+    "day": 242,
+    "range": "렘38-41장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 30
+  },
+  {
+    "day": 243,
+    "range": "렘42-44장",
+    "testament": "구약",
+    "month": 8,
+    "monthDay": 31
+  },
+  {
+    "day": 244,
+    "range": "렘45-48장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 1
+  },
+  {
+    "day": 245,
+    "range": "렘49-52장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 2
+  },
+  {
+    "day": 246,
+    "range": "애1-5장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 3
+  },
+  {
+    "day": 247,
+    "range": "겔1-3장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 4
+  },
+  {
+    "day": 248,
+    "range": "겔4-6장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 5
+  },
+  {
+    "day": 249,
+    "range": "겔7-9장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 6
+  },
+  {
+    "day": 250,
+    "range": "겔10-12장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 7
+  },
+  {
+    "day": 251,
+    "range": "겔13-15장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 8
+  },
+  {
+    "day": 252,
+    "range": "겔16-18장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 9
+  },
+  {
+    "day": 253,
+    "range": "겔19-21장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 10
+  },
+  {
+    "day": 254,
+    "range": "겔22-24장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 11
+  },
+  {
+    "day": 255,
+    "range": "겔25-28장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 12
+  },
+  {
+    "day": 256,
+    "range": "겔29-32장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 13
+  },
+  {
+    "day": 257,
+    "range": "겔33-36장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 14
+  },
+  {
+    "day": 258,
+    "range": "겔37-39장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 15
+  },
+  {
+    "day": 259,
+    "range": "겔40-43장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 16
+  },
+  {
+    "day": 260,
+    "range": "겔44-48장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 17
+  },
+  {
+    "day": 261,
+    "range": "단1-3장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 18
+  },
+  {
+    "day": 262,
+    "range": "단4-6장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 19
+  },
+  {
+    "day": 263,
+    "range": "단7-9장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 20
+  },
+  {
+    "day": 264,
+    "range": "단10-12장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 21
+  },
+  {
+    "day": 265,
+    "range": "호1-3장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 22
+  },
+  {
+    "day": 266,
+    "range": "호4-7장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 23
+  },
+  {
+    "day": 267,
+    "range": "호8-10장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 24
+  },
+  {
+    "day": 268,
+    "range": "호11-14장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 25
+  },
+  {
+    "day": 269,
+    "range": "욜1-3장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 26
+  },
+  {
+    "day": 270,
+    "range": "암1-3장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 27
+  },
+  {
+    "day": 271,
+    "range": "암4-6장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 28
+  },
+  {
+    "day": 272,
+    "range": "암7-9장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 29
+  },
+  {
+    "day": 273,
+    "range": "옵1장",
+    "testament": "구약",
+    "month": 9,
+    "monthDay": 30
+  },
+  {
+    "day": 274,
+    "range": "욘1-4장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 1
+  },
+  {
+    "day": 275,
+    "range": "미1-4장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 2
+  },
+  {
+    "day": 276,
+    "range": "미5-7장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 3
+  },
+  {
+    "day": 277,
+    "range": "나1-3장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 4
+  },
+  {
+    "day": 278,
+    "range": "합1-3장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 5
+  },
+  {
+    "day": 279,
+    "range": "습1-3장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 6
+  },
+  {
+    "day": 280,
+    "range": "학1-2장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 7
+  },
+  {
+    "day": 281,
+    "range": "슥1-4장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 8
+  },
+  {
+    "day": 282,
+    "range": "슥5-8장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 9
+  },
+  {
+    "day": 283,
+    "range": "슥9-11장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 10
+  },
+  {
+    "day": 284,
+    "range": "슥12-14장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 11
+  },
+  {
+    "day": 285,
+    "range": "말1-4장",
+    "testament": "구약",
+    "month": 10,
+    "monthDay": 12
+  },
+  {
+    "day": 286,
+    "range": "마1-4장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 13
+  },
+  {
+    "day": 287,
+    "range": "마5-7장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 14
+  },
+  {
+    "day": 288,
+    "range": "마8-10장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 15
+  },
+  {
+    "day": 289,
+    "range": "마11-13장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 16
+  },
+  {
+    "day": 290,
+    "range": "마14-16장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 17
+  },
+  {
+    "day": 291,
+    "range": "마17-20장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 18
+  },
+  {
+    "day": 292,
+    "range": "마21-23장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 19
+  },
+  {
+    "day": 293,
+    "range": "마24-26장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 20
+  },
+  {
+    "day": 294,
+    "range": "마27-28장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 21
+  },
+  {
+    "day": 295,
+    "range": "막1-4장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 22
+  },
+  {
+    "day": 296,
+    "range": "막5-8장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 23
+  },
+  {
+    "day": 297,
+    "range": "막9-12장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 24
+  },
+  {
+    "day": 298,
+    "range": "막13-16장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 25
+  },
+  {
+    "day": 299,
+    "range": "눅1-4장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 26
+  },
+  {
+    "day": 300,
+    "range": "눅5-8장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 27
+  },
+  {
+    "day": 301,
+    "range": "눅9-12장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 28
+  },
+  {
+    "day": 302,
+    "range": "눅13-16장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 29
+  },
+  {
+    "day": 303,
+    "range": "눅17-20장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 30
+  },
+  {
+    "day": 304,
+    "range": "눅21-24장",
+    "testament": "신약",
+    "month": 10,
+    "monthDay": 31
+  },
+  {
+    "day": 305,
+    "range": "요1-3장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 1
+  },
+  {
+    "day": 306,
+    "range": "요4-6장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 2
+  },
+  {
+    "day": 307,
+    "range": "요7-9장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 3
+  },
+  {
+    "day": 308,
+    "range": "요10-13장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 4
+  },
+  {
+    "day": 309,
+    "range": "요14-16장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 5
+  },
+  {
+    "day": 310,
+    "range": "요17-21장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 6
+  },
+  {
+    "day": 311,
+    "range": "행1-4장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 7
+  },
+  {
+    "day": 312,
+    "range": "행5-7장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 8
+  },
+  {
+    "day": 313,
+    "range": "행8-9장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 9
+  },
+  {
+    "day": 314,
+    "range": "행10-12장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 10
+  },
+  {
+    "day": 315,
+    "range": "행13-16장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 11
+  },
+  {
+    "day": 316,
+    "range": "행17-20장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 12
+  },
+  {
+    "day": 317,
+    "range": "행21-23장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 13
+  },
+  {
+    "day": 318,
+    "range": "행24-26장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 14
+  },
+  {
+    "day": 319,
+    "range": "행27-28장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 15
+  },
+  {
+    "day": 320,
+    "range": "롬1-3장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 16
+  },
+  {
+    "day": 321,
+    "range": "롬4-5장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 17
+  },
+  {
+    "day": 322,
+    "range": "롬6-8장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 18
+  },
+  {
+    "day": 323,
+    "range": "롬9-11장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 19
+  },
+  {
+    "day": 324,
+    "range": "롬12-13장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 20
+  },
+  {
+    "day": 325,
+    "range": "롬14-16장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 21
+  },
+  {
+    "day": 326,
+    "range": "고전1-3장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 22
+  },
+  {
+    "day": 327,
+    "range": "고전4-6장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 23
+  },
+  {
+    "day": 328,
+    "range": "고전7-9장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 24
+  },
+  {
+    "day": 329,
+    "range": "고전10-12장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 25
+  },
+  {
+    "day": 330,
+    "range": "고전13-16장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 26
+  },
+  {
+    "day": 331,
+    "range": "고후1-3장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 27
+  },
+  {
+    "day": 332,
+    "range": "고후4-6장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 28
+  },
+  {
+    "day": 333,
+    "range": "고후7-9장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 29
+  },
+  {
+    "day": 334,
+    "range": "고후10-13장",
+    "testament": "신약",
+    "month": 11,
+    "monthDay": 30
+  },
+  {
+    "day": 335,
+    "range": "갈1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 1
+  },
+  {
+    "day": 336,
+    "range": "갈4-6장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 2
+  },
+  {
+    "day": 337,
+    "range": "엡1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 3
+  },
+  {
+    "day": 338,
+    "range": "엡4-6장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 4
+  },
+  {
+    "day": 339,
+    "range": "빌1-4장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 5
+  },
+  {
+    "day": 340,
+    "range": "골1-4장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 6
+  },
+  {
+    "day": 341,
+    "range": "살전1-5장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 7
+  },
+  {
+    "day": 342,
+    "range": "살후1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 8
+  },
+  {
+    "day": 343,
+    "range": "딤전1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 9
+  },
+  {
+    "day": 344,
+    "range": "딤전4-6장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 10
+  },
+  {
+    "day": 345,
+    "range": "딤후1-4장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 11
+  },
+  {
+    "day": 346,
+    "range": "딛1-3장, 몬1장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 12
+  },
+  {
+    "day": 347,
+    "range": "히1-2장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 13
+  },
+  {
+    "day": 348,
+    "range": "히3-4장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 14
+  },
+  {
+    "day": 349,
+    "range": "히5-7장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 15
+  },
+  {
+    "day": 350,
+    "range": "히8-10장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 16
+  },
+  {
+    "day": 351,
+    "range": "히11장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 17
+  },
+  {
+    "day": 352,
+    "range": "히12-13장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 18
+  },
+  {
+    "day": 353,
+    "range": "약1-5장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 19
+  },
+  {
+    "day": 354,
+    "range": "벧전1-5장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 20
+  },
+  {
+    "day": 355,
+    "range": "벧후1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 21
+  },
+  {
+    "day": 356,
+    "range": "요일1-5장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 22
+  },
+  {
+    "day": 357,
+    "range": "요이1장, 요삼1장, 유1장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 23
+  },
+  {
+    "day": 358,
+    "range": "계1-3장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 24
+  },
+  {
+    "day": 359,
+    "range": "계4-5장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 25
+  },
+  {
+    "day": 360,
+    "range": "계6-9장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 26
+  },
+  {
+    "day": 361,
+    "range": "계10-13장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 27
+  },
+  {
+    "day": 362,
+    "range": "계14-16장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 28
+  },
+  {
+    "day": 363,
+    "range": "계17-18장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 29
+  },
+  {
+    "day": 364,
+    "range": "계19-20장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 30
+  },
+  {
+    "day": 365,
+    "range": "계21-22장",
+    "testament": "신약",
+    "month": 12,
+    "monthDay": 31
+  }
+]

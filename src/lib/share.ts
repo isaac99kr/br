@@ -10,6 +10,7 @@ export function formatShareClipboard(title: string, path: string): string {
   return `${title}\n${buildShareUrl(path)}`
 }
 
-export function formatDayShareTitle(day: number, range: string): string {
-  return `${day}일차 · ${range}`
+export function formatDayShareTitle(dayLabel: string | number, range: string): string {
+  const label = typeof dayLabel === 'number' ? `${dayLabel}일차` : dayLabel
+  return `${label} · ${range}`
 }

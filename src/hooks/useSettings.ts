@@ -34,6 +34,10 @@ export function useSettings() {
     setSettings((prev) => ({ ...prev, translationId }))
   }, [])
 
+  const setScheduleId = useCallback((scheduleId: string) => {
+    setSettings((prev) => ({ ...prev, scheduleId }))
+  }, [])
+
   const setVoiceGender = useCallback((voiceGender: VoiceGender) => {
     setSettings((prev) => ({ ...prev, voiceGender }))
   }, [])
@@ -48,12 +52,14 @@ export function useSettings() {
     setVerseGap,
     setLineHeight,
     setTranslationId,
+    setScheduleId,
     setVoiceGender,
     setTtsVoiceUri,
     fontSize: settings.fontSize,
     verseGap: settings.verseGap,
     lineHeight: settings.lineHeight,
     translationId: settings.translationId,
+    scheduleId: settings.scheduleId,
     voiceGender: settings.voiceGender,
     ttsVoiceUri: settings.ttsVoiceUri,
   }

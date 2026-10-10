@@ -1,11 +1,29 @@
 export type ReadingStatus = 'unread' | 'in_progress' | 'completed'
 
+export type ScheduleGroupMode = 'testament-week' | 'month'
+
+export type ScheduleMeta = {
+  id: string
+  title: string
+  description?: string
+  dayCount: number
+  groupMode: ScheduleGroupMode
+  source?: string
+}
+
+export type ScheduleCatalog = {
+  defaultId: string
+  schedules: ScheduleMeta[]
+}
+
 export type ScheduleItem = {
   day: number
-  weekday: string
-  testament: '구약' | '신약' | string
-  week: number
   range: string
+  weekday?: string
+  testament?: string
+  week?: number
+  month?: number
+  monthDay?: number
 }
 
 export type DayProgress = {

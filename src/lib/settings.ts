@@ -12,11 +12,15 @@ export type AppSettings = {
   verseGap: SpacingSize
   lineHeight: SpacingSize
   translationId: TranslationId
+  /** Active reading schedule id (see public/data/schedules.json). */
+  scheduleId: string
   /** @deprecated Kept for older localStorage; unused by browser TTS. */
   voiceGender: VoiceGender
   /** Browser SpeechSynthesisVoice.voiceURI for Korean TTS. */
   ttsVoiceUri: string | null
 }
+
+export const DEFAULT_SCHEDULE_ID = 'chrono-246'
 
 export const SETTINGS_KEY = 'bibleReadingSettings:v1'
 
@@ -76,6 +80,7 @@ const DEFAULT: AppSettings = {
   verseGap: 'M',
   lineHeight: 'M',
   translationId: 'krv',
+  scheduleId: DEFAULT_SCHEDULE_ID,
   voiceGender: 'female',
   ttsVoiceUri: null,
 }
@@ -103,6 +108,10 @@ export function loadSettings(): AppSettings {
       verseGap: isSpacingSize(parsed.verseGap) ? parsed.verseGap : 'M',
       lineHeight: isSpacingSize(parsed.lineHeight) ? parsed.lineHeight : 'M',
       translationId: isTranslationId(parsed.translationId) ? parsed.translationId : 'krv',
+      scheduleId:
+        typeof parsed.scheduleId === 'string' && parsed.scheduleId
+          ? parsed.scheduleId
+          : DEFAULT_SCHEDULE_ID,
       voiceGender: 'female',
       ttsVoiceUri:
         typeof parsed.ttsVoiceUri === 'string' && parsed.ttsVoiceUri

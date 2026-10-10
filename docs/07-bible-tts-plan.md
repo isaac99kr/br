@@ -21,10 +21,11 @@
 
 ---
 
-## 2. 스케줄 단일 기준
+## 2. 스케줄 기준 (사전 녹음)
 
-- **246일** CSV만 사용. 365일 가정·스케줄 변경 금지.
-- 경로: `asset/schedule/bible_reading_schedule.csv` → `public/data/schedule.json`
+- **사전 녹음 MP3는 현재 `chrono-246`(연대기순 246일)만** 대상입니다.
+- 경로: `asset/schedule/chrono-246.csv` → `public/data/schedules/chrono-246.json` (호환: `public/data/schedule.json`)
+- `yearly-365` 등 다른 스케줄용 일괄 TTS는 이번 TTS 계획 범위 밖입니다.
 
 ---
 

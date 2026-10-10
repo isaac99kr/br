@@ -40,14 +40,14 @@
 
 | 항목 | 값 |
 |---|---|
-| 원본 | `asset/schedule/bible_reading_schedule.csv` |
-| 앱 입력 | `public/data/schedule.json` (246항목) |
-| 범위 | **1~246일차** (365일 아님) |
+| 원본 | `asset/schedule/chrono-246.csv` |
+| 앱 입력 | `public/data/schedules/chrono-246.json` (호환: `schedule.json`, 246항목) |
+| 범위 | **연대기순 1~246일차** (사전 녹음 대상; 앱의 `yearly-365`는 TTS 범위 밖) |
 | 구약/신약 | 구약 31주, 신약 11주 |
 | 1일차 | `창1-3장` |
 | 246일차 | `계17-22장` |
 
-음원 생성·매핑·용량은 이 246항목만 따른다. 스케줄 변경·재생성 금지.
+음원 생성·매핑·용량은 `chrono-246` 246항목만 따른다.
 
 ### 1.3 성경 본문
 

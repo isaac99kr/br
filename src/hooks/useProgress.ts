@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   countCompleted,
   getStatus,
@@ -13,12 +13,18 @@ import {
 } from '../lib/progress'
 import type { ProgressStore, ReadingStatus } from '../types'
 
-export function useProgress(totalDays = 246) {
-  const [store, setStore] = useState<ProgressStore>(() => loadProgress())
+export function useProgress(scheduleId: string, totalDays: number) {
+  const [store, setStore] = useState<ProgressStore>(() => loadProgress(scheduleId, totalDays))
+  const activeScheduleId = useRef(scheduleId)
 
   useEffect(() => {
-    saveProgress(store)
-  }, [store])
+    if (activeScheduleId.current !== scheduleId) {
+      activeScheduleId.current = scheduleId
+      setStore(loadProgress(scheduleId, totalDays))
+      return
+    }
+    saveProgress(scheduleId, store)
+  }, [scheduleId, totalDays, store])
 
   const statusOf = useCallback((day: number) => getStatus(store, day), [store])
 
@@ -37,14 +43,17 @@ export function useProgress(totalDays = 246) {
     })
   }, [])
 
-  const completeDaysBefore = useCallback((day: number) => {
-    setStore((prev) => {
-      const next = withCompletedThrough(prev, day)
-      // Persist immediately so a quick navigate does not lose bulk-complete.
-      saveProgress(next)
-      return next
-    })
-  }, [])
+  const completeDaysBefore = useCallback(
+    (day: number) => {
+      setStore((prev) => {
+        const next = withCompletedThrough(prev, day)
+        // Persist immediately so a quick navigate does not lose bulk-complete.
+        saveProgress(scheduleId, next)
+        return next
+      })
+    },
+    [scheduleId],
+  )
 
   const clearAllCompleted = useCallback(() => {
     setStore((prev) => withClearedCompleted(prev))
@@ -57,7 +66,7 @@ export function useProgress(totalDays = 246) {
 
   const completedCount = countCompleted(store, totalDays)
   const percent = totalDays ? Math.round((completedCount / totalDays) * 100) : 0
-  const continueDay = resumeDay(store)
+  const continueDay = resumeDay(store, totalDays)
 
   return {
     store,

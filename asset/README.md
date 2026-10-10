@@ -1,13 +1,15 @@
 # asset
 
 프로젝트에서 사용하는 **원본 자료**를 모아 두는 폴더입니다.  
-일정·성경 본문·화면 디자인의 내용을 임의로 수정하지 않습니다.
+성경 본문 내용을 임의로 변조하지 않습니다. 읽기 일정은 등록된 CSV만 사용합니다.
 
 ## 하위 구조
 
 | 경로 | 설명 |
 |---|---|
-| `schedule/bible_reading_schedule.csv` | 246일 읽기 일정 (구약 183일 / 신약 63일) |
+| `schedule/chrono-246.csv` | 연대기순 246일 (구약 183 / 신약 63) |
+| `schedule/yearly-365.csv` | 1년 1독 날짜별 통독표 (365일) |
+| `schedule/README.md` | 스케줄 CSV 안내 |
 | `bible/개역개정-text/` | 개역개정 성경 본문 txt 66권 |
 | `bible/개역개정-text.zip` | 본문 원본 zip 보관본 |
 | `design/bible_reading_screen_design_v2.html` | 화면 디자인 HTML 프로토타입 |
@@ -15,12 +17,9 @@
 
 ## 일정 CSV
 
-- 구분자: `;`
-- 컬럼: `reading_day`, `weekday`, `testament`, `week_no`, `reading_range`
-- 일정 번호: **1일차 ~ 246일차** (365일 일정 사용 금지)
-- 주차: 구약 1~31주차, 신약 1~11주차
-
-상세 스키마는 [docs/03-data-model.md](../docs/03-data-model.md)를 참고하세요.
+- 구분자: `;`, UTF-8
+- 스케줄 ID·빌드 출력: [`schedule/README.md`](schedule/README.md), [docs/03-data-model.md](../docs/03-data-model.md)
+- 새 일정 추가: CSV 작성 → `scripts/build-data.py`의 `SCHEDULES`에 등록 → `npm run data`
 
 ## 성경 본문
 
@@ -50,6 +49,6 @@
 
 ## 원본 수정 금지
 
-- CSV 일정을 임의로 추가·삭제·재배치하지 않습니다.
 - 성경 본문 내용을 임의로 생성·변조하지 않습니다.
+- 일정 CSV는 등록된 스케줄 범위에서만 추가·수정하며, 임의로 가짜 일차를 만들지 않습니다.
 - 변경이 필요하면 `docs/`에 이슈를 남기고, 원본은 별도 합의 후에만 수정합니다.
