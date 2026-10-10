@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import subprocess
 import sys
@@ -300,6 +301,17 @@ def generate_day(
 
 def publish(metas: list[dict], cfg: dict) -> None:
     PUBLIC_AUDIO.mkdir(parents=True, exist_ok=True)
+    lock_path = PUBLIC_AUDIO / ".publish.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock_f:
+        fcntl.flock(lock_f.fileno(), fcntl.LOCK_EX)
+        try:
+            _publish_unlocked(metas, cfg)
+        finally:
+            fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
+
+
+def _publish_unlocked(metas: list[dict], cfg: dict) -> None:
     sets: dict[tuple[str, str], dict] = {}
 
     for meta in metas:
@@ -419,6 +431,11 @@ def main() -> None:
         help="Generate work audio/meta only (skip public/ + manifest)",
     )
     parser.add_argument(
+        "--publish-each",
+        action="store_true",
+        help="Publish after each day (safe with flock for parallel translations)",
+    )
+    parser.add_argument(
         "--publish-only",
         action="store_true",
         help="Publish existing work metas for --days/--translation/--voices",
@@ -427,6 +444,8 @@ def main() -> None:
 
     if args.no_publish and args.publish_only:
         raise SystemExit("use either --no-publish or --publish-only, not both")
+    if args.no_publish and args.publish_each:
+        raise SystemExit("use either --no-publish or --publish-each, not both")
 
     cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     if cfg.get("engine") != "supertonic3":
@@ -471,30 +490,41 @@ def main() -> None:
     print(f"model loaded in {time.time() - t0:.1f}s (sr={tts.sample_rate})")
 
     metas: list[dict] = []
+    batch_t0 = time.time()
     for voice in voices:
         speaker = female["speaker"]
-        for day in days:
-            print(f"=== day {day} {translation_id}/{voice}/{speaker} ===")
-            metas.append(
-                generate_day(
-                    tts,
-                    style,
-                    day=day,
-                    voice=voice,
-                    speaker=speaker,
-                    translation_id=translation_id,
-                    language=language,
-                    speed=speed,
-                    total_steps=total_steps,
-                    announce_silence_sec=announce_silence,
-                    chunk_gap_sec=chunk_gap,
-                    force=args.force,
-                )
+        for i, day in enumerate(days, start=1):
+            print(
+                f"=== [{i}/{len(days)}] day {day} {translation_id}/{voice}/{speaker} ===",
+                flush=True,
+            )
+            meta = generate_day(
+                tts,
+                style,
+                day=day,
+                voice=voice,
+                speaker=speaker,
+                translation_id=translation_id,
+                language=language,
+                speed=speed,
+                total_steps=total_steps,
+                announce_silence_sec=announce_silence,
+                chunk_gap_sec=chunk_gap,
+                force=args.force,
+            )
+            metas.append(meta)
+            if args.publish_each:
+                publish([meta], cfg)
+            elapsed = time.time() - batch_t0
+            print(
+                f"progress {translation_id}: {i}/{len(days)} days done, "
+                f"elapsed {elapsed / 60:.1f}m",
+                flush=True,
             )
 
     if args.no_publish:
         print(f"skip publish ({len(metas)} meta(s) in work/)")
-    else:
+    elif not args.publish_each:
         publish(metas, cfg)
 
 

@@ -98,8 +98,14 @@ class RangeSegment:
 
 
 def strip_section_title(text: str) -> str:
-    """Remove leading <단락 제목> markers from verse text for TTS."""
-    return SECTION_TITLE_RE.sub("", text or "").strip()
+    """Remove leading <단락 제목> markers and control chars from verse text for TTS.
+
+    Some KRV source verses end with NUL padding (\\x00) from the legacy text files;
+    Supertonic rejects those characters.
+    """
+    cleaned = SECTION_TITLE_RE.sub("", text or "")
+    cleaned = "".join(ch for ch in cleaned if ch >= " " or ch in "\t\n")
+    return cleaned.strip()
 
 
 def get_book_name(abbr: str) -> str:
