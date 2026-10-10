@@ -12,6 +12,7 @@ import {
 import { ReaderScreen } from './components/ReaderScreen'
 import { useProgress } from './hooks/useProgress'
 import { useSettings } from './hooks/useSettings'
+import { hasIncompleteBefore } from './lib/progress'
 import { loadSchedule } from './lib/schedule'
 import { FindPage } from './pages/FindPage'
 import { HomePage } from './pages/HomePage'
@@ -42,7 +43,8 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
   const showFind = location.pathname.startsWith('/find')
 
   const openReader = (day: number) => {
-    if (day > 1 && progress.needsBulkCompleteBefore(day)) {
+    // Skip the prompt when every previous day is already ✓ 완료.
+    if (day > 1 && hasIncompleteBefore(progress.store, day)) {
       const ok = window.confirm(
         `이전 날짜(1~${day - 1}일)를 모두 읽은 것으로 표시할까요?`,
       )

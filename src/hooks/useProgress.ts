@@ -38,7 +38,12 @@ export function useProgress(totalDays = 246) {
   }, [])
 
   const completeDaysBefore = useCallback((day: number) => {
-    setStore((prev) => withCompletedThrough(prev, day))
+    setStore((prev) => {
+      const next = withCompletedThrough(prev, day)
+      // Persist immediately so a quick navigate does not lose bulk-complete.
+      saveProgress(next)
+      return next
+    })
   }, [])
 
   const clearAllCompleted = useCallback(() => {

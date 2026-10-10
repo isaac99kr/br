@@ -138,9 +138,13 @@ export function withCompletedThrough(
   return { version: 1, lastReadDay: store.lastReadDay, progress }
 }
 
+/**
+ * True when some day before `day` was never started (unread).
+ * in_progress / completed count as already handled — do not re-prompt.
+ */
 export function hasIncompleteBefore(store: ProgressStore, day: number): boolean {
   for (let d = 1; d < day; d++) {
-    if (getStatus(store, d) !== 'completed') return true
+    if (getStatus(store, d) === 'unread') return true
   }
   return false
 }
