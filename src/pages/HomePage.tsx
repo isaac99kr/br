@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatScheduleDayLabel, getItem } from '../lib/schedule'
-import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
-import { SettingsPage } from './SettingsPage'
 import type { ScheduleItem, ScheduleMeta } from '../types'
 import type { useProgress } from '../hooks/useProgress'
 
@@ -16,14 +14,6 @@ type Props = {
   onScheduleChange: (id: string) => void
   progress: ProgressApi
   onOpenReader: (day: number) => void
-  fontSize: FontSize
-  verseGap: SpacingSize
-  lineHeight: SpacingSize
-  translationId: TranslationId
-  onFontSizeChange: (size: FontSize) => void
-  onVerseGapChange: (size: SpacingSize) => void
-  onLineHeightChange: (size: SpacingSize) => void
-  onTranslationChange: (id: TranslationId) => void
 }
 
 export function HomePage({
@@ -34,29 +24,21 @@ export function HomePage({
   onScheduleChange,
   progress,
   onOpenReader,
-  fontSize,
-  verseGap,
-  lineHeight,
-  translationId,
-  onFontSizeChange,
-  onVerseGapChange,
-  onLineHeightChange,
-  onTranslationChange,
 }: Props) {
   const total = schedule.length
   const { completedCount, percent, continueDay } = progress
   const item = getItem(schedule, continueDay)
   const allDone = completedCount === total && total > 0
-  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [scheduleOpen, setScheduleOpen] = useState(false)
 
   useEffect(() => {
-    if (settingsOpen) {
+    if (scheduleOpen) {
       document.body.classList.add('settings-overlay-open')
     } else {
       document.body.classList.remove('settings-overlay-open')
     }
     return () => document.body.classList.remove('settings-overlay-open')
-  }, [settingsOpen])
+  }, [scheduleOpen])
 
   const nextLabel = item
     ? `${formatScheduleDayLabel(item)} · ${item.range}`
@@ -70,8 +52,8 @@ export function HomePage({
             <div className="eyebrow">읽기 일정</div>
             <div className="home-plan-title">{scheduleMeta.title}</div>
           </div>
-          <button type="button" className="pill" onClick={() => setSettingsOpen(true)}>
-            설정
+          <button type="button" className="pill" onClick={() => setScheduleOpen(true)}>
+            스케줄 설정
           </button>
         </div>
 
@@ -101,33 +83,52 @@ export function HomePage({
         </div>
       </section>
 
-      {settingsOpen && (
-        <div className="settings-overlay" role="dialog" aria-modal="true" aria-label="설정">
+      {scheduleOpen && (
+        <div
+          className="settings-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="스케줄 설정"
+        >
           <button
             type="button"
             className="settings-overlay-backdrop"
-            aria-label="설정 닫기"
-            onClick={() => setSettingsOpen(false)}
+            aria-label="닫기"
+            onClick={() => setScheduleOpen(false)}
           />
           <div className="settings-overlay-sheet">
-            <SettingsPage
-              embedded
-              fontSize={fontSize}
-              verseGap={verseGap}
-              lineHeight={lineHeight}
-              translationId={translationId}
-              scheduleId={scheduleId}
-              scheduleOptions={scheduleOptions}
-              onFontSizeChange={onFontSizeChange}
-              onVerseGapChange={onVerseGapChange}
-              onLineHeightChange={onLineHeightChange}
-              onTranslationChange={onTranslationChange}
-              onScheduleChange={(id) => {
-                onScheduleChange(id)
-                setSettingsOpen(false)
-              }}
-              onClose={() => setSettingsOpen(false)}
-            />
+            <main className="settings-panel">
+              <div className="settings-back">
+                <button type="button" className="pill" onClick={() => setScheduleOpen(false)}>
+                  닫기
+                </button>
+              </div>
+              <h2 className="section-title">스케줄 설정</h2>
+              <p className="section-desc">읽을 일정을 고르세요. 진행 상황은 일정별로 따로 저장됩니다.</p>
+              <section className="panel">
+                <div className="eyebrow">읽기 일정</div>
+                <div className="font-size-options" role="radiogroup" aria-label="읽기 일정">
+                  {scheduleOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={scheduleId === opt.id}
+                      className={scheduleId === opt.id ? 'font-opt active' : 'font-opt'}
+                      onClick={() => {
+                        onScheduleChange(opt.id)
+                        setScheduleOpen(false)
+                      }}
+                    >
+                      <span className="font-opt-label">{opt.title}</span>
+                      <span className="font-opt-sample">
+                        {opt.description || `${opt.dayCount}일`}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </main>
           </div>
         </div>
       )}

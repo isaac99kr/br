@@ -88,7 +88,6 @@ function AppRoutes({
         day={readerDay}
         schedule={schedule}
         scheduleMeta={meta}
-        scheduleOptions={catalog.schedules}
         progress={progress}
         translationId={translationId}
         ttsVoiceUri={ttsVoiceUri}
@@ -100,7 +99,6 @@ function AppRoutes({
         onVerseGapChange={setVerseGap}
         onLineHeightChange={setLineHeight}
         onTranslationChange={setTranslationId}
-        onScheduleChange={setScheduleId}
         onClose={closeReader}
         onChangeDay={(d) =>
           navigate(`/read/${d}`, { replace: true, state: location.state })
@@ -152,14 +150,6 @@ function AppRoutes({
             onScheduleChange={setScheduleId}
             progress={progress}
             onOpenReader={openReader}
-            fontSize={fontSize}
-            verseGap={verseGap}
-            lineHeight={lineHeight}
-            translationId={translationId}
-            onFontSizeChange={setFontSize}
-            onVerseGapChange={setVerseGap}
-            onLineHeightChange={setLineHeight}
-            onTranslationChange={setTranslationId}
           />
         )}
       </div>

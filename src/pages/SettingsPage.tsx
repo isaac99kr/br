@@ -7,20 +7,16 @@ import {
   type SpacingSize,
   type TranslationId,
 } from '../lib/settings'
-import type { ScheduleMeta } from '../types'
 
 type Props = {
   fontSize: FontSize
   verseGap: SpacingSize
   lineHeight: SpacingSize
   translationId: TranslationId
-  scheduleId?: string
-  scheduleOptions?: ScheduleMeta[]
   onFontSizeChange: (size: FontSize) => void
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
-  onScheduleChange?: (id: string) => void
   onClose?: () => void
   embedded?: boolean
 }
@@ -30,13 +26,10 @@ export function SettingsPage({
   verseGap,
   lineHeight,
   translationId,
-  scheduleId,
-  scheduleOptions,
   onFontSizeChange,
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
-  onScheduleChange,
   onClose,
   embedded = false,
 }: Props) {
@@ -51,31 +44,7 @@ export function SettingsPage({
       )}
 
       <h2 className="section-title">설정</h2>
-      <p className="section-desc">읽기 일정·성경 종류·글자 크기·간격을 고르세요. 앱 전체에 바로 적용됩니다.</p>
-
-      {scheduleOptions && scheduleOptions.length > 0 && scheduleId && onScheduleChange && (
-        <section className="panel">
-          <div className="eyebrow">읽기 일정</div>
-          <div className="font-size-options" role="radiogroup" aria-label="읽기 일정">
-            {scheduleOptions.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                role="radio"
-                aria-checked={scheduleId === opt.id}
-                className={scheduleId === opt.id ? 'font-opt active' : 'font-opt'}
-                onClick={() => onScheduleChange(opt.id)}
-              >
-                <span className="font-opt-label">{opt.title}</span>
-                <span className="font-opt-sample">
-                  {opt.description || `${opt.dayCount}일`}
-                </span>
-              </button>
-            ))}
-          </div>
-          <p className="settings-note">일정을 바꾸면 진행 상황은 일정별로 따로 저장됩니다.</p>
-        </section>
-      )}
+      <p className="section-desc">성경 종류·글자 크기·간격을 고르세요. 앱 전체에 바로 적용됩니다.</p>
 
       <section className="panel">
         <div className="eyebrow">성경 종류</div>

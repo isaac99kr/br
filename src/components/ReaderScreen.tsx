@@ -23,7 +23,6 @@ type Props = {
   day: number
   schedule: ScheduleItem[]
   scheduleMeta: ScheduleMeta
-  scheduleOptions: ScheduleMeta[]
   progress: ProgressApi
   translationId: TranslationId
   ttsVoiceUri: string | null
@@ -35,7 +34,6 @@ type Props = {
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
-  onScheduleChange: (id: string) => void
   onClose: () => void
   onChangeDay: (day: number) => void
 }
@@ -87,7 +85,6 @@ export function ReaderScreen({
   day,
   schedule,
   scheduleMeta,
-  scheduleOptions,
   progress,
   translationId,
   ttsVoiceUri,
@@ -99,7 +96,6 @@ export function ReaderScreen({
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
-  onScheduleChange,
   onClose,
   onChangeDay,
 }: Props) {
@@ -752,17 +748,10 @@ export function ReaderScreen({
               verseGap={verseGap}
               lineHeight={lineHeight}
               translationId={translationId}
-              scheduleId={scheduleMeta.id}
-              scheduleOptions={scheduleOptions}
               onFontSizeChange={onFontSizeChange}
               onVerseGapChange={onVerseGapChange}
               onLineHeightChange={onLineHeightChange}
               onTranslationChange={onTranslationChange}
-              onScheduleChange={(id) => {
-                onScheduleChange(id)
-                setSettingsOpen(false)
-                onClose()
-              }}
               onClose={() => setSettingsOpen(false)}
             />
           </div>
