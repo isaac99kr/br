@@ -362,12 +362,23 @@ export function ReaderScreen({
     revealChrome()
   }
 
+  const closeAudioPanel = () => {
+    setAudioOpen(false)
+    audioPlayingRef.current = false
+    setAudioPlaying(false)
+    setActiveChapter(null)
+    setActiveVerse(null)
+    lastScrolledVerse.current = null
+    lastScrolledChapter.current = null
+  }
+
   const handleAutoScrollToggle = () => {
     if (autoScrollOn) {
       stopAutoScroll(true)
       return
     }
     if (!linked || !verses.length) return
+    if (audioOpen) closeAudioPanel()
     const idx = findNearestVerseIndex(verses)
     autoScrollIndexRef.current = idx
     setActiveVerse(verseToCue(verses[idx]))
@@ -393,17 +404,9 @@ export function ReaderScreen({
 
   const handleListenClick = async () => {
     if (audioOpen) {
-      setAudioOpen(false)
+      closeAudioPanel()
       clearChromeHideTimer()
-      setActiveChapter(null)
-      if (!autoScrollOnRef.current) {
-        setActiveVerse(null)
-        setChromeHidden(false)
-      } else {
-        const v = versesRef.current[autoScrollIndexRef.current]
-        if (v) setActiveVerse(verseToCue(v))
-        scheduleChromeHide()
-      }
+      setChromeHidden(false)
       return
     }
     const manifest = await loadAudioManifest()
@@ -412,6 +415,7 @@ export function ReaderScreen({
       setToast('준비중입니다')
       return
     }
+    if (autoScrollOnRef.current) stopAutoScroll(true)
     setAudioOpen(true)
   }
 
@@ -420,8 +424,6 @@ export function ReaderScreen({
     setAudioPlaying(playing)
     clearChromeHideTimer()
     if (playing) {
-      scheduleChromeHide()
-    } else if (autoScrollOnRef.current) {
       scheduleChromeHide()
     } else {
       setChromeHidden(false)
@@ -579,6 +581,15 @@ export function ReaderScreen({
         <div className="reader-actions">
           <button
             type="button"
+            className={autoScrollOn ? 'primary' : undefined}
+            aria-pressed={autoScrollOn}
+            disabled={!linked || loading || !verses.length}
+            onClick={handleAutoScrollToggle}
+          >
+            {autoScrollOn ? '자동스크롤 ✓' : '자동스크롤'}
+          </button>
+          <button
+            type="button"
             className={audioOpen ? 'primary' : undefined}
             aria-pressed={audioOpen}
             onClick={() => {
@@ -586,15 +597,6 @@ export function ReaderScreen({
             }}
           >
             {audioOpen ? '음성듣기 ✓' : '음성듣기'}
-          </button>
-          <button
-            type="button"
-            className={autoScrollOn ? 'primary' : undefined}
-            aria-pressed={autoScrollOn}
-            disabled={!linked || loading || !verses.length}
-            onClick={handleAutoScrollToggle}
-          >
-            {autoScrollOn ? '자동스크롤 ✓' : '자동스크롤'}
           </button>
           <button
             type="button"
