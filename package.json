@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "data": "python3 scripts/build-data.py",
+    "tts:day": "PYTORCH_ENABLE_MPS_FALLBACK=1 tts/.venv/bin/python tts/scripts/generate_day.py",
     "pages": "bash scripts/deploy-pages.sh",
     "pages:status": "gh run list --workflow=\"Deploy to GitHub Pages\" --limit 5"
   },

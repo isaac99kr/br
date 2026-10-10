@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "status": "locked",
+  "lockedAt": "2026-10-10",
+  "engine": "supertonic3",
+  "modelId": "supertonic-3",
+  "language": "ko",
+  "translationId": "krv",
+  "female": {
+    "status": "locked",
+    "speaker": "Angelina",
+    "stylePath": "voices/angelina.json",
+    "referencePrompt": "voices/refs/angelina_prompt.wav",
+    "speed": 0.9,
+    "totalSteps": 12
+  },
+  "male": {
+    "status": "disabled",
+    "note": "이번 전환에서 남성 음원 제외"
+  },
+  "readingRules": {
+    "chapterAnnounce": "{bookName} {koreanChapter}장 말씀입니다.",
+    "announcePerChapter": true,
+    "announceSilenceSec": 0.5,
+    "chunkGapSec": 0.12,
+    "stripSectionTitlePattern": "^<[^>]+>\\s*"
+  },
+  "license": {
+    "sdk": "MIT",
+    "modelWeights": "BigScience OpenRAIL-M",
+    "note": "OpenRAIL-M is not equivalent to MIT. See docs/07 and Hugging Face LICENSE."
+  }
+}

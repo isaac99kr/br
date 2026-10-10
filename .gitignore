@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# TTS local work (models, venv, generated audio)
+tts/.venv/
+tts/work/
+tts/models/
+tts/**/*.wav
+tts/**/*.mp3
+tts/**/*.ogg
+tts/**/*.flac
+
+__pycache__/
+*.py[cod]

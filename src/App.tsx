@@ -29,6 +29,8 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
     setLineHeight,
     translationId,
     setTranslationId,
+    voiceGender,
+    setVoiceGender,
   } = useSettings()
   const navigate = useNavigate()
   const location = useLocation()
@@ -61,6 +63,7 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
         schedule={schedule}
         progress={progress}
         translationId={translationId}
+        voiceGender={voiceGender}
         fontSize={fontSize}
         verseGap={verseGap}
         lineHeight={lineHeight}
@@ -68,6 +71,7 @@ function AppRoutes({ schedule }: { schedule: ScheduleItem[] }) {
         onVerseGapChange={setVerseGap}
         onLineHeightChange={setLineHeight}
         onTranslationChange={setTranslationId}
+        onVoiceGenderChange={setVoiceGender}
         onClose={closeReader}
         onChangeDay={(d) =>
           navigate(`/read/${d}`, { replace: true, state: location.state })

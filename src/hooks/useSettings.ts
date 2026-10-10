@@ -7,6 +7,7 @@ import {
   type FontSize,
   type SpacingSize,
   type TranslationId,
+  type VoiceGender,
 } from '../lib/settings'
 
 export function useSettings() {
@@ -33,15 +34,21 @@ export function useSettings() {
     setSettings((prev) => ({ ...prev, translationId }))
   }, [])
 
+  const setVoiceGender = useCallback((voiceGender: VoiceGender) => {
+    setSettings((prev) => ({ ...prev, voiceGender }))
+  }, [])
+
   return {
     settings,
     setFontSize,
     setVerseGap,
     setLineHeight,
     setTranslationId,
+    setVoiceGender,
     fontSize: settings.fontSize,
     verseGap: settings.verseGap,
     lineHeight: settings.lineHeight,
     translationId: settings.translationId,
+    voiceGender: settings.voiceGender,
   }
 }

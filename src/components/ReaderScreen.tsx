@@ -1,11 +1,19 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
+import { AudioPlayer } from './AudioPlayer'
+import {
+  findAudioDay,
+  loadAudioManifest,
+  verseCueKey,
+  type AudioChapterCue,
+  type AudioVerseCue,
+} from '../lib/audio'
 import { loadVersesForRange } from '../lib/bible'
 import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
 import { formatDayShareTitle, formatShareClipboard } from '../lib/share'
-import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
+import type { FontSize, SpacingSize, TranslationId, VoiceGender } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
 import type { useProgress } from '../hooks/useProgress'
@@ -17,6 +25,7 @@ type Props = {
   schedule: ScheduleItem[]
   progress: ProgressApi
   translationId: TranslationId
+  voiceGender: VoiceGender
   fontSize: FontSize
   verseGap: SpacingSize
   lineHeight: SpacingSize
@@ -24,6 +33,7 @@ type Props = {
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
+  onVoiceGenderChange: (voice: VoiceGender) => void
   onClose: () => void
   onChangeDay: (day: number) => void
 }
@@ -32,11 +42,14 @@ function verseKey(v: Verse): string {
   return `${v.abbr}-${v.chapter}-${v.verse}`
 }
 
+const CHROME_HIDE_DELAY_MS = 1500
+
 export function ReaderScreen({
   day,
   schedule,
   progress,
   translationId,
+  voiceGender,
   fontSize,
   verseGap,
   lineHeight,
@@ -44,6 +57,7 @@ export function ReaderScreen({
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
+  onVoiceGenderChange,
   onClose,
   onChangeDay,
 }: Props) {
@@ -56,8 +70,39 @@ export function ReaderScreen({
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [toast, setToast] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [audioOpen, setAudioOpen] = useState(false)
+  const [activeChapter, setActiveChapter] = useState<AudioChapterCue | null>(null)
+  const [activeVerse, setActiveVerse] = useState<AudioVerseCue | null>(null)
   const completedRef = useRef(false)
   const lastScrollY = useRef(0)
+  const userScrollLock = useRef(0)
+  const programScrollLock = useRef(0)
+  const chromeHideTimer = useRef<number | null>(null)
+  const audioPlayingRef = useRef(false)
+  const lastScrolledVerse = useRef<string | null>(null)
+  const lastScrolledChapter = useRef<string | null>(null)
+
+  const clearChromeHideTimer = () => {
+    if (chromeHideTimer.current != null) {
+      window.clearTimeout(chromeHideTimer.current)
+      chromeHideTimer.current = null
+    }
+  }
+
+  const scheduleChromeHide = () => {
+    clearChromeHideTimer()
+    if (settingsOpen || !audioPlayingRef.current) return
+    chromeHideTimer.current = window.setTimeout(() => {
+      setChromeHidden(true)
+      chromeHideTimer.current = null
+    }, CHROME_HIDE_DELAY_MS)
+  }
+
+  /** Show chrome; if audio still playing, hide again after a short delay. */
+  const revealChrome = () => {
+    setChromeHidden(false)
+    if (audioPlayingRef.current) scheduleChromeHide()
+  }
 
   useEffect(() => {
     document.documentElement.classList.add('reader-open')
@@ -65,6 +110,7 @@ export function ReaderScreen({
     window.scrollTo(0, 0)
     lastScrollY.current = 0
     return () => {
+      clearChromeHideTimer()
       document.documentElement.classList.remove('reader-open')
       document.body.classList.remove('reader-open')
       document.body.classList.remove('settings-overlay-open')
@@ -88,6 +134,12 @@ export function ReaderScreen({
     setSelected(new Set())
     setChromeHidden(false)
     setSettingsOpen(false)
+    setAudioOpen(false)
+    setActiveChapter(null)
+    setActiveVerse(null)
+    lastScrolledVerse.current = null
+    lastScrolledChapter.current = null
+    clearChromeHideTimer()
     setLoading(true)
     setError(null)
     window.scrollTo(0, 0)
@@ -115,21 +167,39 @@ export function ReaderScreen({
   }, [day, item?.range, translationId])
 
   useEffect(() => {
+    setAudioOpen(false)
+    setActiveChapter(null)
+    setActiveVerse(null)
+    lastScrolledVerse.current = null
+    lastScrolledChapter.current = null
+    clearChromeHideTimer()
+    setChromeHidden(false)
+  }, [voiceGender])
+
+  useEffect(() => {
     lastScrollY.current = window.scrollY
 
     const onScroll = () => {
       if (document.body.classList.contains('settings-overlay-open')) return
+      if (Date.now() < programScrollLock.current) {
+        lastScrollY.current = window.scrollY
+        return
+      }
 
       const top = window.scrollY
       const delta = top - lastScrollY.current
       lastScrollY.current = top
 
-      if (top < 24) {
-        setChromeHidden(false)
-      } else if (delta > 10) {
-        setChromeHidden(true)
-      } else if (delta < -10) {
-        setChromeHidden(false)
+      // While audio plays, chrome stays hidden until the user taps — ignore scroll toggles
+      // (verse auto-scroll would otherwise keep flashing the menus).
+      if (!audioPlayingRef.current) {
+        if (top < 24) {
+          setChromeHidden(false)
+        } else if (delta > 10) {
+          setChromeHidden(true)
+        } else if (delta < -10) {
+          setChromeHidden(false)
+        }
       }
 
       if (!linked || completedRef.current) return
@@ -152,12 +222,45 @@ export function ReaderScreen({
     return () => window.clearTimeout(t)
   }, [toast])
 
+  useEffect(() => {
+    if (Date.now() < userScrollLock.current) return
+
+    if (activeVerse) {
+      const key = verseCueKey(activeVerse)
+      if (key === lastScrolledVerse.current) return
+      lastScrolledVerse.current = key
+      const id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
+      const el = document.getElementById(id)
+      if (!el) return
+      programScrollLock.current = Date.now() + 800
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+
+    if (activeChapter) {
+      const key = `${activeChapter.abbr}-${activeChapter.chapter}`
+      if (key === lastScrolledChapter.current) return
+      lastScrolledChapter.current = key
+      const id = `ch-${activeChapter.abbr}-${activeChapter.chapter}`
+      const el = document.getElementById(id)
+      if (!el) return
+      programScrollLock.current = Date.now() + 800
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [activeVerse, activeChapter])
+
   if (!item) return null
 
   const status = progress.statusOf(day)
   const selectedVerses = verses.filter((v) => selected.has(verseKey(v)))
 
   const toggleVerse = (v: Verse) => {
+    // First tap while chrome is hidden only reveals menus (no verse select).
+    if (chromeHidden) {
+      revealChrome()
+      return
+    }
+    userScrollLock.current = Date.now() + 2500
     const key = verseKey(v)
     setSelected((prev) => {
       const next = new Set(prev)
@@ -165,7 +268,7 @@ export function ReaderScreen({
       else next.add(key)
       return next
     })
-    setChromeHidden(false)
+    revealChrome()
   }
 
   const handleCopy = async () => {
@@ -180,6 +283,39 @@ export function ReaderScreen({
     const text = formatShareClipboard(formatDayShareTitle(item.day, item.range), `/read/${day}`)
     const ok = await copyText(text)
     setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
+  }
+
+  const handleListenClick = async () => {
+    if (audioOpen) {
+      setAudioOpen(false)
+      clearChromeHideTimer()
+      setChromeHidden(false)
+      setActiveChapter(null)
+      setActiveVerse(null)
+      return
+    }
+    const manifest = await loadAudioManifest()
+    const found = findAudioDay(manifest, translationId, voiceGender, day)
+    if (!found) {
+      setToast('준비중입니다')
+      return
+    }
+    setAudioOpen(true)
+  }
+
+  const handlePlayingChange = (playing: boolean) => {
+    audioPlayingRef.current = playing
+    clearChromeHideTimer()
+    if (playing) {
+      scheduleChromeHide()
+    } else {
+      setChromeHidden(false)
+    }
+  }
+
+  const handleReaderSurfaceTap = () => {
+    if (!chromeHidden) return
+    revealChrome()
   }
 
   return (
@@ -214,7 +350,7 @@ export function ReaderScreen({
         </div>
       </header>
 
-      <div className="reader-scroll">
+      <div className="reader-scroll" onClick={handleReaderSurfaceTap} role="presentation">
         <div className="reader-meta-block">
           <p className="reader-meta-line">
             {item.testament} · {item.week}주차 · {statusLabel(status)}
@@ -235,17 +371,36 @@ export function ReaderScreen({
               const key = verseKey(v)
               const isOn = selected.has(key)
               const prev = i > 0 ? verses[i - 1] : null
-              const showBookHeader = !prev || prev.abbr !== v.abbr
+              const showBookHeader =
+                !prev || prev.abbr !== v.abbr || prev.chapter !== v.chapter
+              const chapterActive =
+                activeChapter?.abbr === v.abbr && activeChapter.chapter === v.chapter
+              const verseActive =
+                activeVerse?.abbr === v.abbr &&
+                activeVerse.chapter === v.chapter &&
+                activeVerse.verse === v.verse
               return (
                 <Fragment key={key}>
                   {showBookHeader && (
-                    <div className="book-header" role="heading" aria-level={2}>
+                    <div
+                      id={`ch-${v.abbr}-${v.chapter}`}
+                      className={chapterActive ? 'book-header book-header-active' : 'book-header'}
+                      role="heading"
+                      aria-level={2}
+                    >
                       {getBookName(v.abbr)} · {v.chapter}장
                     </div>
                   )}
                   <button
                     type="button"
-                    className={isOn ? 'verse verse-selected' : 'verse'}
+                    id={`v-${v.abbr}-${v.chapter}-${v.verse}`}
+                    className={[
+                      'verse',
+                      isOn ? 'verse-selected' : '',
+                      verseActive ? 'verse-listening' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
                     onClick={() => toggleVerse(v)}
                     aria-pressed={isOn}
                   >
@@ -273,7 +428,29 @@ export function ReaderScreen({
       )}
 
       <footer className="reader-chrome reader-chrome-bottom">
+        {audioOpen && (
+          <AudioPlayer
+            day={day}
+            translationId={translationId}
+            voiceGender={voiceGender}
+            verses={verses}
+            onActiveChapter={setActiveChapter}
+            onActiveVerse={setActiveVerse}
+            onPlayingChange={handlePlayingChange}
+            onUnavailable={(message) => setToast(message)}
+          />
+        )}
         <div className="reader-actions">
+          <button
+            type="button"
+            className={audioOpen ? 'primary' : undefined}
+            aria-pressed={audioOpen}
+            onClick={() => {
+              void handleListenClick()
+            }}
+          >
+            {audioOpen ? '음성듣기 ✓' : '음성듣기'}
+          </button>
           <button
             type="button"
             onClick={() => progress.setDayStatus(day, 'in_progress')}
@@ -341,10 +518,12 @@ export function ReaderScreen({
               verseGap={verseGap}
               lineHeight={lineHeight}
               translationId={translationId}
+              voiceGender={voiceGender}
               onFontSizeChange={onFontSizeChange}
               onVerseGapChange={onVerseGapChange}
               onLineHeightChange={onLineHeightChange}
               onTranslationChange={onTranslationChange}
+              onVoiceGenderChange={onVoiceGenderChange}
               onClose={() => setSettingsOpen(false)}
             />
           </div>

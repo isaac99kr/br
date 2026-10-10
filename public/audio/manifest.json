@@ -1,0 +1,128 @@
+{
+  "version": 2,
+  "modelVersion": "supertonic-3",
+  "engine": "supertonic3",
+  "configVersion": "voice-selection@2",
+  "format": "mp3",
+  "sets": [
+    {
+      "translationId": "krv",
+      "voice": "female",
+      "speakerId": "Angelina",
+      "days": [
+        {
+          "day": 1,
+          "path": "audio/krv/female/day-001.mp3",
+          "durationMs": 658978,
+          "bytes": 3954329,
+          "chapters": [
+            {
+              "abbr": "창",
+              "chapter": 1,
+              "announce": "창세기 일장 말씀입니다.",
+              "startMs": 0
+            },
+            {
+              "abbr": "창",
+              "chapter": 2,
+              "announce": "창세기 이장 말씀입니다.",
+              "startMs": 244012
+            },
+            {
+              "abbr": "창",
+              "chapter": 3,
+              "announce": "창세기 삼장 말씀입니다.",
+              "startMs": 432880
+            }
+          ],
+          "status": "draft"
+        },
+        {
+          "day": 213,
+          "path": "audio/krv/female/day-213.mp3",
+          "durationMs": 1098445,
+          "bytes": 6591076,
+          "chapters": [
+            {
+              "abbr": "요",
+              "chapter": 20,
+              "announce": "요한복음 이십장 말씀입니다.",
+              "startMs": 0
+            },
+            {
+              "abbr": "눅",
+              "chapter": 24,
+              "announce": "누가복음 이십사장 말씀입니다.",
+              "startMs": 260084
+            },
+            {
+              "abbr": "막",
+              "chapter": 16,
+              "announce": "마가복음 십육장 말씀입니다.",
+              "startMs": 590985
+            },
+            {
+              "abbr": "마",
+              "chapter": 28,
+              "announce": "마태복음 이십팔장 말씀입니다.",
+              "startMs": 734443
+            },
+            {
+              "abbr": "요",
+              "chapter": 21,
+              "announce": "요한복음 이십일장 말씀입니다.",
+              "startMs": 845896
+            }
+          ],
+          "status": "draft"
+        }
+      ]
+    },
+    {
+      "translationId": "rnksv",
+      "voice": "female",
+      "speakerId": "Angelina",
+      "days": [
+        {
+          "day": 213,
+          "path": "audio/rnksv/female/day-213.mp3",
+          "durationMs": 1422217,
+          "bytes": 8533803,
+          "chapters": [
+            {
+              "abbr": "요",
+              "chapter": 20,
+              "announce": "요한복음 이십장 말씀입니다.",
+              "startMs": 0
+            },
+            {
+              "abbr": "눅",
+              "chapter": 24,
+              "announce": "누가복음 이십사장 말씀입니다.",
+              "startMs": 316032
+            },
+            {
+              "abbr": "막",
+              "chapter": 16,
+              "announce": "마가복음 십육장 말씀입니다.",
+              "startMs": 739287
+            },
+            {
+              "abbr": "마",
+              "chapter": 28,
+              "announce": "마태복음 이십팔장 말씀입니다.",
+              "startMs": 955203
+            },
+            {
+              "abbr": "요",
+              "chapter": 21,
+              "announce": "요한복음 이십일장 말씀입니다.",
+              "startMs": 1090979
+            }
+          ],
+          "status": "draft"
+        }
+      ]
+    }
+  ]
+}

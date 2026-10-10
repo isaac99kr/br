@@ -14,6 +14,8 @@
 5. [04-ui-screens.md](04-ui-screens.md) — 화면별 UI 스펙
 6. [05-progress-storage.md](05-progress-storage.md) — 읽기 상태·localStorage
 7. [06-implementation-roadmap.md](06-implementation-roadmap.md) — 후속 구현 순서
+8. [07-bible-tts-plan.md](07-bible-tts-plan.md) — Qwen3-TTS 성경 음원 기능 기획
+9. [08-bible-tts-investigation.md](08-bible-tts-investigation.md) — TTS 조사·§11 산출물 (용량·권리·질문)
 
 ## 참조 자료 위치
 
@@ -25,9 +27,11 @@
 | 화면 HTML | [`../asset/design/bible_reading_screen_design_v2.html`](../asset/design/bible_reading_screen_design_v2.html) |
 | 스크린샷 | [`../asset/design/screenshots/`](../asset/design/screenshots/) |
 | asset 안내 | [`../asset/README.md`](../asset/README.md) |
+| TTS 음원 사전 요청서 | [`qwen3_bible_tts_cursor_planning_ko.md`](qwen3_bible_tts_cursor_planning_ko.md) |
 
 ## 문서와 구현의 관계
 
 - `docs/`의 결정은 이후 React 구현의 기준입니다.
 - UI 시각 참고는 HTML·스크린샷을 따르고, **상태 규칙·저장 스키마는 본 기획 문서(개발 가이드 기반)** 를 우선합니다.
 - 구현은 [06-implementation-roadmap.md](06-implementation-roadmap.md)의 별도 승인 후 진행합니다.
+- TTS 음원([07](07-bible-tts-plan.md)·[08](08-bible-tts-investigation.md))은 조사·용량·라이선스 승인 전 구현·대량 생성을 하지 않습니다.

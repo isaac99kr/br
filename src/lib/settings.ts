@@ -4,12 +4,15 @@ export type SpacingSize = 'S' | 'M' | 'L' | 'XL'
 
 export type TranslationId = 'krv' | 'rnksv'
 
+export type VoiceGender = 'female' | 'male'
+
 export type AppSettings = {
   version: number
   fontSize: FontSize
   verseGap: SpacingSize
   lineHeight: SpacingSize
   translationId: TranslationId
+  voiceGender: VoiceGender
 }
 
 export const SETTINGS_KEY = 'bibleReadingSettings:v1'
@@ -52,12 +55,25 @@ export const TRANSLATION_OPTIONS: {
   },
 ]
 
+export const VOICE_OPTIONS: {
+  value: VoiceGender
+  label: string
+  description: string
+}[] = [
+  {
+    value: 'female',
+    label: '여성',
+    description: 'Angelina',
+  },
+]
+
 const DEFAULT: AppSettings = {
   version: 1,
   fontSize: 'M',
   verseGap: 'M',
   lineHeight: 'M',
   translationId: 'krv',
+  voiceGender: 'female',
 }
 
 function isSpacingSize(v: unknown): v is SpacingSize {
@@ -83,6 +99,8 @@ export function loadSettings(): AppSettings {
       verseGap: isSpacingSize(parsed.verseGap) ? parsed.verseGap : 'M',
       lineHeight: isSpacingSize(parsed.lineHeight) ? parsed.lineHeight : 'M',
       translationId: isTranslationId(parsed.translationId) ? parsed.translationId : 'krv',
+      // Male track disabled for Supertonic Angelina rollout — coerce legacy male → female.
+      voiceGender: 'female',
     }
   } catch {
     return { ...DEFAULT }
