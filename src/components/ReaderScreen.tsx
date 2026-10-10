@@ -3,7 +3,6 @@ import { AudioPlayer } from './AudioPlayer'
 import {
   findAudioDay,
   loadAudioManifest,
-  verseCueKey,
   type AudioChapterCue,
   type AudioVerseCue,
 } from '../lib/audio'
@@ -43,13 +42,22 @@ function verseKey(v: Verse): string {
 }
 
 const CHROME_HIDE_DELAY_MS = 1500
-/** Base dwell time per verse at 1x auto-scroll rate. */
-const AUTO_SCROLL_BASE_MS = 4000
+/** Time to scroll one CSS line at 1x. */
+const LINE_SCROLL_BASE_MS = 1200
 const AUTO_SCROLL_RATES = [0.75, 1, 1.25, 1.5, 2] as const
 type AutoScrollRate = (typeof AUTO_SCROLL_RATES)[number]
 
 function verseToCue(v: Verse): AudioVerseCue {
   return { abbr: v.abbr, chapter: v.chapter, verse: v.verse, startMs: 0 }
+}
+
+function getLineHeightPx(): number {
+  const el = document.querySelector('.reader-scroll')
+  if (!el) return 28
+  const lh = parseFloat(getComputedStyle(el).lineHeight)
+  if (Number.isFinite(lh) && lh > 0) return lh
+  const fs = parseFloat(getComputedStyle(el).fontSize) || 16
+  return fs * 1.8
 }
 
 function findNearestVerseIndex(list: Verse[]): number {
@@ -102,6 +110,7 @@ export function ReaderScreen({
   const [autoScrollOn, setAutoScrollOn] = useState(false)
   const [autoScrollRate, setAutoScrollRate] = useState<AutoScrollRate>(1)
   const [audioPlaying, setAudioPlaying] = useState(false)
+  const [audioRate, setAudioRate] = useState(1)
   const [activeChapter, setActiveChapter] = useState<AudioChapterCue | null>(null)
   const [activeVerse, setActiveVerse] = useState<AudioVerseCue | null>(null)
   const completedRef = useRef(false)
@@ -111,15 +120,16 @@ export function ReaderScreen({
   const chromeHideTimer = useRef<number | null>(null)
   const audioPlayingRef = useRef(false)
   const autoScrollOnRef = useRef(false)
-  const autoScrollIndexRef = useRef(0)
+  const autoScrollRateRef = useRef<AutoScrollRate>(1)
+  autoScrollRateRef.current = autoScrollRate
+  const audioRateRef = useRef(1)
+  audioRateRef.current = audioRate
   const settingsOpenRef = useRef(settingsOpen)
   settingsOpenRef.current = settingsOpen
   const versesRef = useRef(verses)
   versesRef.current = verses
   const activeVerseRef = useRef(activeVerse)
   activeVerseRef.current = activeVerse
-  const lastScrolledVerse = useRef<string | null>(null)
-  const lastScrolledChapter = useRef<string | null>(null)
 
   const clearChromeHideTimer = () => {
     if (chromeHideTimer.current != null) {
@@ -188,10 +198,9 @@ export function ReaderScreen({
     setAudioOpen(false)
     autoScrollOnRef.current = false
     setAutoScrollOn(false)
+    setAudioRate(1)
     setActiveChapter(null)
     setActiveVerse(null)
-    lastScrolledVerse.current = null
-    lastScrolledChapter.current = null
     clearChromeHideTimer()
     setLoading(true)
     setError(null)
@@ -223,10 +232,9 @@ export function ReaderScreen({
     setAudioOpen(false)
     autoScrollOnRef.current = false
     setAutoScrollOn(false)
+    setAudioRate(1)
     setActiveChapter(null)
     setActiveVerse(null)
-    lastScrolledVerse.current = null
-    lastScrolledChapter.current = null
     clearChromeHideTimer()
     setChromeHidden(false)
   }, [voiceGender])
@@ -245,13 +253,8 @@ export function ReaderScreen({
       const delta = top - lastScrollY.current
       lastScrollY.current = top
 
-      if (autoScrollOnRef.current && Math.abs(delta) > 10) {
-        stopAutoScroll(true)
-        return
-      }
-
       // While audio/auto-scroll runs, chrome stays hidden until the user taps —
-      // ignore scroll toggles (verse auto-scroll would otherwise keep flashing menus).
+      // ignore scroll toggles (line scroll would otherwise keep flashing menus).
       if (!immersiveActive()) {
         if (top < 24) {
           setChromeHidden(false)
@@ -272,8 +275,21 @@ export function ReaderScreen({
       }
     }
 
+    // Distinguish user intent from programmatic line scroll.
+    const onUserScrollIntent = () => {
+      if (!autoScrollOnRef.current) return
+      if (Date.now() < userScrollLock.current) return
+      stopAutoScroll(true)
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('wheel', onUserScrollIntent, { passive: true })
+    window.addEventListener('touchmove', onUserScrollIntent, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('wheel', onUserScrollIntent)
+      window.removeEventListener('touchmove', onUserScrollIntent)
+    }
   }, [linked, verses, day, progress])
 
   useEffect(() => {
@@ -282,62 +298,70 @@ export function ReaderScreen({
     return () => window.clearTimeout(t)
   }, [toast])
 
-  // Pause timer while audio plays; sync index to audio cue when resuming.
+  // Constant-speed line scroll for auto-scroll and audio playback.
   useEffect(() => {
-    if (audioPlaying || !autoScrollOn) return
-    const cue = activeVerseRef.current
-    if (!cue) return
-    const idx = versesRef.current.findIndex(
-      (v) => v.abbr === cue.abbr && v.chapter === cue.chapter && v.verse === cue.verse,
-    )
-    if (idx >= 0) autoScrollIndexRef.current = idx
-  }, [audioPlaying, autoScrollOn])
+    const shouldRun = (autoScrollOn && !audioPlaying) || audioPlaying
+    if (!shouldRun) return
 
-  useEffect(() => {
-    if (!autoScrollOn || audioPlaying) return
+    let raf = 0
+    let last = performance.now()
+    let leftover = 0
+    let highlightAcc = 0
 
-    const intervalMs = Math.max(500, Math.round(AUTO_SCROLL_BASE_MS / autoScrollRate))
-    const tick = () => {
-      const list = versesRef.current
-      const next = autoScrollIndexRef.current + 1
-      if (next >= list.length) {
-        stopAutoScroll(true)
-        return
+    const frame = (now: number) => {
+      const dt = Math.min(64, now - last)
+      last = now
+
+      const rate = audioPlayingRef.current
+        ? audioRateRef.current
+        : autoScrollRateRef.current
+      const linePx = getLineHeightPx()
+      const pxPerMs = (linePx * Math.max(0.25, rate)) / LINE_SCROLL_BASE_MS
+      leftover += pxPerMs * dt
+
+      const doc = document.documentElement
+      const maxScroll = Math.max(0, doc.scrollHeight - window.innerHeight)
+      if (window.scrollY >= maxScroll - 1) {
+        leftover = 0
+        if (autoScrollOnRef.current && !audioPlayingRef.current) {
+          stopAutoScroll(true)
+          return
+        }
+      } else if (leftover >= 0.5) {
+        const step = leftover
+        leftover = 0
+        programScrollLock.current = Date.now() + 80
+        window.scrollBy(0, step)
+        lastScrollY.current = window.scrollY
       }
-      autoScrollIndexRef.current = next
-      setActiveVerse(verseToCue(list[next]))
+
+      if (autoScrollOnRef.current && !audioPlayingRef.current) {
+        highlightAcc += dt
+        if (highlightAcc >= 200) {
+          highlightAcc = 0
+          const list = versesRef.current
+          if (list.length) {
+            const v = list[findNearestVerseIndex(list)]
+            const cue = verseToCue(v)
+            const cur = activeVerseRef.current
+            if (
+              !cur ||
+              cur.abbr !== cue.abbr ||
+              cur.chapter !== cue.chapter ||
+              cur.verse !== cue.verse
+            ) {
+              setActiveVerse(cue)
+            }
+          }
+        }
+      }
+
+      raf = requestAnimationFrame(frame)
     }
 
-    const id = window.setInterval(tick, intervalMs)
-    return () => window.clearInterval(id)
-  }, [autoScrollOn, audioPlaying, autoScrollRate])
-
-  useEffect(() => {
-    if (Date.now() < userScrollLock.current) return
-
-    if (activeVerse) {
-      const key = verseCueKey(activeVerse)
-      if (key === lastScrolledVerse.current) return
-      lastScrolledVerse.current = key
-      const id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
-      const el = document.getElementById(id)
-      if (!el) return
-      programScrollLock.current = Date.now() + 800
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      return
-    }
-
-    if (activeChapter) {
-      const key = `${activeChapter.abbr}-${activeChapter.chapter}`
-      if (key === lastScrolledChapter.current) return
-      lastScrolledChapter.current = key
-      const id = `ch-${activeChapter.abbr}-${activeChapter.chapter}`
-      const el = document.getElementById(id)
-      if (!el) return
-      programScrollLock.current = Date.now() + 800
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }, [activeVerse, activeChapter])
+    raf = requestAnimationFrame(frame)
+    return () => cancelAnimationFrame(raf)
+  }, [autoScrollOn, audioPlaying, autoScrollRate, audioRate])
 
   if (!item) return null
 
@@ -366,10 +390,9 @@ export function ReaderScreen({
     setAudioOpen(false)
     audioPlayingRef.current = false
     setAudioPlaying(false)
+    setAudioRate(1)
     setActiveChapter(null)
     setActiveVerse(null)
-    lastScrolledVerse.current = null
-    lastScrolledChapter.current = null
   }
 
   const handleAutoScrollToggle = () => {
@@ -380,7 +403,6 @@ export function ReaderScreen({
     if (!linked || !verses.length) return
     if (audioOpen) closeAudioPanel()
     const idx = findNearestVerseIndex(verses)
-    autoScrollIndexRef.current = idx
     setActiveVerse(verseToCue(verses[idx]))
     autoScrollOnRef.current = true
     setAutoScrollOn(true)
@@ -554,6 +576,7 @@ export function ReaderScreen({
             onActiveChapter={setActiveChapter}
             onActiveVerse={setActiveVerse}
             onPlayingChange={handlePlayingChange}
+            onRateChange={setAudioRate}
             onUnavailable={(message) => setToast(message)}
           />
         )}

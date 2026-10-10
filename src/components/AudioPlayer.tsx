@@ -25,6 +25,7 @@ type Props = {
   onActiveChapter?: (cue: AudioChapterCue | null) => void
   onActiveVerse?: (cue: AudioVerseCue | null) => void
   onPlayingChange?: (playing: boolean) => void
+  onRateChange?: (rate: number) => void
   onUnavailable?: (message: string) => void
 }
 
@@ -43,6 +44,7 @@ export function AudioPlayer({
   onActiveChapter,
   onActiveVerse,
   onPlayingChange,
+  onRateChange,
   onUnavailable,
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -61,8 +63,14 @@ export function AudioPlayer({
   onVerseRef.current = onActiveVerse
   const onPlayingRef = useRef(onPlayingChange)
   onPlayingRef.current = onPlayingChange
+  const onRateRef = useRef(onRateChange)
+  onRateRef.current = onRateChange
   const onUnavailableRef = useRef(onUnavailable)
   onUnavailableRef.current = onUnavailable
+
+  useEffect(() => {
+    onRateRef.current?.(rate)
+  }, [rate])
 
   const verseCues = useMemo(() => resolveVerseCues(entry, verses), [entry, verses])
   const verseCuesRef = useRef(verseCues)
