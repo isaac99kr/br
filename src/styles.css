@@ -862,8 +862,31 @@ p {
   color: var(--reader-accent);
 }
 
+.verse-listening {
+  background: color-mix(in srgb, var(--reader-accent) 14%, transparent);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--reader-accent) 35%, transparent);
+}
+
 .verse-listening .verse-num {
   color: var(--reader-accent);
+  font-weight: 700;
+}
+
+.audio-voice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--reader-muted);
+}
+
+.audio-voice select {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
 }
 
 .copy-bar {

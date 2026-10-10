@@ -38,6 +38,10 @@ export function useSettings() {
     setSettings((prev) => ({ ...prev, voiceGender }))
   }, [])
 
+  const setTtsVoiceUri = useCallback((ttsVoiceUri: string | null) => {
+    setSettings((prev) => ({ ...prev, ttsVoiceUri }))
+  }, [])
+
   return {
     settings,
     setFontSize,
@@ -45,10 +49,12 @@ export function useSettings() {
     setLineHeight,
     setTranslationId,
     setVoiceGender,
+    setTtsVoiceUri,
     fontSize: settings.fontSize,
     verseGap: settings.verseGap,
     lineHeight: settings.lineHeight,
     translationId: settings.translationId,
     voiceGender: settings.voiceGender,
+    ttsVoiceUri: settings.ttsVoiceUri,
   }
 }

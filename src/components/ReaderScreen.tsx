@@ -1,18 +1,18 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { AudioPlayer } from './AudioPlayer'
+import type { AudioChapterCue, AudioVerseCue } from '../lib/audio'
 import {
-  findAudioDay,
-  loadAudioManifest,
-  type AudioChapterCue,
-  type AudioVerseCue,
-} from '../lib/audio'
+  TTS_UNSUPPORTED_MESSAGE,
+  isSpeechSynthesisSupported,
+  loadKoreanVoices,
+} from '../lib/browserTts'
 import { loadVersesForRange } from '../lib/bible'
 import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
 import { getItem } from '../lib/schedule'
 import { formatDayShareTitle, formatShareClipboard } from '../lib/share'
-import type { FontSize, SpacingSize, TranslationId, VoiceGender } from '../lib/settings'
+import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
 import type { ScheduleItem, Verse } from '../types'
 import type { useProgress } from '../hooks/useProgress'
@@ -24,7 +24,8 @@ type Props = {
   schedule: ScheduleItem[]
   progress: ProgressApi
   translationId: TranslationId
-  voiceGender: VoiceGender
+  ttsVoiceUri: string | null
+  onTtsVoiceUriChange: (uri: string | null) => void
   fontSize: FontSize
   verseGap: SpacingSize
   lineHeight: SpacingSize
@@ -32,7 +33,6 @@ type Props = {
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
-  onVoiceGenderChange: (voice: VoiceGender) => void
   onClose: () => void
   onChangeDay: (day: number) => void
 }
@@ -85,7 +85,8 @@ export function ReaderScreen({
   schedule,
   progress,
   translationId,
-  voiceGender,
+  ttsVoiceUri,
+  onTtsVoiceUriChange,
   fontSize,
   verseGap,
   lineHeight,
@@ -93,7 +94,6 @@ export function ReaderScreen({
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
-  onVoiceGenderChange,
   onClose,
   onChangeDay,
 }: Props) {
@@ -228,16 +228,15 @@ export function ReaderScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, item?.range, translationId])
 
+  // Scroll the listening verse into view (browser TTS cue).
   useEffect(() => {
-    setAudioOpen(false)
-    autoScrollOnRef.current = false
-    setAutoScrollOn(false)
-    setAudioRate(1)
-    setActiveChapter(null)
-    setActiveVerse(null)
-    clearChromeHideTimer()
-    setChromeHidden(false)
-  }, [voiceGender])
+    if (!audioPlaying || !activeVerse) return
+    const id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
+    const el = document.getElementById(id)
+    if (!el) return
+    programScrollLock.current = Date.now() + 400
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [activeVerse, audioPlaying])
 
   useEffect(() => {
     lastScrollY.current = window.scrollY
@@ -298,9 +297,9 @@ export function ReaderScreen({
     return () => window.clearTimeout(t)
   }, [toast])
 
-  // Constant-speed line scroll for auto-scroll and audio playback.
+  // Constant-speed line scroll for auto-scroll only (TTS uses verse scroll above).
   useEffect(() => {
-    const shouldRun = (autoScrollOn && !audioPlaying) || audioPlaying
+    const shouldRun = autoScrollOn && !audioPlaying
     if (!shouldRun) return
 
     let raf = 0
@@ -387,6 +386,7 @@ export function ReaderScreen({
   }
 
   const closeAudioPanel = () => {
+    if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel()
     setAudioOpen(false)
     audioPlayingRef.current = false
     setAudioPlaying(false)
@@ -427,14 +427,22 @@ export function ReaderScreen({
   const handleListenClick = async () => {
     if (audioOpen) {
       closeAudioPanel()
+      if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel()
       clearChromeHideTimer()
       setChromeHidden(false)
       return
     }
-    const manifest = await loadAudioManifest()
-    const found = findAudioDay(manifest, translationId, voiceGender, day)
-    if (!found) {
-      setToast('준비중입니다')
+    if (!isSpeechSynthesisSupported()) {
+      setToast(TTS_UNSUPPORTED_MESSAGE)
+      return
+    }
+    const voices = await loadKoreanVoices()
+    if (!voices.length) {
+      setToast(TTS_UNSUPPORTED_MESSAGE)
+      return
+    }
+    if (!linked || !verses.length) {
+      setToast('본문을 불러온 뒤 다시 시도해 주세요')
       return
     }
     if (autoScrollOnRef.current) stopAutoScroll(true)
@@ -570,9 +578,9 @@ export function ReaderScreen({
         {audioOpen && (
           <AudioPlayer
             day={day}
-            translationId={translationId}
-            voiceGender={voiceGender}
             verses={verses}
+            ttsVoiceUri={ttsVoiceUri}
+            onTtsVoiceUriChange={onTtsVoiceUriChange}
             onActiveChapter={setActiveChapter}
             onActiveVerse={setActiveVerse}
             onPlayingChange={handlePlayingChange}
@@ -688,12 +696,10 @@ export function ReaderScreen({
               verseGap={verseGap}
               lineHeight={lineHeight}
               translationId={translationId}
-              voiceGender={voiceGender}
               onFontSizeChange={onFontSizeChange}
               onVerseGapChange={onVerseGapChange}
               onLineHeightChange={onLineHeightChange}
               onTranslationChange={onTranslationChange}
-              onVoiceGenderChange={onVoiceGenderChange}
               onClose={() => setSettingsOpen(false)}
             />
           </div>

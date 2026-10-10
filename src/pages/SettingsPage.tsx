@@ -3,11 +3,9 @@ import {
   LINE_HEIGHT_OPTIONS,
   TRANSLATION_OPTIONS,
   VERSE_GAP_OPTIONS,
-  VOICE_OPTIONS,
   type FontSize,
   type SpacingSize,
   type TranslationId,
-  type VoiceGender,
 } from '../lib/settings'
 
 type Props = {
@@ -15,12 +13,10 @@ type Props = {
   verseGap: SpacingSize
   lineHeight: SpacingSize
   translationId: TranslationId
-  voiceGender: VoiceGender
   onFontSizeChange: (size: FontSize) => void
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
-  onVoiceGenderChange: (voice: VoiceGender) => void
   onClose?: () => void
   embedded?: boolean
 }
@@ -30,12 +26,10 @@ export function SettingsPage({
   verseGap,
   lineHeight,
   translationId,
-  voiceGender,
   onFontSizeChange,
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
-  onVoiceGenderChange,
   onClose,
   embedded = false,
 }: Props) {
@@ -50,7 +44,7 @@ export function SettingsPage({
       )}
 
       <h2 className="section-title">설정</h2>
-      <p className="section-desc">성경 종류·음성·글자 크기·간격을 고르세요. 앱 전체에 바로 적용됩니다.</p>
+      <p className="section-desc">성경 종류·글자 크기·간격을 고르세요. 앱 전체에 바로 적용됩니다.</p>
 
       <section className="panel">
         <div className="eyebrow">성경 종류</div>
@@ -71,36 +65,13 @@ export function SettingsPage({
         </div>
       </section>
 
-      {VOICE_OPTIONS.length > 1 ? (
-        <section className="panel">
-          <div className="eyebrow">음성</div>
-          <div className="font-size-options" role="radiogroup" aria-label="음성">
-            {VOICE_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                role="radio"
-                aria-checked={voiceGender === opt.value}
-                className={voiceGender === opt.value ? 'font-opt active' : 'font-opt'}
-                onClick={() => onVoiceGenderChange(opt.value)}
-              >
-                <span className="font-opt-label">{opt.label}</span>
-                <span className="font-opt-sample">{opt.description}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <section className="panel">
-          <div className="eyebrow">음성</div>
-          <div className="font-size-options">
-            <div className="font-opt active" aria-label="음성">
-              <span className="font-opt-label">여성</span>
-              <span className="font-opt-sample">Angelina</span>
-            </div>
-          </div>
-        </section>
-      )}
+      <section className="panel">
+        <div className="eyebrow">음성 듣기</div>
+        <p className="settings-note">
+          읽기 화면의 「음성듣기」는 브라우저에 설치된 <strong>한국어 음성</strong>으로 실시간
+          낭독합니다. 화자는 재생 패널에서 고를 수 있습니다.
+        </p>
+      </section>
 
       <section className="panel">
         <div className="eyebrow">글자 크기</div>

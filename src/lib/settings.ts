@@ -12,7 +12,10 @@ export type AppSettings = {
   verseGap: SpacingSize
   lineHeight: SpacingSize
   translationId: TranslationId
+  /** @deprecated Kept for older localStorage; unused by browser TTS. */
   voiceGender: VoiceGender
+  /** Browser SpeechSynthesisVoice.voiceURI for Korean TTS. */
+  ttsVoiceUri: string | null
 }
 
 export const SETTINGS_KEY = 'bibleReadingSettings:v1'
@@ -74,6 +77,7 @@ const DEFAULT: AppSettings = {
   lineHeight: 'M',
   translationId: 'krv',
   voiceGender: 'female',
+  ttsVoiceUri: null,
 }
 
 function isSpacingSize(v: unknown): v is SpacingSize {
@@ -99,8 +103,11 @@ export function loadSettings(): AppSettings {
       verseGap: isSpacingSize(parsed.verseGap) ? parsed.verseGap : 'M',
       lineHeight: isSpacingSize(parsed.lineHeight) ? parsed.lineHeight : 'M',
       translationId: isTranslationId(parsed.translationId) ? parsed.translationId : 'krv',
-      // Male track disabled for Supertonic Angelina rollout — coerce legacy male → female.
       voiceGender: 'female',
+      ttsVoiceUri:
+        typeof parsed.ttsVoiceUri === 'string' && parsed.ttsVoiceUri
+          ? parsed.ttsVoiceUri
+          : null,
     }
   } catch {
     return { ...DEFAULT }
