@@ -126,3 +126,59 @@ export function voiceLabel(voice: SpeechSynthesisVoice): string {
   const lang = voice.lang ? ` (${voice.lang})` : ''
   return `${name}${lang}`
 }
+
+export function findVerseUnitIndex(
+  units: SpeakUnit[],
+  abbr: string,
+  chapter: number,
+  verse: number,
+): number {
+  return units.findIndex(
+    (u) =>
+      u.kind === 'verse' &&
+      u.abbr === abbr &&
+      u.chapter === chapter &&
+      u.verse === verse,
+  )
+}
+
+/** 1-based verse ordinal → unit index; -1 if out of range. */
+export function verseOrdinalToUnitIndex(units: SpeakUnit[], ordinal1based: number): number {
+  if (ordinal1based < 1) return -1
+  let n = 0
+  for (let i = 0; i < units.length; i++) {
+    if (units[i].kind !== 'verse') continue
+    n++
+    if (n === ordinal1based) return i
+  }
+  return -1
+}
+
+export type VerseOption = {
+  ordinal: number
+  unitIndex: number
+  abbr: string
+  chapter: number
+  verse: number
+  label: string
+}
+
+export function listVerseOptions(units: SpeakUnit[]): VerseOption[] {
+  const total = units.filter((u) => u.kind === 'verse').length
+  const options: VerseOption[] = []
+  let ordinal = 0
+  for (let i = 0; i < units.length; i++) {
+    const u = units[i]
+    if (u.kind !== 'verse') continue
+    ordinal++
+    options.push({
+      ordinal,
+      unitIndex: i,
+      abbr: u.abbr,
+      chapter: u.chapter,
+      verse: u.verse,
+      label: `${ordinal} / ${total} · ${u.abbr} ${u.chapter}:${u.verse}`,
+    })
+  }
+  return options
+}

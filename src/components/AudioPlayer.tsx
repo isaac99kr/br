@@ -3,7 +3,9 @@ import type { AudioChapterCue, AudioVerseCue } from '../lib/audio'
 import {
   TTS_UNSUPPORTED_MESSAGE,
   buildDaySpeakUnits,
+  findVerseUnitIndex,
   isSpeechSynthesisSupported,
+  listVerseOptions,
   loadKoreanVoices,
   pickDefaultKoreanVoice,
   voiceLabel,
@@ -13,11 +15,19 @@ import type { Verse } from '../types'
 
 const RATES = [0.75, 1, 1.25, 1.5, 2] as const
 
+export type TtsStartAt = {
+  abbr: string
+  chapter: number
+  verse: number
+  nonce: number
+}
+
 type Props = {
   day: number
   verses: Verse[]
   ttsVoiceUri: string | null
   onTtsVoiceUriChange: (uri: string | null) => void
+  startAt?: TtsStartAt | null
   onActiveChapter?: (cue: AudioChapterCue | null) => void
   onActiveVerse?: (cue: AudioVerseCue | null) => void
   onPlayingChange?: (playing: boolean) => void
@@ -30,6 +40,7 @@ export function AudioPlayer({
   verses,
   ttsVoiceUri,
   onTtsVoiceUriChange,
+  startAt = null,
   onActiveChapter,
   onActiveVerse,
   onPlayingChange,
@@ -44,10 +55,8 @@ export function AudioPlayer({
   const [unitIndex, setUnitIndex] = useState(0)
 
   const units = useMemo(() => buildDaySpeakUnits(verses), [verses])
-  const verseCount = useMemo(
-    () => units.filter((u) => u.kind === 'verse').length,
-    [units],
-  )
+  const verseOptions = useMemo(() => listVerseOptions(units), [units])
+  const verseCount = verseOptions.length
   const verseOrdinal = useMemo(() => {
     let n = 0
     for (let i = 0; i < unitIndex && i < units.length; i++) {
@@ -69,6 +78,7 @@ export function AudioPlayer({
   const indexRef = useRef(0)
   const speakingRef = useRef(false)
   const pausedRef = useRef(false)
+  const speakFromRef = useRef<(startIndex: number) => void>(() => {})
 
   const onChapterRef = useRef(onActiveChapter)
   onChapterRef.current = onActiveChapter
@@ -104,7 +114,7 @@ export function AudioPlayer({
   const speakFrom = (startIndex: number) => {
     if (!isSpeechSynthesisSupported()) return
     const list = unitsRef.current
-    if (!list.length || startIndex >= list.length) {
+    if (!list.length || startIndex < 0 || startIndex >= list.length) {
       speakingRef.current = false
       pausedRef.current = false
       setPlaying(false)
@@ -198,6 +208,8 @@ export function AudioPlayer({
     speakOne(startIndex)
   }
 
+  speakFromRef.current = speakFrom
+
   useEffect(() => {
     let cancelled = false
     setReady(false)
@@ -239,6 +251,23 @@ export function AudioPlayer({
   }, [day, verses])
 
   const available = ready && voices.length > 0 && units.length > 0
+
+  // Jump when parent requests a verse (nonce changes).
+  useEffect(() => {
+    if (!startAt || !available) return
+    const idx = findVerseUnitIndex(
+      unitsRef.current,
+      startAt.abbr,
+      startAt.chapter,
+      startAt.verse,
+    )
+    if (idx < 0) {
+      onUnavailableRef.current?.('선택한 절을 찾지 못했습니다')
+      return
+    }
+    speakFromRef.current(idx)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startAt?.nonce, available])
 
   const toggle = () => {
     if (!available) {
@@ -282,6 +311,13 @@ export function AudioPlayer({
     clearCues()
   }
 
+  const jumpToOrdinal = (ordinal: number) => {
+    if (!available) return
+    const opt = verseOptions.find((o) => o.ordinal === ordinal)
+    if (!opt) return
+    speakFrom(opt.unitIndex)
+  }
+
   const onVoiceSelect = (uri: string) => {
     setVoiceUri(uri)
     onTtsVoiceUriChange(uri)
@@ -296,6 +332,8 @@ export function AudioPlayer({
       window.setTimeout(() => speakFrom(resumeAt), 0)
     }
   }
+
+  const selectOrdinal = Math.min(Math.max(verseOrdinal, 1), verseCount || 1)
 
   return (
     <div className={`audio-player${available ? '' : ' audio-player-pending'}`}>
@@ -337,16 +375,26 @@ export function AudioPlayer({
             ))}
           </select>
         </label>
-        <span className="audio-time">
-          {available
-            ? verseCount
-              ? `${Math.min(verseOrdinal, verseCount)} / ${verseCount}절`
-              : '낭독 준비'
-            : ready
-              ? '음성 없음'
-              : '…'}
-        </span>
       </div>
+      <label className="audio-position">
+        <span className="audio-rate-label">위치</span>
+        <select
+          value={available && verseCount ? String(selectOrdinal) : ''}
+          onChange={(e) => jumpToOrdinal(Number(e.target.value))}
+          aria-label="낭독 위치"
+          disabled={!available || !verseCount}
+        >
+          {!available || !verseCount ? (
+            <option value="">{ready ? '음성 없음' : '…'}</option>
+          ) : (
+            verseOptions.map((o) => (
+              <option key={o.unitIndex} value={String(o.ordinal)}>
+                {o.label}
+              </option>
+            ))
+          )}
+        </select>
+      </label>
       <label className="audio-voice">
         <span className="audio-rate-label">화자</span>
         <select

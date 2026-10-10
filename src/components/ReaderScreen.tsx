@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { AudioPlayer } from './AudioPlayer'
+import { AudioPlayer, type TtsStartAt } from './AudioPlayer'
 import type { AudioChapterCue, AudioVerseCue } from '../lib/audio'
 import {
   TTS_UNSUPPORTED_MESSAGE,
@@ -10,11 +10,11 @@ import { loadVersesForRange } from '../lib/bible'
 import { getBookName } from '../lib/bookNames'
 import { copyText, formatVersesForCopy } from '../lib/copy'
 import { statusLabel } from '../lib/progress'
-import { getItem } from '../lib/schedule'
+import { formatScheduleDayLabel, getItem } from '../lib/schedule'
 import { formatDayShareTitle, formatShareClipboard } from '../lib/share'
 import type { FontSize, SpacingSize, TranslationId } from '../lib/settings'
 import { SettingsPage } from '../pages/SettingsPage'
-import type { ScheduleItem, Verse } from '../types'
+import type { ScheduleItem, ScheduleMeta, Verse } from '../types'
 import type { useProgress } from '../hooks/useProgress'
 
 type ProgressApi = ReturnType<typeof useProgress>
@@ -22,6 +22,8 @@ type ProgressApi = ReturnType<typeof useProgress>
 type Props = {
   day: number
   schedule: ScheduleItem[]
+  scheduleMeta: ScheduleMeta
+  scheduleOptions: ScheduleMeta[]
   progress: ProgressApi
   translationId: TranslationId
   ttsVoiceUri: string | null
@@ -33,6 +35,7 @@ type Props = {
   onVerseGapChange: (size: SpacingSize) => void
   onLineHeightChange: (size: SpacingSize) => void
   onTranslationChange: (id: TranslationId) => void
+  onScheduleChange: (id: string) => void
   onClose: () => void
   onChangeDay: (day: number) => void
 }
@@ -83,6 +86,8 @@ function findNearestVerseIndex(list: Verse[]): number {
 export function ReaderScreen({
   day,
   schedule,
+  scheduleMeta,
+  scheduleOptions,
   progress,
   translationId,
   ttsVoiceUri,
@@ -94,6 +99,7 @@ export function ReaderScreen({
   onVerseGapChange,
   onLineHeightChange,
   onTranslationChange,
+  onScheduleChange,
   onClose,
   onChangeDay,
 }: Props) {
@@ -107,6 +113,7 @@ export function ReaderScreen({
   const [toast, setToast] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
+  const [ttsStartAt, setTtsStartAt] = useState<TtsStartAt | null>(null)
   const [autoScrollOn, setAutoScrollOn] = useState(false)
   const [autoScrollRate, setAutoScrollRate] = useState<AutoScrollRate>(1)
   const [audioPlaying, setAudioPlaying] = useState(false)
@@ -196,6 +203,7 @@ export function ReaderScreen({
     setChromeHidden(false)
     setSettingsOpen(false)
     setAudioOpen(false)
+    setTtsStartAt(null)
     autoScrollOnRef.current = false
     setAutoScrollOn(false)
     setAudioRate(1)
@@ -388,6 +396,7 @@ export function ReaderScreen({
   const closeAudioPanel = () => {
     if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel()
     setAudioOpen(false)
+    setTtsStartAt(null)
     audioPlayingRef.current = false
     setAudioPlaying(false)
     setAudioRate(1)
@@ -417,9 +426,44 @@ export function ReaderScreen({
     setToast(ok ? `${selectedVerses.length}개 구절을 복사했어요` : '복사에 실패했습니다')
   }
 
+  const handleListenFromSelected = async () => {
+    if (!selectedVerses.length) return
+    // Reading order: first selected verse in the day's verse list
+    const first = verses.find((v) => selected.has(verseKey(v)))
+    if (!first) return
+
+    if (!isSpeechSynthesisSupported()) {
+      setToast(TTS_UNSUPPORTED_MESSAGE)
+      return
+    }
+    const voices = await loadKoreanVoices()
+    if (!voices.length) {
+      setToast(TTS_UNSUPPORTED_MESSAGE)
+      return
+    }
+    if (!linked || !verses.length) {
+      setToast('본문을 불러온 뒤 다시 시도해 주세요')
+      return
+    }
+    if (autoScrollOnRef.current) stopAutoScroll(true)
+
+    const next: TtsStartAt = {
+      abbr: first.abbr,
+      chapter: first.chapter,
+      verse: first.verse,
+      nonce: Date.now(),
+    }
+    setSelected(new Set())
+    setAudioOpen(true)
+    setTtsStartAt(next)
+  }
+
   const handleShare = async () => {
     if (!item) return
-    const text = formatShareClipboard(formatDayShareTitle(item.day, item.range), `/read/${day}`)
+    const text = formatShareClipboard(
+      formatDayShareTitle(formatScheduleDayLabel(item), item.range),
+      `/read/${day}`,
+    )
     const ok = await copyText(text)
     setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
   }
@@ -472,7 +516,11 @@ export function ReaderScreen({
           ←
         </button>
         <div className="reader-chrome-title">
-          <div className="reader-day">DAY {item.day}</div>
+          <div className="reader-day">
+            {item.month != null && item.monthDay != null
+              ? `${item.month}월 ${item.monthDay}일`
+              : `DAY ${item.day}`}
+          </div>
           <div className="reader-range-short" id="reader-ref" title={item.range}>
             {item.range}
           </div>
@@ -500,7 +548,11 @@ export function ReaderScreen({
       <div className="reader-scroll" onClick={handleReaderSurfaceTap} role="presentation">
         <div className="reader-meta-block">
           <p className="reader-meta-line">
-            {item.testament} · {item.week}주차 · {statusLabel(status)}
+            {item.month != null && item.monthDay != null
+              ? `${scheduleMeta.title} · ${item.day}일차 · ${statusLabel(status)}`
+              : `${item.testament ?? scheduleMeta.title}${
+                  item.week != null ? ` · ${item.week}주차` : ''
+                } · ${statusLabel(status)}`}
           </p>
         </div>
 
@@ -565,6 +617,9 @@ export function ReaderScreen({
       {selected.size > 0 && (
         <div className="copy-bar">
           <span className="copy-count">{selected.size}개 선택</span>
+          <button type="button" className="copy-btn copy-btn-listen" onClick={() => void handleListenFromSelected()}>
+            여기부터 듣기
+          </button>
           <button type="button" className="copy-btn" onClick={handleCopy}>
             복사
           </button>
@@ -581,6 +636,7 @@ export function ReaderScreen({
             verses={verses}
             ttsVoiceUri={ttsVoiceUri}
             onTtsVoiceUriChange={onTtsVoiceUriChange}
+            startAt={ttsStartAt}
             onActiveChapter={setActiveChapter}
             onActiveVerse={setActiveVerse}
             onPlayingChange={handlePlayingChange}
@@ -696,10 +752,17 @@ export function ReaderScreen({
               verseGap={verseGap}
               lineHeight={lineHeight}
               translationId={translationId}
+              scheduleId={scheduleMeta.id}
+              scheduleOptions={scheduleOptions}
               onFontSizeChange={onFontSizeChange}
               onVerseGapChange={onVerseGapChange}
               onLineHeightChange={onLineHeightChange}
               onTranslationChange={onTranslationChange}
+              onScheduleChange={(id) => {
+                onScheduleChange(id)
+                setSettingsOpen(false)
+                onClose()
+              }}
               onClose={() => setSettingsOpen(false)}
             />
           </div>
