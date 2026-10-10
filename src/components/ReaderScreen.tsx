@@ -43,6 +43,31 @@ function verseKey(v: Verse): string {
 }
 
 const CHROME_HIDE_DELAY_MS = 1500
+const AUTO_SCROLL_MS = 4000
+
+function verseToCue(v: Verse): AudioVerseCue {
+  return { abbr: v.abbr, chapter: v.chapter, verse: v.verse, startMs: 0 }
+}
+
+function findNearestVerseIndex(list: Verse[]): number {
+  if (!list.length) return 0
+  const centerY = window.innerHeight / 2
+  let best = 0
+  let bestDist = Infinity
+  for (let i = 0; i < list.length; i++) {
+    const v = list[i]
+    const el = document.getElementById(`v-${v.abbr}-${v.chapter}-${v.verse}`)
+    if (!el) continue
+    const rect = el.getBoundingClientRect()
+    const mid = (rect.top + rect.bottom) / 2
+    const dist = Math.abs(mid - centerY)
+    if (dist < bestDist) {
+      bestDist = dist
+      best = i
+    }
+  }
+  return best
+}
 
 export function ReaderScreen({
   day,
@@ -71,6 +96,8 @@ export function ReaderScreen({
   const [toast, setToast] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
+  const [autoScrollOn, setAutoScrollOn] = useState(false)
+  const [audioPlaying, setAudioPlaying] = useState(false)
   const [activeChapter, setActiveChapter] = useState<AudioChapterCue | null>(null)
   const [activeVerse, setActiveVerse] = useState<AudioVerseCue | null>(null)
   const completedRef = useRef(false)
@@ -79,8 +106,22 @@ export function ReaderScreen({
   const programScrollLock = useRef(0)
   const chromeHideTimer = useRef<number | null>(null)
   const audioPlayingRef = useRef(false)
+  const autoScrollOnRef = useRef(false)
+  const autoScrollIndexRef = useRef(0)
+  const versesRef = useRef(verses)
+  versesRef.current = verses
+  const activeVerseRef = useRef(activeVerse)
+  activeVerseRef.current = activeVerse
   const lastScrolledVerse = useRef<string | null>(null)
   const lastScrolledChapter = useRef<string | null>(null)
+
+  const stopAutoScroll = (clearHighlight: boolean) => {
+    autoScrollOnRef.current = false
+    setAutoScrollOn(false)
+    if (clearHighlight && !audioPlayingRef.current) {
+      setActiveVerse(null)
+    }
+  }
 
   const clearChromeHideTimer = () => {
     if (chromeHideTimer.current != null) {
@@ -135,6 +176,8 @@ export function ReaderScreen({
     setChromeHidden(false)
     setSettingsOpen(false)
     setAudioOpen(false)
+    autoScrollOnRef.current = false
+    setAutoScrollOn(false)
     setActiveChapter(null)
     setActiveVerse(null)
     lastScrolledVerse.current = null
@@ -168,6 +211,8 @@ export function ReaderScreen({
 
   useEffect(() => {
     setAudioOpen(false)
+    autoScrollOnRef.current = false
+    setAutoScrollOn(false)
     setActiveChapter(null)
     setActiveVerse(null)
     lastScrolledVerse.current = null
@@ -189,6 +234,10 @@ export function ReaderScreen({
       const top = window.scrollY
       const delta = top - lastScrollY.current
       lastScrollY.current = top
+
+      if (autoScrollOnRef.current && Math.abs(delta) > 10) {
+        stopAutoScroll(true)
+      }
 
       // While audio plays, chrome stays hidden until the user taps — ignore scroll toggles
       // (verse auto-scroll would otherwise keep flashing the menus).
@@ -221,6 +270,35 @@ export function ReaderScreen({
     const t = window.setTimeout(() => setToast(null), 1800)
     return () => window.clearTimeout(t)
   }, [toast])
+
+  // Pause timer while audio plays; sync index to audio cue when resuming.
+  useEffect(() => {
+    if (audioPlaying || !autoScrollOn) return
+    const cue = activeVerseRef.current
+    if (!cue) return
+    const idx = versesRef.current.findIndex(
+      (v) => v.abbr === cue.abbr && v.chapter === cue.chapter && v.verse === cue.verse,
+    )
+    if (idx >= 0) autoScrollIndexRef.current = idx
+  }, [audioPlaying, autoScrollOn])
+
+  useEffect(() => {
+    if (!autoScrollOn || audioPlaying) return
+
+    const tick = () => {
+      const list = versesRef.current
+      const next = autoScrollIndexRef.current + 1
+      if (next >= list.length) {
+        stopAutoScroll(true)
+        return
+      }
+      autoScrollIndexRef.current = next
+      setActiveVerse(verseToCue(list[next]))
+    }
+
+    const id = window.setInterval(tick, AUTO_SCROLL_MS)
+    return () => window.clearInterval(id)
+  }, [autoScrollOn, audioPlaying])
 
   useEffect(() => {
     if (Date.now() < userScrollLock.current) return
@@ -260,6 +338,7 @@ export function ReaderScreen({
       revealChrome()
       return
     }
+    if (autoScrollOnRef.current) stopAutoScroll(true)
     userScrollLock.current = Date.now() + 2500
     const key = verseKey(v)
     setSelected((prev) => {
@@ -269,6 +348,19 @@ export function ReaderScreen({
       return next
     })
     revealChrome()
+  }
+
+  const handleAutoScrollToggle = () => {
+    if (autoScrollOn) {
+      stopAutoScroll(true)
+      return
+    }
+    if (!linked || !verses.length) return
+    const idx = findNearestVerseIndex(verses)
+    autoScrollIndexRef.current = idx
+    setActiveVerse(verseToCue(verses[idx]))
+    autoScrollOnRef.current = true
+    setAutoScrollOn(true)
   }
 
   const handleCopy = async () => {
@@ -291,7 +383,12 @@ export function ReaderScreen({
       clearChromeHideTimer()
       setChromeHidden(false)
       setActiveChapter(null)
-      setActiveVerse(null)
+      if (!autoScrollOnRef.current) {
+        setActiveVerse(null)
+      } else {
+        const v = versesRef.current[autoScrollIndexRef.current]
+        if (v) setActiveVerse(verseToCue(v))
+      }
       return
     }
     const manifest = await loadAudioManifest()
@@ -305,6 +402,7 @@ export function ReaderScreen({
 
   const handlePlayingChange = (playing: boolean) => {
     audioPlayingRef.current = playing
+    setAudioPlaying(playing)
     clearChromeHideTimer()
     if (playing) {
       scheduleChromeHide()
@@ -450,6 +548,15 @@ export function ReaderScreen({
             }}
           >
             {audioOpen ? '음성듣기 ✓' : '음성듣기'}
+          </button>
+          <button
+            type="button"
+            className={autoScrollOn ? 'primary' : undefined}
+            aria-pressed={autoScrollOn}
+            disabled={!linked || loading || !verses.length}
+            onClick={handleAutoScrollToggle}
+          >
+            {autoScrollOn ? '자동스크롤 ✓' : '자동스크롤'}
           </button>
           <button
             type="button"

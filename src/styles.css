@@ -739,6 +739,7 @@ p {
 
 .reader-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
 }
@@ -748,13 +749,15 @@ p {
 }
 
 .reader-actions button {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   border: 1px solid var(--reader-line);
   border-radius: 12px;
-  padding: 12px 10px;
+  padding: 12px 6px;
   background: #242429;
   color: var(--reader-fg);
   font-weight: 700;
+  font-size: 13px;
   min-height: 44px;
 }
 
