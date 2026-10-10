@@ -918,7 +918,7 @@ p {
   transform: translateX(-50%);
   width: calc(100% - 24px);
   max-width: 456px;
-  bottom: calc(200px + env(safe-area-inset-bottom));
+  bottom: calc(var(--reader-chrome-bottom-h) + 8px);
   display: flex;
   align-items: center;
   gap: 8px;

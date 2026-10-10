@@ -121,6 +121,8 @@ export function ReaderScreen({
   const userScrollLock = useRef(0)
   const programScrollLock = useRef(0)
   const chromeHideTimer = useRef<number | null>(null)
+  const readerScreenRef = useRef<HTMLDivElement | null>(null)
+  const footerRef = useRef<HTMLElement | null>(null)
   const audioPlayingRef = useRef(false)
   const autoScrollOnRef = useRef(false)
   const autoScrollRateRef = useRef<AutoScrollRate>(1)
@@ -294,6 +296,26 @@ export function ReaderScreen({
       window.removeEventListener('touchmove', onUserScrollIntent)
     }
   }, [linked, verses, day, progress])
+
+  // Keep copy-bar / content padding above the real footer height (audio panel grows).
+  useEffect(() => {
+    const screen = readerScreenRef.current
+    const footer = footerRef.current
+    if (!screen || !footer) return
+
+    const apply = () => {
+      const h = Math.ceil(footer.getBoundingClientRect().height)
+      screen.style.setProperty('--reader-chrome-bottom-h', `${h}px`)
+    }
+
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(footer)
+    return () => {
+      ro.disconnect()
+      screen.style.removeProperty('--reader-chrome-bottom-h')
+    }
+  }, [audioOpen, autoScrollOn, chromeHidden])
 
   useEffect(() => {
     if (!toast) return
@@ -506,7 +528,10 @@ export function ReaderScreen({
   }
 
   return (
-    <div className={`reader-screen${chromeHidden ? ' chrome-hidden' : ''}`}>
+    <div
+      ref={readerScreenRef}
+      className={`reader-screen${chromeHidden ? ' chrome-hidden' : ''}`}
+    >
       <header className="reader-chrome reader-chrome-top">
         <button type="button" className="reader-icon-btn" onClick={onClose} aria-label="뒤로">
           ←
@@ -625,7 +650,7 @@ export function ReaderScreen({
         </div>
       )}
 
-      <footer className="reader-chrome reader-chrome-bottom">
+      <footer ref={footerRef} className="reader-chrome reader-chrome-bottom">
         {audioOpen && (
           <AudioPlayer
             day={day}

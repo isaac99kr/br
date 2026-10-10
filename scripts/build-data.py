@@ -43,6 +43,16 @@ SCHEDULES = [
         "source": "성서유니온 일년일독 통독표",
         "default": False,
     },
+    {
+        "id": "mcheyne-365",
+        "title": "맥체인",
+        "description": "로버트 머레이 맥체인 1년 4본문 통독표",
+        "dayCount": 365,
+        "groupMode": "month",
+        "csv": "mcheyne-365.csv",
+        "source": "맥체인 성경 읽기표",
+        "default": False,
+    },
 ]
 
 TRANSLATIONS = [
