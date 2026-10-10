@@ -78,6 +78,8 @@ export function AudioPlayer({
   const indexRef = useRef(0)
   const speakingRef = useRef(false)
   const pausedRef = useRef(false)
+  /** Bumped to drop stale speak callbacks after cancel/stop/day change. */
+  const speakGenerationRef = useRef(0)
   const speakFromRef = useRef<(startIndex: number) => void>(() => {})
 
   const onChapterRef = useRef(onActiveChapter)
@@ -111,12 +113,18 @@ export function AudioPlayer({
     window.speechSynthesis.cancel()
   }
 
+  const invalidateSpeech = () => {
+    speakGenerationRef.current += 1
+    speakingRef.current = false
+    pausedRef.current = false
+    cancelSynthesis()
+  }
+
   const speakFrom = (startIndex: number) => {
     if (!isSpeechSynthesisSupported()) return
     const list = unitsRef.current
     if (!list.length || startIndex < 0 || startIndex >= list.length) {
-      speakingRef.current = false
-      pausedRef.current = false
+      invalidateSpeech()
       setPlaying(false)
       onPlayingRef.current?.(false)
       setUnitIndex(0)
@@ -132,7 +140,9 @@ export function AudioPlayer({
       return
     }
 
+    // cancel() then speak() in the same turn is often dropped (Chrome/Safari).
     cancelSynthesis()
+    const generation = ++speakGenerationRef.current
     speakingRef.current = true
     pausedRef.current = false
     indexRef.current = startIndex
@@ -141,9 +151,11 @@ export function AudioPlayer({
     onPlayingRef.current?.(true)
 
     const speakOne = (i: number) => {
+      if (speakGenerationRef.current !== generation) return
       if (!speakingRef.current || pausedRef.current) return
       const listNow = unitsRef.current
       if (i >= listNow.length) {
+        if (speakGenerationRef.current !== generation) return
         speakingRef.current = false
         setPlaying(false)
         onPlayingRef.current?.(false)
@@ -163,6 +175,7 @@ export function AudioPlayer({
       utter.rate = rateRef.current
 
       utter.onstart = () => {
+        if (speakGenerationRef.current !== generation) return
         if (!speakingRef.current) return
         if (unit.kind === 'announce') {
           onChapterRef.current?.({
@@ -189,6 +202,7 @@ export function AudioPlayer({
       }
 
       utter.onend = () => {
+        if (speakGenerationRef.current !== generation) return
         if (!speakingRef.current || pausedRef.current) return
         speakOne(i + 1)
       }
@@ -196,6 +210,7 @@ export function AudioPlayer({
       utter.onerror = (ev) => {
         const err = (ev as SpeechSynthesisErrorEvent).error
         if (err === 'interrupted' || err === 'canceled') return
+        if (speakGenerationRef.current !== generation) return
         if (!speakingRef.current || pausedRef.current) return
         speakingRef.current = false
         setPlaying(false)
@@ -205,7 +220,11 @@ export function AudioPlayer({
       window.speechSynthesis.speak(utter)
     }
 
-    speakOne(startIndex)
+    window.setTimeout(() => {
+      if (speakGenerationRef.current !== generation) return
+      if (!speakingRef.current || pausedRef.current) return
+      speakOne(startIndex)
+    }, 40)
   }
 
   speakFromRef.current = speakFrom
@@ -213,9 +232,7 @@ export function AudioPlayer({
   useEffect(() => {
     let cancelled = false
     setReady(false)
-    speakingRef.current = false
-    pausedRef.current = false
-    cancelSynthesis()
+    invalidateSpeech()
     setPlaying(false)
     onPlayingRef.current?.(false)
     setUnitIndex(0)
@@ -242,9 +259,7 @@ export function AudioPlayer({
 
     return () => {
       cancelled = true
-      speakingRef.current = false
-      pausedRef.current = false
-      cancelSynthesis()
+      invalidateSpeech()
       onPlayingRef.current?.(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -277,10 +292,16 @@ export function AudioPlayer({
     if (!isSpeechSynthesisSupported()) return
 
     if (playing && !pausedRef.current) {
+      const synth = window.speechSynthesis
+      // Stuck UI after a dropped cancel→speak: recover by restarting.
+      if (!synth.speaking && !synth.pending && !synth.paused) {
+        speakFrom(indexRef.current)
+        return
+      }
       pausedRef.current = true
       speakingRef.current = false
-      window.speechSynthesis.pause()
-      if (!window.speechSynthesis.paused) {
+      synth.pause()
+      if (!synth.paused) {
         cancelSynthesis()
       }
       setPlaying(false)
@@ -301,9 +322,7 @@ export function AudioPlayer({
   }
 
   const stop = () => {
-    speakingRef.current = false
-    pausedRef.current = false
-    cancelSynthesis()
+    invalidateSpeech()
     setPlaying(false)
     onPlayingRef.current?.(false)
     setUnitIndex(0)
@@ -323,13 +342,11 @@ export function AudioPlayer({
     onTtsVoiceUriChange(uri)
     const wasPlaying = playing || pausedRef.current
     const resumeAt = indexRef.current
-    speakingRef.current = false
-    pausedRef.current = false
-    cancelSynthesis()
+    invalidateSpeech()
     setPlaying(false)
     onPlayingRef.current?.(false)
     if (wasPlaying) {
-      window.setTimeout(() => speakFrom(resumeAt), 0)
+      window.setTimeout(() => speakFrom(resumeAt), 40)
     }
   }
 
@@ -357,12 +374,10 @@ export function AudioPlayer({
             onChange={(e) => {
               const next = Number(e.target.value)
               setRate(next)
+              rateRef.current = next
               if (playing) {
                 const at = indexRef.current
-                speakingRef.current = false
-                cancelSynthesis()
-                rateRef.current = next
-                window.setTimeout(() => speakFrom(at), 0)
+                speakFrom(at)
               }
             }}
             aria-label="재생 속도"
