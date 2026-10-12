@@ -659,15 +659,71 @@ p {
 }
 
 .reader-range-short {
-  font-size: calc(var(--text-ui) + 1px);
-  font-weight: 700;
-  margin-top: 2px;
-  line-height: 1.35;
-  white-space: normal;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  width: 100%;
+  margin-top: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: calc(var(--text-ui) + 1px);
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  white-space: normal;
+  word-break: keep-all;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--reader-muted) 55%, transparent);
+  text-underline-offset: 3px;
+}
+
+.reader-range-short:focus-visible {
+  outline: 2px solid var(--reader-accent, #c9a227);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.range-overlay-sheet {
+  background: var(--reader-chrome, #1c1c20);
+  color: var(--reader-fg, #f2f2f4);
+}
+
+.range-overlay-sheet .pill {
+  background: #2a2a30;
+  border-color: #3a3a42;
+  color: var(--reader-fg);
+}
+
+.range-overlay-sheet .section-title,
+.range-overlay-sheet .section-desc {
+  color: inherit;
+}
+
+.range-overlay-sheet .section-desc {
+  opacity: 0.7;
+}
+
+.range-overlay-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.range-overlay-list li {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: calc(var(--text-ui) + 2px);
+  font-weight: 700;
+  line-height: 1.4;
   word-break: keep-all;
 }
 

@@ -108,6 +108,7 @@ export function ReaderScreen({
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [toast, setToast] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [rangeOpen, setRangeOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
   const [ttsStartAt, setTtsStartAt] = useState<TtsStartAt | null>(null)
   const [autoScrollOn, setAutoScrollOn] = useState(false)
@@ -131,6 +132,9 @@ export function ReaderScreen({
   audioRateRef.current = audioRate
   const settingsOpenRef = useRef(settingsOpen)
   settingsOpenRef.current = settingsOpen
+  const rangeOpenRef = useRef(rangeOpen)
+  rangeOpenRef.current = rangeOpen
+  const overlayOpen = settingsOpen || rangeOpen
   const versesRef = useRef(verses)
   versesRef.current = verses
   const activeVerseRef = useRef(activeVerse)
@@ -147,7 +151,7 @@ export function ReaderScreen({
 
   const scheduleChromeHide = () => {
     clearChromeHideTimer()
-    if (settingsOpenRef.current || !immersiveActive()) return
+    if (settingsOpenRef.current || rangeOpenRef.current || !immersiveActive()) return
     chromeHideTimer.current = window.setTimeout(() => {
       setChromeHidden(true)
       chromeHideTimer.current = null
@@ -185,13 +189,22 @@ export function ReaderScreen({
   }, [])
 
   useEffect(() => {
-    if (settingsOpen) {
+    if (overlayOpen) {
       document.body.classList.add('settings-overlay-open')
     } else {
       document.body.classList.remove('settings-overlay-open')
     }
     return () => document.body.classList.remove('settings-overlay-open')
-  }, [settingsOpen])
+  }, [overlayOpen])
+
+  useEffect(() => {
+    if (!rangeOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setRangeOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [rangeOpen])
 
   useEffect(() => {
     if (!item) return
@@ -200,6 +213,7 @@ export function ReaderScreen({
     setSelected(new Set())
     setChromeHidden(false)
     setSettingsOpen(false)
+    setRangeOpen(false)
     setAudioOpen(false)
     setTtsStartAt(null)
     autoScrollOnRef.current = false
@@ -542,9 +556,18 @@ export function ReaderScreen({
               ? `${item.month}월 ${item.monthDay}일`
               : `DAY ${item.day}`}
           </div>
-          <div className="reader-range-short" id="reader-ref" title={item.range}>
+          <button
+            type="button"
+            className="reader-range-short"
+            id="reader-ref"
+            title={item.range}
+            aria-haspopup="dialog"
+            aria-expanded={rangeOpen}
+            aria-controls="reader-range-dialog"
+            onClick={() => setRangeOpen(true)}
+          >
             {item.range}
-          </div>
+          </button>
         </div>
         <div className="reader-chrome-actions">
           <button
@@ -752,6 +775,47 @@ export function ReaderScreen({
       </footer>
 
       {toast && <div className="toast">{toast}</div>}
+
+      {rangeOpen && (
+        <div
+          className="settings-overlay"
+          id="reader-range-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="오늘의 읽기 범위"
+        >
+          <button
+            type="button"
+            className="settings-overlay-backdrop"
+            aria-label="읽기 범위 닫기"
+            onClick={() => setRangeOpen(false)}
+          />
+          <div className="settings-overlay-sheet range-overlay-sheet">
+            <div className="settings-panel">
+              <div className="settings-back">
+                <button type="button" className="pill" onClick={() => setRangeOpen(false)}>
+                  닫기
+                </button>
+              </div>
+              <h2 className="section-title">오늘의 읽기 범위</h2>
+              <p className="section-desc">
+                {item.month != null && item.monthDay != null
+                  ? `${item.month}월 ${item.monthDay}일`
+                  : `DAY ${item.day}`}
+              </p>
+              <ul className="range-overlay-list">
+                {item.range
+                  .split(',')
+                  .map((part) => part.trim())
+                  .filter(Boolean)
+                  .map((part) => (
+                    <li key={part}>{part}</li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {settingsOpen && (
         <div
