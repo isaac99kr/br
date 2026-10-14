@@ -612,6 +612,8 @@ export function ReaderScreen({
           <div className="verses">
             {verses.map((v, i) => {
               const key = verseKey(v)
+              // Index in key: same ref can appear again after a later segment jump.
+              const listKey = `${key}@${i}`
               const isOn = selected.has(key)
               const prev = i > 0 ? verses[i - 1] : null
               const showBookHeader =
@@ -623,10 +625,10 @@ export function ReaderScreen({
                 activeVerse.chapter === v.chapter &&
                 activeVerse.verse === v.verse
               return (
-                <Fragment key={key}>
+                <Fragment key={listKey}>
                   {showBookHeader && (
                     <div
-                      id={`ch-${v.abbr}-${v.chapter}`}
+                      id={`ch-${v.abbr}-${v.chapter}-${i}`}
                       className={chapterActive ? 'book-header book-header-active' : 'book-header'}
                       role="heading"
                       aria-level={2}

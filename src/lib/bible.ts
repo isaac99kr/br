@@ -64,6 +64,14 @@ function versesFromSegment(book: BibleBook, seg: RangeSegment): Verse[] {
   return out
 }
 
+/**
+ * Load verses for a schedule reading_range.
+ *
+ * Returns verses in schedule segment order (comma-separated parts, left to right).
+ * Within each segment, verses follow canonical chapter/verse order. Across
+ * segments there is no sort, merge, or dedupe — later segments may jump
+ * backward in the same book.
+ */
 export async function loadVersesForRange(
   range: string,
   translationId: TranslationId = 'krv',
@@ -90,6 +98,7 @@ export async function loadVersesForRange(
     }
     const chunk = versesFromSegment(book, { ...seg, abbr: fileAbbr })
     if (!chunk.length) missing.push(`${seg.abbr}${seg.startChapter}`)
+    // Append in segment order; do not reorder relative to earlier segments.
     verses.push(...chunk)
   }
 

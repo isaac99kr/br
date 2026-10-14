@@ -9,12 +9,19 @@ export type RangeSegment = {
 }
 
 /**
+ * Split a reading_range into ordered segments.
+ *
+ * Segment order is significant (chronological / parallel reading plans).
+ * Do not sort, merge, or dedupe segments — even when the same book/chapter
+ * reappears out of numeric order (e.g. 행8:1-13, 행8:26-40, 행8:14-25).
+ *
  * Examples:
  * - 창1-3장
  * - 민9:1-14
  * - 민20:14-24장  (20:14 through end of ch.24)
  * - 시34·56편 / 시53·55·58·61·62·64-66편
  * - 삼상18-20장, 시59편
+ * - 행8:1-13, 행8:26-40, 행8:14-25, 행9:32-11:18, 행9:1-31
  */
 export function parseReadingRange(range: string): RangeSegment[] {
   const parts = range
