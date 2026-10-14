@@ -248,15 +248,21 @@ export function ReaderScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, item?.range, translationId])
 
-  // Scroll the listening verse into view (browser TTS cue).
+  // Scroll chapter announce / listening verse into view (browser TTS cue).
   useEffect(() => {
-    if (!audioPlaying || !activeVerse) return
-    const id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
+    if (!audioPlaying) return
+    let id: string | null = null
+    if (activeChapter?.announce && activeChapter.verseIndex != null) {
+      id = `ch-${activeChapter.abbr}-${activeChapter.chapter}-${activeChapter.verseIndex}`
+    } else if (activeVerse) {
+      id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
+    }
+    if (!id) return
     const el = document.getElementById(id)
     if (!el) return
     programScrollLock.current = Date.now() + 400
     el.scrollIntoView({ block: 'center', behavior: 'smooth' })
-  }, [activeVerse, audioPlaying])
+  }, [activeVerse, activeChapter, audioPlaying])
 
   useEffect(() => {
     lastScrollY.current = window.scrollY
@@ -616,10 +622,17 @@ export function ReaderScreen({
               const listKey = `${key}@${i}`
               const isOn = selected.has(key)
               const prev = i > 0 ? verses[i - 1] : null
+              // New book/chapter, or a new schedule segment that revisits the same chapter.
               const showBookHeader =
-                !prev || prev.abbr !== v.abbr || prev.chapter !== v.chapter
+                !prev ||
+                prev.abbr !== v.abbr ||
+                prev.chapter !== v.chapter ||
+                Boolean(v.segmentStart)
               const chapterActive =
-                activeChapter?.abbr === v.abbr && activeChapter.chapter === v.chapter
+                Boolean(activeChapter?.announce) &&
+                activeChapter?.abbr === v.abbr &&
+                activeChapter.chapter === v.chapter &&
+                activeChapter.verseIndex === i
               const verseActive =
                 activeVerse?.abbr === v.abbr &&
                 activeVerse.chapter === v.chapter &&

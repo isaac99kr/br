@@ -183,6 +183,7 @@ export function AudioPlayer({
             chapter: unit.chapter,
             announce: unit.text,
             startMs: 0,
+            verseIndex: unit.verseIndex,
           })
           onVerseRef.current?.(null)
         } else {

@@ -13,6 +13,8 @@ export type AudioChapterCue = {
   chapter: number
   announce: string
   startMs: number
+  /** Index of the verse this announce precedes (for segment-local headers). */
+  verseIndex?: number
 }
 
 export type AudioVerseCue = {

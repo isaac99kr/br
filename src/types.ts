@@ -42,6 +42,8 @@ export type Verse = {
   verse: number
   text: string
   abbr: string
+  /** True on the first verse of each CSV reading_range segment (comma part). */
+  segmentStart?: boolean
 }
 
 export type BibleBook = {

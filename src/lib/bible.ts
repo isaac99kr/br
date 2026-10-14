@@ -97,7 +97,12 @@ export async function loadVersesForRange(
       continue
     }
     const chunk = versesFromSegment(book, { ...seg, abbr: fileAbbr })
-    if (!chunk.length) missing.push(`${seg.abbr}${seg.startChapter}`)
+    if (!chunk.length) {
+      missing.push(`${seg.abbr}${seg.startChapter}`)
+      continue
+    }
+    // Mark segment boundary so UI/TTS re-announce even for the same chapter.
+    chunk[0] = { ...chunk[0], segmentStart: true }
     // Append in segment order; do not reorder relative to earlier segments.
     verses.push(...chunk)
   }

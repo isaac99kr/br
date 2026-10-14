@@ -9,7 +9,14 @@ const SECTION_TITLE_RE = /^<[^>]+>\s*/
 const KO_DIGITS = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'] as const
 
 export type SpeakUnit =
-  | { kind: 'announce'; text: string; abbr: string; chapter: number }
+  | {
+      kind: 'announce'
+      text: string
+      abbr: string
+      chapter: number
+      /** Index in the day's verse list that this announce introduces. */
+      verseIndex: number
+    }
   | { kind: 'verse'; text: string; abbr: string; chapter: number; verse: number }
 
 export function isSpeechSynthesisSupported(): boolean {
@@ -46,14 +53,18 @@ export function chapterAnnounce(abbr: string, chapter: number): string {
 export function buildDaySpeakUnits(verses: Verse[]): SpeakUnit[] {
   const units: SpeakUnit[] = []
   let prevKey: string | null = null
-  for (const v of verses) {
+  for (let i = 0; i < verses.length; i++) {
+    const v = verses[i]
     const key = `${v.abbr}:${v.chapter}`
-    if (key !== prevKey) {
+    // Re-announce at each schedule segment, even when the chapter is unchanged
+    // (e.g. 행8:26-40 then 행8:14-25).
+    if (key !== prevKey || v.segmentStart) {
       units.push({
         kind: 'announce',
         text: chapterAnnounce(v.abbr, v.chapter),
         abbr: v.abbr,
         chapter: v.chapter,
+        verseIndex: i,
       })
       prevKey = key
     }
