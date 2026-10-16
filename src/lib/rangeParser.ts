@@ -22,6 +22,7 @@ export type RangeSegment = {
  * - 시34·56편 / 시53·55·58·61·62·64-66편
  * - 삼상18-20장, 시59편
  * - 행8:1-13, 행8:26-40, 행8:14-25, 행9:32-11:18, 행9:1-31
+ * - 행20:1-2a / 행20장2b-3 / 행20:3b-21:16  (a/b half-verse markers → whole verse)
  */
 export function parseReadingRange(range: string): RangeSegment[] {
   const parts = range
@@ -66,9 +67,10 @@ export function parseReadingRange(range: string): RangeSegment[] {
       continue
     }
 
+    // Optional a/b half-verse markers are kept in CSV display but map to whole verses.
     const patterns: { re: RegExp; map: (m: RegExpMatchArray) => RangeSegment }[] = [
       {
-        re: /^([가-힣]+)(\d+):(\d+)-(\d+):(\d+)$/,
+        re: /^([가-힣]+)(\d+):(\d+)[ab]?-(\d+):(\d+)[ab]?$/,
         map: (m) => ({
           abbr: m[1],
           startChapter: Number(m[2]),
@@ -78,7 +80,7 @@ export function parseReadingRange(range: string): RangeSegment[] {
         }),
       },
       {
-        re: /^([가-힣]+)(\d+)장-(\d+):(\d+)$/,
+        re: /^([가-힣]+)(\d+)장-(\d+):(\d+)[ab]?$/,
         map: (m) => ({
           abbr: m[1],
           startChapter: Number(m[2]),
@@ -88,7 +90,7 @@ export function parseReadingRange(range: string): RangeSegment[] {
         }),
       },
       {
-        re: /^([가-힣]+)(\d+):(\d+)-(\d+)장$/,
+        re: /^([가-힣]+)(\d+):(\d+)[ab]?-(\d+)장$/,
         map: (m) => ({
           abbr: m[1],
           startChapter: Number(m[2]),
@@ -98,17 +100,8 @@ export function parseReadingRange(range: string): RangeSegment[] {
         }),
       },
       {
-        re: /^([가-힣]+)(\d+)-(\d+):(\d+)$/,
-        map: (m) => ({
-          abbr: m[1],
-          startChapter: Number(m[2]),
-          startVerse: null,
-          endChapter: Number(m[3]),
-          endVerse: Number(m[4]),
-        }),
-      },
-      {
-        re: /^([가-힣]+)(\d+):(\d+)-(\d+)$/,
+        // 행20장2b-3 — chapter then verse range with optional a/b
+        re: /^([가-힣]+)(\d+)장(\d+)[ab]?-(\d+)[ab]?$/,
         map: (m) => ({
           abbr: m[1],
           startChapter: Number(m[2]),
@@ -118,7 +111,27 @@ export function parseReadingRange(range: string): RangeSegment[] {
         }),
       },
       {
-        re: /^([가-힣]+)(\d+):(\d+)$/,
+        re: /^([가-힣]+)(\d+)-(\d+):(\d+)[ab]?$/,
+        map: (m) => ({
+          abbr: m[1],
+          startChapter: Number(m[2]),
+          startVerse: null,
+          endChapter: Number(m[3]),
+          endVerse: Number(m[4]),
+        }),
+      },
+      {
+        re: /^([가-힣]+)(\d+):(\d+)[ab]?-(\d+)[ab]?$/,
+        map: (m) => ({
+          abbr: m[1],
+          startChapter: Number(m[2]),
+          startVerse: Number(m[3]),
+          endChapter: Number(m[2]),
+          endVerse: Number(m[4]),
+        }),
+      },
+      {
+        re: /^([가-힣]+)(\d+):(\d+)[ab]?$/,
         map: (m) => ({
           abbr: m[1],
           startChapter: Number(m[2]),

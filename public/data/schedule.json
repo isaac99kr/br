@@ -1493,231 +1493,231 @@
   {
     "day": 214,
     "range": "행1:1-11, 마28:16-20, 막16:19-20, 눅24:50-53, 행1:12-26, 행2장, 행3:1-5:11",
-    "weekday": "목",
+    "weekday": "월",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 215,
     "range": "행5:12-42, 행6-7장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 216,
     "range": "행8:1-13, 행8:26-40, 행8:14-25, 행9:32-11:18, 행9:1-31",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 217,
     "range": "행11:19-15:35",
-    "weekday": "월",
+    "weekday": "목",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 218,
     "range": "갈2:11-14, 행15:36-41, 행16-18:17",
-    "weekday": "화",
+    "weekday": "금",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 219,
     "range": "살전1-5장, 살후1-3장",
-    "weekday": "수",
+    "weekday": "토",
     "testament": "신약",
     "week": 6
   },
   {
     "day": 220,
     "range": "갈1-6장, 행18:18-22",
-    "weekday": "목",
+    "weekday": "월",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 221,
     "range": "행18:23-19:22, 고전1-6장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 222,
     "range": "고전7-11장",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 223,
-    "range": "고전12-16장, 행19:23-41, 행20:1-22",
-    "weekday": "월",
+    "range": "고전12-16장, 행19:23-41, 행20:1-2a",
+    "weekday": "목",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 224,
-    "range": "행20:23-38, 롬1-4장",
-    "weekday": "화",
+    "range": "고후1-6장",
+    "weekday": "금",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 225,
     "range": "고후7-13장",
-    "weekday": "수",
+    "weekday": "토",
     "testament": "신약",
     "week": 7
   },
   {
     "day": 226,
-    "range": "행20:26-38, 롬1-4장",
-    "weekday": "목",
+    "range": "행20장2b-3, 롬1-4장",
+    "weekday": "월",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 227,
     "range": "롬5-8장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 228,
     "range": "롬9-14장",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 229,
-    "range": "롬15-16장, 행20:36-21:16",
-    "weekday": "월",
+    "range": "롬15-16장, 행20:3b-21:16",
+    "weekday": "목",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 230,
     "range": "행21:17-40, 행22-24장",
-    "weekday": "화",
+    "weekday": "금",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 231,
     "range": "행25-28장",
-    "weekday": "수",
+    "weekday": "토",
     "testament": "신약",
     "week": 8
   },
   {
     "day": 232,
     "range": "골1-4장, 몬1장",
-    "weekday": "목",
+    "weekday": "월",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 233,
     "range": "엡1-6장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 234,
     "range": "빌1-4장",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 235,
-    "range": "살전1-5장",
-    "weekday": "월",
+    "range": "딤전1-6장",
+    "weekday": "목",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 236,
-    "range": "딤전1-6장, 딤후1-4장",
-    "weekday": "화",
+    "range": "딛1-3장, 딤후1-4장",
+    "weekday": "금",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 237,
     "range": "약1-5장",
-    "weekday": "수",
+    "weekday": "토",
     "testament": "신약",
     "week": 9
   },
   {
     "day": 238,
     "range": "유1장, 벧전1-3장",
-    "weekday": "목",
+    "weekday": "월",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 239,
     "range": "벧전4-5장, 벧후1-3장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 240,
     "range": "히1-6장",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 241,
     "range": "히7-10장",
-    "weekday": "월",
+    "weekday": "목",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 242,
     "range": "히11-13장",
-    "weekday": "화",
+    "weekday": "금",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 243,
     "range": "요일1-5장, 요이1장, 요삼1장",
-    "weekday": "수",
+    "weekday": "토",
     "testament": "신약",
     "week": 10
   },
   {
     "day": 244,
     "range": "계1-7장",
-    "weekday": "목",
+    "weekday": "월",
     "testament": "신약",
     "week": 11
   },
   {
     "day": 245,
     "range": "계8-16장",
-    "weekday": "금",
+    "weekday": "화",
     "testament": "신약",
     "week": 11
   },
   {
     "day": 246,
     "range": "계17-22장",
-    "weekday": "토",
+    "weekday": "수",
     "testament": "신약",
     "week": 11
   }

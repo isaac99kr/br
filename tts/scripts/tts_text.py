@@ -193,37 +193,43 @@ def parse_reading_range(range_str: str) -> list[RangeSegment]:
 
         patterns: list[tuple[re.Pattern[str], Callable[[re.Match[str]], RangeSegment]]] = [
             (
-                re.compile(r"^([가-힣]+)(\d+):(\d+)-(\d+):(\d+)$"),
+                re.compile(r"^([가-힣]+)(\d+):(\d+)[ab]?-(\d+):(\d+)[ab]?$"),
                 lambda m: RangeSegment(
                     m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(4)), int(m.group(5))
                 ),
             ),
             (
-                re.compile(r"^([가-힣]+)(\d+)장-(\d+):(\d+)$"),
+                re.compile(r"^([가-힣]+)(\d+)장-(\d+):(\d+)[ab]?$"),
                 lambda m: RangeSegment(
                     m.group(1), int(m.group(2)), None, int(m.group(3)), int(m.group(4))
                 ),
             ),
             (
-                re.compile(r"^([가-힣]+)(\d+):(\d+)-(\d+)장$"),
+                re.compile(r"^([가-힣]+)(\d+):(\d+)[ab]?-(\d+)장$"),
                 lambda m: RangeSegment(
                     m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(4)), None
                 ),
             ),
             (
-                re.compile(r"^([가-힣]+)(\d+)-(\d+):(\d+)$"),
-                lambda m: RangeSegment(
-                    m.group(1), int(m.group(2)), None, int(m.group(3)), int(m.group(4))
-                ),
-            ),
-            (
-                re.compile(r"^([가-힣]+)(\d+):(\d+)-(\d+)$"),
+                re.compile(r"^([가-힣]+)(\d+)장(\d+)[ab]?-(\d+)[ab]?$"),
                 lambda m: RangeSegment(
                     m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(2)), int(m.group(4))
                 ),
             ),
             (
-                re.compile(r"^([가-힣]+)(\d+):(\d+)$"),
+                re.compile(r"^([가-힣]+)(\d+)-(\d+):(\d+)[ab]?$"),
+                lambda m: RangeSegment(
+                    m.group(1), int(m.group(2)), None, int(m.group(3)), int(m.group(4))
+                ),
+            ),
+            (
+                re.compile(r"^([가-힣]+)(\d+):(\d+)[ab]?-(\d+)[ab]?$"),
+                lambda m: RangeSegment(
+                    m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(2)), int(m.group(4))
+                ),
+            ),
+            (
+                re.compile(r"^([가-힣]+)(\d+):(\d+)[ab]?$"),
                 lambda m: RangeSegment(
                     m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(2)), int(m.group(3))
                 ),
