@@ -784,7 +784,7 @@ export function ReaderScreen({
             disabled={!linked || loading || !verses.length}
             onClick={handleAutoScrollToggle}
           >
-            {autoScrollOn ? '자동스크롤 ✓' : '자동스크롤'}
+            {autoScrollOn ? '스크롤 ✓' : '스크롤'}
           </button>
           <button
             type="button"
@@ -798,13 +798,16 @@ export function ReaderScreen({
           </button>
           <button
             type="button"
-            className={newAudioEntry ? 'primary' : undefined}
+            className={`new-audio-action${newAudioEntry ? ' primary' : ''}`}
             aria-pressed={Boolean(newAudioEntry)}
             onClick={() => {
               void handleNewAudioClick()
             }}
           >
-            {newAudioEntry ? '신규음성 ✓' : '신규음성'}
+            <span>신규음성{newAudioEntry ? ' ✓' : ''}</span>
+            <span className="new-audio-badge" aria-hidden="true">
+              NEW
+            </span>
           </button>
           <button
             type="button"
