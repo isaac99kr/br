@@ -850,35 +850,13 @@ p {
 }
 
 .reader-actions .new-audio-action {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  background: linear-gradient(135deg, #413292, #6856d9);
-  border-color: #8274ec;
-  color: #fff;
-  box-shadow: inset 0 0 0 1px #a89fff33, 0 3px 10px #6856d944;
+  border-color: #8e82e8;
 }
 
 .reader-actions .new-audio-action.primary {
-  background: linear-gradient(135deg, #2e2474, #5543ca);
-  border-color: #aea6ff;
-}
-
-.new-audio-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 16px;
-  padding: 1px 4px;
-  border-radius: 99px;
-  background: #f4c66d;
-  color: #38270d;
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  background: #242429;
+  border-color: #aaa0ff;
+  color: var(--reader-fg);
 }
 
 .auto-scroll-controls {

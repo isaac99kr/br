@@ -804,10 +804,7 @@ export function ReaderScreen({
               void handleNewAudioClick()
             }}
           >
-            <span>신규음성{newAudioEntry ? ' ✓' : ''}</span>
-            <span className="new-audio-badge" aria-hidden="true">
-              NEW
-            </span>
+            신규음성{newAudioEntry ? ' ✓' : ''}
           </button>
           <button
             type="button"
