@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { AudioPlayer, type TtsStartAt } from './AudioPlayer'
-import type { AudioChapterCue, AudioVerseCue } from '../lib/audio'
+import { NewAudioPlayer } from './NewAudioPlayer'
+import { findAudioDay, loadAudioManifest, type AudioChapterCue, type AudioDayEntry, type AudioVerseCue } from '../lib/audio'
 import {
   TTS_UNSUPPORTED_MESSAGE,
   isSpeechSynthesisSupported,
@@ -110,6 +111,7 @@ export function ReaderScreen({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [rangeOpen, setRangeOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
+  const [newAudioEntry, setNewAudioEntry] = useState<AudioDayEntry | null>(null)
   const [ttsStartAt, setTtsStartAt] = useState<TtsStartAt | null>(null)
   const [autoScrollOn, setAutoScrollOn] = useState(false)
   const [autoScrollRate, setAutoScrollRate] = useState<AutoScrollRate>(1)
@@ -215,6 +217,7 @@ export function ReaderScreen({
     setSettingsOpen(false)
     setRangeOpen(false)
     setAudioOpen(false)
+    setNewAudioEntry(null)
     setTtsStartAt(null)
     autoScrollOnRef.current = false
     setAutoScrollOn(false)
@@ -335,7 +338,7 @@ export function ReaderScreen({
       ro.disconnect()
       screen.style.removeProperty('--reader-chrome-bottom-h')
     }
-  }, [audioOpen, autoScrollOn, chromeHidden])
+  }, [audioOpen, newAudioEntry, autoScrollOn, chromeHidden])
 
   useEffect(() => {
     if (!toast) return
@@ -442,6 +445,15 @@ export function ReaderScreen({
     setActiveVerse(null)
   }
 
+  const closeNewAudioPanel = () => {
+    setNewAudioEntry(null)
+    audioPlayingRef.current = false
+    setAudioPlaying(false)
+    setAudioRate(1)
+    setActiveChapter(null)
+    setActiveVerse(null)
+  }
+
   const handleAutoScrollToggle = () => {
     if (autoScrollOn) {
       stopAutoScroll(true)
@@ -449,6 +461,7 @@ export function ReaderScreen({
     }
     if (!linked || !verses.length) return
     if (audioOpen) closeAudioPanel()
+    if (newAudioEntry) closeNewAudioPanel()
     const idx = findNearestVerseIndex(verses)
     setActiveVerse(verseToCue(verses[idx]))
     autoScrollOnRef.current = true
@@ -484,6 +497,7 @@ export function ReaderScreen({
       return
     }
     if (autoScrollOnRef.current) stopAutoScroll(true)
+    if (newAudioEntry) closeNewAudioPanel()
 
     const next: TtsStartAt = {
       abbr: first.abbr,
@@ -528,7 +542,34 @@ export function ReaderScreen({
       return
     }
     if (autoScrollOnRef.current) stopAutoScroll(true)
+    if (newAudioEntry) closeNewAudioPanel()
     setAudioOpen(true)
+  }
+
+  const handleNewAudioClick = async () => {
+    if (newAudioEntry) {
+      closeNewAudioPanel()
+      clearChromeHideTimer()
+      setChromeHidden(false)
+      return
+    }
+    if (!linked || !verses.length) {
+      setToast('본문을 불러온 뒤 다시 시도해 주세요')
+      return
+    }
+    if (day < 220 || day > 246) {
+      setToast('신규음성은 준비 중입니다.')
+      return
+    }
+    const manifest = await loadAudioManifest()
+    const entry = findAudioDay(manifest, translationId, 'female', day)
+    if (!entry) {
+      setToast('신규음성은 준비 중입니다.')
+      return
+    }
+    if (autoScrollOnRef.current) stopAutoScroll(true)
+    if (audioOpen) closeAudioPanel()
+    setNewAudioEntry(entry)
   }
 
   const handlePlayingChange = (playing: boolean) => {
@@ -703,6 +744,17 @@ export function ReaderScreen({
             onUnavailable={(message) => setToast(message)}
           />
         )}
+        {newAudioEntry && (
+          <NewAudioPlayer
+            entry={newAudioEntry}
+            verses={verses}
+            onActiveChapter={setActiveChapter}
+            onActiveVerse={setActiveVerse}
+            onPlayingChange={handlePlayingChange}
+            onRateChange={setAudioRate}
+            onUnavailable={(message) => setToast(message)}
+          />
+        )}
         {autoScrollOn && (
           <div className="auto-scroll-controls">
             <label className="audio-rate">
@@ -743,6 +795,16 @@ export function ReaderScreen({
             }}
           >
             {audioOpen ? '음성듣기 ✓' : '음성듣기'}
+          </button>
+          <button
+            type="button"
+            className={newAudioEntry ? 'primary' : undefined}
+            aria-pressed={Boolean(newAudioEntry)}
+            onClick={() => {
+              void handleNewAudioClick()
+            }}
+          >
+            {newAudioEntry ? '신규음성 ✓' : '신규음성'}
           </button>
           <button
             type="button"

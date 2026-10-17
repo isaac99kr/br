@@ -16,6 +16,7 @@
 7. [06-implementation-roadmap.md](06-implementation-roadmap.md) — 후속 구현 순서
 8. [07-bible-tts-plan.md](07-bible-tts-plan.md) — Qwen3-TTS 성경 음원 기능 기획
 9. [08-bible-tts-investigation.md](08-bible-tts-investigation.md) — TTS 조사·§11 산출물 (용량·권리·질문)
+10. [09-new-audio-playback-plan.md](09-new-audio-playback-plan.md) — 220~246일차 신규음성(MP3) 재생·재생성 기준
 
 ## 참조 자료 위치
 
