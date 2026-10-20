@@ -1,3 +1,4 @@
+import { getBookAbbr } from './bookNames'
 import type { BibleBook, Verse } from '../types'
 import { parseReadingRange, type RangeSegment } from './rangeParser'
 import type { TranslationId } from './settings'
@@ -75,13 +76,14 @@ function versesFromSegment(book: BibleBook, seg: RangeSegment): Verse[] {
 export async function loadVersesForRange(
   range: string,
   translationId: TranslationId = 'krv',
+  strict = false,
 ): Promise<{
   verses: Verse[]
   linked: boolean
   missing: string[]
 }> {
   const meta = await loadMeta()
-  const segments = parseReadingRange(range)
+  const segments = parseReadingRange(range, strict)
   if (!segments.length) {
     return { verses: [], linked: false, missing: [range] }
   }
@@ -90,11 +92,27 @@ export async function loadVersesForRange(
   const missing: string[] = []
 
   for (const seg of segments) {
-    const fileAbbr = resolveAbbr(seg.abbr, meta.aliases)
+    const fileAbbr = resolveAbbr(getBookAbbr(seg.abbr), meta.aliases)
+    if (strict && !meta.books.some((b) => b.abbr === fileAbbr)) {
+      throw new Error(`성경 이름을 확인해 주세요: ${seg.abbr}`)
+    }
     const book = await loadBook(translationId, fileAbbr)
     if (!book) {
+      if (strict) throw new Error(`본문을 불러오지 못했습니다: ${seg.abbr}`)
       missing.push(seg.abbr)
       continue
+    }
+    if (strict) {
+      if (seg.endChapter > Object.keys(book.chapters).length) {
+        throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${seg.endChapter}장`)
+      }
+      for (let ch = seg.startChapter; ch <= seg.endChapter; ch++) {
+        if (!book.chapters[String(ch)]) throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${ch}장`)
+      }
+      if ((seg.startVerse != null && !(String(seg.startVerse) in book.chapters[String(seg.startChapter)])) ||
+          (seg.endVerse != null && !(String(seg.endVerse) in book.chapters[String(seg.endChapter)]))) {
+        throw new Error(`존재하지 않는 절입니다: ${seg.abbr}`)
+      }
     }
     const chunk = versesFromSegment(book, { ...seg, abbr: fileAbbr })
     if (!chunk.length) {

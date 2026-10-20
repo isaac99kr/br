@@ -73,3 +73,7 @@ const BOOK_NAMES: Record<string, string> = {
 export function getBookName(abbr: string): string {
   return BOOK_NAMES[abbr] ?? abbr
 }
+
+export function getBookAbbr(name: string): string {
+  return Object.entries(BOOK_NAMES).find(([abbr, full]) => name === abbr || name === full)?.[0] ?? name
+}

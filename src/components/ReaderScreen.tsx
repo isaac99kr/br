@@ -21,6 +21,7 @@ import type { useProgress } from '../hooks/useProgress'
 type ProgressApi = ReturnType<typeof useProgress>
 
 type Props = {
+  collection?: boolean
   day: number
   schedule: ScheduleItem[]
   scheduleMeta: ScheduleMeta
@@ -83,6 +84,7 @@ function findNearestVerseIndex(list: Verse[]): number {
 }
 
 export function ReaderScreen({
+  collection = false,
   day,
   schedule,
   scheduleMeta,
@@ -230,17 +232,17 @@ export function ReaderScreen({
     window.scrollTo(0, 0)
     lastScrollY.current = 0
     let cancelled = false
-    loadVersesForRange(item.range, translationId)
+    loadVersesForRange(item.range, translationId, collection)
       .then((res) => {
         if (cancelled) return
         setVerses(res.verses)
         setLinked(res.linked)
       })
-      .catch(() => {
+      .catch((cause: unknown) => {
         if (cancelled) return
         setVerses([])
         setLinked(false)
-        setError('본문을 불러오지 못했습니다.')
+        setError(cause instanceof Error ? cause.message : '본문을 불러오지 못했습니다.')
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -513,8 +515,8 @@ export function ReaderScreen({
   const handleShare = async () => {
     if (!item) return
     const text = formatShareClipboard(
-      formatDayShareTitle(formatScheduleDayLabel(item), item.range),
-      `/read/${day}`,
+      collection ? `모아읽기 · ${item.range}` : formatDayShareTitle(formatScheduleDayLabel(item), item.range),
+      collection ? `/collection/read?range=${encodeURIComponent(item.range)}` : `/read/${day}`,
     )
     const ok = await copyText(text)
     setToast(ok ? '링크를 복사했어요' : '복사에 실패했습니다')
@@ -547,6 +549,10 @@ export function ReaderScreen({
   }
 
   const handleNewAudioClick = async () => {
+    if (collection) {
+      setToast('신규음성은 준비 중입니다.')
+      return
+    }
     if (newAudioEntry) {
       closeNewAudioPanel()
       clearChromeHideTimer()
@@ -599,7 +605,7 @@ export function ReaderScreen({
         </button>
         <div className="reader-chrome-title">
           <div className="reader-day">
-            {item.month != null && item.monthDay != null
+            {collection ? '모아읽기' : item.month != null && item.monthDay != null
               ? `${item.month}월 ${item.monthDay}일`
               : `DAY ${item.day}`}
           </div>
@@ -639,7 +645,7 @@ export function ReaderScreen({
       <div className="reader-scroll" onClick={handleReaderSurfaceTap} role="presentation">
         <div className="reader-meta-block">
           <p className="reader-meta-line">
-            {item.month != null && item.monthDay != null
+            {collection ? '모아읽기' : item.month != null && item.monthDay != null
               ? `${scheduleMeta.title} · ${item.day}일차 · ${statusLabel(status)}`
               : `${item.testament ?? scheduleMeta.title}${
                   item.week != null ? ` · ${item.week}주차` : ''
@@ -651,7 +657,7 @@ export function ReaderScreen({
         {error && <p className="reader-status-msg">{error}</p>}
         {!loading && !error && !linked && (
           <div className="reader-fallback">
-            이 날짜의 읽기 범위는 <strong>{item.range}</strong> 입니다. 본문을 연결하지 못했거나 범위
+            읽기 범위는 <strong>{item.range}</strong> 입니다. 본문을 연결하지 못했거나 범위
             파싱에 실패했습니다. 자동 완료는 적용되지 않습니다.
           </div>
         )}
@@ -838,6 +844,7 @@ export function ReaderScreen({
           )}
         </div>
         <div className="reader-actions">
+          {collection ? <button type="button" onClick={onClose}>범위 다시 입력</button> : <>
           <button type="button" disabled={day <= 1} onClick={() => onChangeDay(day - 1)}>
             ← 이전
           </button>
@@ -848,6 +855,7 @@ export function ReaderScreen({
           >
             다음 →
           </button>
+          </>}
         </div>
       </footer>
 
@@ -876,7 +884,7 @@ export function ReaderScreen({
               </div>
               <h2 className="section-title">오늘의 읽기 범위</h2>
               <p className="section-desc">
-                {item.month != null && item.monthDay != null
+                {collection ? '모아읽기' : item.month != null && item.monthDay != null
                   ? `${item.month}월 ${item.monthDay}일`
                   : `DAY ${item.day}`}
               </p>

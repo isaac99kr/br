@@ -1126,3 +1126,20 @@ p {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
+
+.collection-form textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  background: var(--bg, white);
+  color: inherit;
+}
+.collection-form textarea:focus-visible { outline: 2px solid var(--purple); }
+.collection-error { color: #b42318; }
+.collection-form button:disabled { opacity: 0.55; cursor: default; }

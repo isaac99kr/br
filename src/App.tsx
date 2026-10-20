@@ -19,6 +19,7 @@ import {
   loadScheduleCatalog,
   resolveScheduleId,
 } from './lib/schedule'
+import { CollectionPage } from './pages/CollectionPage'
 import { FindPage } from './pages/FindPage'
 import { HomePage } from './pages/HomePage'
 import type { ScheduleCatalog, ScheduleItem, ScheduleMeta } from './types'
@@ -65,6 +66,10 @@ function AppRoutes({
   const readerDay =
     Number.isInteger(rawDay) && rawDay >= 1 && rawDay <= schedule.length ? rawDay : null
 
+  const collectionRange = location.pathname === '/collection/read'
+    ? new URLSearchParams(location.search).get('range') : null
+  const collectionProgress = useProgress(`collection:${collectionRange ?? ''}`, 1)
+  const showCollection = location.pathname.startsWith('/collection')
   const showFind = location.pathname.startsWith('/find')
 
   const openReader = (day: number) => {
@@ -79,16 +84,18 @@ function AppRoutes({
 
   const closeReader = () => {
     const from = (location.state as { from?: string } | null)?.from
-    navigate(from === '/find' ? '/find' : '/')
+    navigate(showCollection ? `/collection?range=${encodeURIComponent(collectionRange ?? '')}` : from === '/find' ? '/find' : '/')
   }
 
-  if (readerDay != null) {
+  if (readerDay != null || collectionRange) {
     return (
       <ReaderScreen
-        day={readerDay}
-        schedule={schedule}
-        scheduleMeta={meta}
-        progress={progress}
+        key={collectionRange ?? 'schedule'}
+        collection={Boolean(collectionRange)}
+        day={collectionRange ? 1 : readerDay!}
+        schedule={collectionRange ? [{ day: 1, range: collectionRange }] : schedule}
+        scheduleMeta={collectionRange ? { ...meta, title: '모아읽기' } : meta}
+        progress={collectionRange ? collectionProgress : progress}
         translationId={translationId}
         ttsVoiceUri={ttsVoiceUri}
         onTtsVoiceUriChange={setTtsVoiceUri}
@@ -107,8 +114,8 @@ function AppRoutes({
     )
   }
 
-  const title = showFind ? '날짜별 읽기 일정' : '오늘의 말씀, 한 걸음씩'
-  const sub = showFind
+  const title = showCollection ? '원하는 말씀, 모아읽기' : showFind ? '날짜별 읽기 일정' : '오늘의 말씀, 한 걸음씩'
+  const sub = showCollection ? '읽고 싶은 성경 범위를 직접 입력해 보세요.' : showFind
     ? meta.groupMode === 'month'
       ? '월별로 일정을 확인하고 날짜를 고르세요.'
       : '구약과 신약을 주차별로 확인하세요.'
@@ -132,9 +139,15 @@ function AppRoutes({
           <NavLink to="/find" className={({ isActive }) => (isActive ? 'tab active' : 'tab')}>
             날짜 찾기
           </NavLink>
+          <NavLink to="/collection" className={({ isActive }) => (isActive ? 'tab active' : 'tab')}>
+            모아읽기
+          </NavLink>
         </nav>
 
-        {showFind ? (
+        {showCollection ? (
+          <CollectionPage initialRange={new URLSearchParams(location.search).get('range') ?? ''} translationId={translationId} onOpenReader={(range) =>
+            navigate(`/collection/read?range=${encodeURIComponent(range)}`)} />
+        ) : showFind ? (
           <FindPage
             schedule={schedule}
             scheduleMeta={meta}
@@ -156,6 +169,8 @@ function AppRoutes({
 
       <Routes>
         <Route path="/" element={null} />
+        <Route path="/collection" element={null} />
+        <Route path="/collection/read" element={null} />
         <Route path="/find" element={null} />
         <Route path="/settings" element={<Navigate to="/" replace />} />
         <Route path="/read/:day" element={null} />
