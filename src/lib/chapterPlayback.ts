@@ -76,7 +76,11 @@ export class ChapterPlayback {
         buffer = await this.context.decodeAudioData(bytes)
         if (generation !== this.generation || this.disposed) return
         const duration = item.chapter.timing.totalSamples / item.chapter.timing.sampleRate
-        if (Math.abs(buffer.duration - duration) > 0.05) throw new Error('이 브라우저의 음원 길이가 시간 정보와 다릅니다.')
+        // MP3 decoders may expose encoder delay/final-frame padding slightly
+        // differently, especially after low-bitrate re-encoding. The queue
+        // still uses the exact JSON sample boundaries; this only tolerates
+        // codec padding at the whole-buffer duration check.
+        if (Math.abs(buffer.duration - duration) > 0.5) throw new Error('이 브라우저의 음원 길이가 시간 정보와 다릅니다.')
         this.cache.set(url, buffer)
       } else {
         this.cache.delete(url)
