@@ -1141,5 +1141,22 @@ p {
   color: inherit;
 }
 .collection-form textarea:focus-visible { outline: 2px solid var(--purple); }
+.collection-input-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.collection-input-actions button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.collection-input-actions button:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 .collection-error { color: #b42318; }
 .collection-form button:disabled { opacity: 0.55; cursor: default; }

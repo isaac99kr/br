@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { loadVersesForRange } from '../lib/bible'
 import { normalizeReadingRange } from '../lib/rangeParser'
 import type { TranslationId } from '../lib/settings'
@@ -11,6 +11,34 @@ export function CollectionPage({ initialRange, translationId, onOpenReader }: {
   const [range, setRange] = useState(initialRange)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const clearRange = () => {
+    setRange('')
+    setError(null)
+    requestAnimationFrame(() => textareaRef.current?.focus())
+  }
+
+  const pasteRange = async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      if (!text) return
+      const textarea = textareaRef.current
+      const start = textarea?.selectionStart ?? range.length
+      const end = textarea?.selectionEnd ?? range.length
+      const next = range.slice(0, start) + text + range.slice(end)
+      setRange(next.slice(0, 4000))
+      setError(null)
+      requestAnimationFrame(() => {
+        if (!textarea) return
+        const cursor = Math.min(start + text.length, 4000)
+        textarea.focus()
+        textarea.setSelectionRange(cursor, cursor)
+      })
+    } catch {
+      setError('클립보드 내용을 붙여넣으려면 브라우저의 클립보드 권한을 허용해 주세요.')
+    }
+  }
 
   return (
     <main className="page">
@@ -33,9 +61,13 @@ export function CollectionPage({ initialRange, translationId, onOpenReader }: {
         <p id="collection-help" className="section-desc">
           여러 범위를 쉼표나 줄바꿈으로 구분해 주세요. 입력한 순서대로 읽을 수 있어요.
         </p>
-        <textarea id="collection-range" value={range} onChange={(event) => setRange(event.target.value)}
+        <textarea ref={textareaRef} id="collection-range" value={range} onChange={(event) => setRange(event.target.value)}
           placeholder="행18:23-19:22, 고전1-6장" rows={4} required maxLength={4000}
           aria-describedby="collection-help collection-examples" aria-invalid={Boolean(error)} disabled={busy} />
+        <div className="collection-input-actions" aria-label="입력 도구">
+          <button type="button" onClick={pasteRange} disabled={busy}>클립보드에서 붙여넣기</button>
+          <button type="button" onClick={clearRange} disabled={busy || !range}>입력 내용 삭제</button>
+        </div>
         <p id="collection-examples" className="section-desc">
           예: 창1-3장, 요3:16-18, 시34·56편<br />
           괄호로 감싼 범위도 입력할 수 있어요: (행18:23-19:22), (고전1-6장)
