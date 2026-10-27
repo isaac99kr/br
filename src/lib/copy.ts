@@ -6,7 +6,8 @@ export function formatVersesForCopy(verses: Verse[]): string {
   const body = verses
     .map((v) => {
       const text = stripHeading(v.text)
-      return text ? `${v.verse} ${text}` : String(v.verse)
+      const number = v.verseEnd && v.verseEnd > v.verse ? `${v.verse}-${v.verseEnd}` : String(v.verse)
+      return text ? `${number} ${text}` : number
     })
     .join('\n')
   return body ? `${ref}\n${body}` : ref
@@ -27,9 +28,9 @@ export function formatVerseReference(verses: Verse[]): string {
       last.chapter === v.chapter &&
       v.verse === last.end + 1
     ) {
-      last.end = v.verse
+      last.end = v.verseEnd ?? v.verse
     } else {
-      runs.push({ abbr: v.abbr, chapter: v.chapter, start: v.verse, end: v.verse })
+      runs.push({ abbr: v.abbr, chapter: v.chapter, start: v.verse, end: v.verseEnd ?? v.verse })
     }
   }
 

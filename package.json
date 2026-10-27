@@ -14,7 +14,10 @@
     "tts:audit-new-audio": "tts/.venv/bin/python tts/scripts/audit_new_audio_ranges.py",
     "tts:stage-new-audio": "python3 tts/scripts/stage_new_audio.py",
     "pages": "bash scripts/deploy-pages.sh",
-    "pages:status": "gh run list --workflow=\"Deploy to GitHub Pages\" --limit 5"
+    "pages:status": "gh run list --workflow=\"Deploy to GitHub Pages\" --limit 5",
+    "test:chapter-audio": "node scripts/test-chapter-audio.mjs",
+    "tts:chapters": "tts/.venv/bin/python tts/scripts/generate_chapters.py",
+    "tts:chapters:status": "tts/.venv/bin/python tts/scripts/generate_chapters.py --status"
   },
   "dependencies": {
     "pretendard": "^1.3.9",

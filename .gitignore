@@ -38,3 +38,6 @@ tts/**/*.flac
 
 __pycache__/
 *.py[cod]
+
+# Chapter releases are staged locally or served from the configured audio host.
+public/audio/chapters/

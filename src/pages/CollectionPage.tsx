@@ -44,7 +44,7 @@ export function CollectionPage({ initialRange, translationId, onOpenReader }: {
         <button type="submit" className="continue" disabled={busy || !range.trim()}>
           {busy ? '본문 확인 중…' : '▶ 모아읽기 시작'}
         </button>
-        <p className="section-desc">신규음성은 준비 중입니다.</p>
+        <p className="section-desc">읽기 화면의 신규음성에서 준비된 장의 음원을 들을 수 있습니다.</p>
       </form>
     </main>
   )

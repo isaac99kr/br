@@ -185,10 +185,10 @@ def build_schedules() -> None:
     print(f"schedule.json: {len(default_days)} days (compat copy of {default_id})")
 
 
-def write_book(out_dir: Path, abbr: str, file_name: str, chapters: dict[str, dict[str, str]]) -> None:
+def write_book(out_dir: Path, abbr: str, file_name: str, chapters: dict[str, dict[str, str]], combined: dict | None = None) -> None:
     write_json(
         out_dir / f"{abbr}.json",
-        {"abbr": abbr, "file": file_name, "chapters": chapters},
+        {"abbr": abbr, "file": file_name, "chapters": chapters, **({"combinedVerses": combined} if combined else {})},
     )
 
 
@@ -213,7 +213,14 @@ def build_krv() -> list[dict]:
             continue
 
         book: dict[str, dict[str, str]] = {}
+        combined: dict[str, dict[str, int]] = {}
         for ln in lines:
+            merged = re.match(r"^([가-힣]+)(\d+):(\d+)-(\d+)\s+(.+)", ln)
+            if merged and merged[1] == abbr:
+                ch, first, last = merged[2], merged[3], int(merged[4])
+                book.setdefault(ch, {})[first] = merged[5]
+                combined.setdefault(ch, {})[first] = last
+                continue
             m = KRV_VERSE_RE.match(ln)
             if not m:
                 continue
@@ -222,7 +229,10 @@ def build_krv() -> list[dict]:
                 continue
             book.setdefault(str(ch), {})[str(vs)] = body
 
-        write_book(out_dir, abbr, f.name, book)
+        # The source explicitly omits Acts 24:6b–8a, including verse 7.
+        if abbr == "행" and "7" not in book["24"] and "6하반-8상반 없음" in book["24"]["6"]:
+            book["24"]["7"] = "(없음)"
+        write_book(out_dir, abbr, f.name, book, combined)
         book_meta.append({"abbr": abbr, "file": f.name, "chapterCount": len(book)})
 
     print(f"bible/krv: {len(book_meta)} books")

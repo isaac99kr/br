@@ -40,6 +40,8 @@ export type ProgressStore = {
 export type Verse = {
   chapter: number
   verse: number
+  /** Inclusive last verse of a combined source passage. */
+  verseEnd?: number
   text: string
   abbr: string
   /** True on the first verse of each CSV reading_range segment (comma part). */
@@ -49,5 +51,6 @@ export type Verse = {
 export type BibleBook = {
   abbr: string
   file: string
+  combinedVerses?: Record<string, Record<string, number>>
   chapters: Record<string, Record<string, string>>
 }

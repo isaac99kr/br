@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { AudioPlayer, type TtsStartAt } from './AudioPlayer'
 import { NewAudioPlayer } from './NewAudioPlayer'
-import { findAudioDay, loadAudioManifest, type AudioChapterCue, type AudioDayEntry, type AudioVerseCue } from '../lib/audio'
+import { type AudioChapterCue, type AudioVerseCue } from '../lib/audio'
+import { loadChapters } from '../lib/chapterAudio'
+import { buildAudioQueue, type AudioQueue } from '../lib/audioQueue'
 import {
   TTS_UNSUPPORTED_MESSAGE,
   isSpeechSynthesisSupported,
@@ -70,7 +72,7 @@ function findNearestVerseIndex(list: Verse[]): number {
   let bestDist = Infinity
   for (let i = 0; i < list.length; i++) {
     const v = list[i]
-    const el = document.getElementById(`v-${v.abbr}-${v.chapter}-${v.verse}`)
+    const el = document.getElementById(`v-${v.abbr}-${v.chapter}-${v.verse}-${i}`)
     if (!el) continue
     const rect = el.getBoundingClientRect()
     const mid = (rect.top + rect.bottom) / 2
@@ -113,7 +115,13 @@ export function ReaderScreen({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [rangeOpen, setRangeOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
-  const [newAudioEntry, setNewAudioEntry] = useState<AudioDayEntry | null>(null)
+  const [newAudioEntry, setNewAudioEntry] = useState<AudioQueue | null>(null)
+  const audioRequest = useRef<AbortController | null>(null)
+  const audioActionVersion = useRef(0)
+  const [newAudioLoading, setNewAudioLoading] = useState(false)
+  useEffect(() => {
+    return () => { audioRequest.current?.abort(); audioActionVersion.current++ }
+  }, [day, item?.range, translationId])
   const [ttsStartAt, setTtsStartAt] = useState<TtsStartAt | null>(null)
   const [autoScrollOn, setAutoScrollOn] = useState(false)
   const [autoScrollRate, setAutoScrollRate] = useState<AutoScrollRate>(1)
@@ -260,7 +268,8 @@ export function ReaderScreen({
     if (activeChapter?.announce && activeChapter.verseIndex != null) {
       id = `ch-${activeChapter.abbr}-${activeChapter.chapter}-${activeChapter.verseIndex}`
     } else if (activeVerse) {
-      id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}`
+      const index = activeVerse.verseIndex ?? verses.findIndex(v => v.abbr === activeVerse.abbr && v.chapter === activeVerse.chapter && v.verse === activeVerse.verse)
+      id = `v-${activeVerse.abbr}-${activeVerse.chapter}-${activeVerse.verse}-${index}`
     }
     if (!id) return
     const el = document.getElementById(id)
@@ -457,6 +466,8 @@ export function ReaderScreen({
   }
 
   const handleAutoScrollToggle = () => {
+    audioRequest.current?.abort()
+    audioActionVersion.current++
     if (autoScrollOn) {
       stopAutoScroll(true)
       return
@@ -480,6 +491,8 @@ export function ReaderScreen({
   }
 
   const handleListenFromSelected = async () => {
+    audioRequest.current?.abort()
+    const actionVersion = ++audioActionVersion.current
     if (!selectedVerses.length) return
     // Reading order: first selected verse in the day's verse list
     const first = verses.find((v) => selected.has(verseKey(v)))
@@ -490,6 +503,7 @@ export function ReaderScreen({
       return
     }
     const voices = await loadKoreanVoices()
+    if (actionVersion !== audioActionVersion.current) return
     if (!voices.length) {
       setToast(TTS_UNSUPPORTED_MESSAGE)
       return
@@ -523,6 +537,8 @@ export function ReaderScreen({
   }
 
   const handleListenClick = async () => {
+    audioRequest.current?.abort()
+    const actionVersion = ++audioActionVersion.current
     if (audioOpen) {
       closeAudioPanel()
       if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel()
@@ -535,6 +551,7 @@ export function ReaderScreen({
       return
     }
     const voices = await loadKoreanVoices()
+    if (actionVersion !== audioActionVersion.current) return
     if (!voices.length) {
       setToast(TTS_UNSUPPORTED_MESSAGE)
       return
@@ -549,10 +566,7 @@ export function ReaderScreen({
   }
 
   const handleNewAudioClick = async () => {
-    if (collection) {
-      setToast('신규음성은 준비 중입니다.')
-      return
-    }
+    audioActionVersion.current++
     if (newAudioEntry) {
       closeNewAudioPanel()
       clearChromeHideTimer()
@@ -563,19 +577,23 @@ export function ReaderScreen({
       setToast('본문을 불러온 뒤 다시 시도해 주세요')
       return
     }
-    if (day < 220 || day > 246) {
-      setToast('신규음성은 준비 중입니다.')
-      return
+    if (newAudioLoading) return
+    audioRequest.current?.abort()
+    const request = new AbortController()
+    audioRequest.current = request
+    setNewAudioLoading(true)
+    try {
+      const chapters = await loadChapters(translationId, verses, request.signal)
+      if (request.signal.aborted) return
+      const queue = buildAudioQueue(translationId, verses, chapters)
+      if (autoScrollOnRef.current) stopAutoScroll(true)
+      if (audioOpen) closeAudioPanel()
+      setNewAudioEntry(queue)
+    } catch (cause) {
+      if (!request.signal.aborted) setToast(cause instanceof Error ? cause.message : '음원을 불러오지 못했습니다.')
+    } finally {
+      if (audioRequest.current === request) setNewAudioLoading(false)
     }
-    const manifest = await loadAudioManifest()
-    const entry = findAudioDay(manifest, translationId, 'female', day)
-    if (!entry) {
-      setToast('신규음성은 준비 중입니다.')
-      return
-    }
-    if (autoScrollOnRef.current) stopAutoScroll(true)
-    if (audioOpen) closeAudioPanel()
-    setNewAudioEntry(entry)
   }
 
   const handlePlayingChange = (playing: boolean) => {
@@ -683,7 +701,8 @@ export function ReaderScreen({
               const verseActive =
                 activeVerse?.abbr === v.abbr &&
                 activeVerse.chapter === v.chapter &&
-                activeVerse.verse === v.verse
+                activeVerse.verse === v.verse &&
+                (activeVerse.verseIndex == null || activeVerse.verseIndex === i)
               return (
                 <Fragment key={listKey}>
                   {showBookHeader && (
@@ -698,7 +717,7 @@ export function ReaderScreen({
                   )}
                   <button
                     type="button"
-                    id={`v-${v.abbr}-${v.chapter}-${v.verse}`}
+                    id={`v-${v.abbr}-${v.chapter}-${v.verse}-${i}`}
                     className={[
                       'verse',
                       isOn ? 'verse-selected' : '',
@@ -709,7 +728,7 @@ export function ReaderScreen({
                     onClick={() => toggleVerse(v)}
                     aria-pressed={isOn}
                   >
-                    <span className="verse-num">{v.verse}</span>
+                    <span className="verse-num">{v.verse}{v.verseEnd && v.verseEnd > v.verse ? `-${v.verseEnd}` : ''}</span>
                     <span className="verse-text">{v.text}</span>
                   </button>
                 </Fragment>
@@ -753,7 +772,6 @@ export function ReaderScreen({
         {newAudioEntry && (
           <NewAudioPlayer
             entry={newAudioEntry}
-            verses={verses}
             onActiveChapter={setActiveChapter}
             onActiveVerse={setActiveVerse}
             onPlayingChange={handlePlayingChange}
@@ -810,7 +828,7 @@ export function ReaderScreen({
               void handleNewAudioClick()
             }}
           >
-            신규음성{newAudioEntry ? ' ✓' : ''}
+            {newAudioLoading ? '음원 확인 중…' : `신규음성${newAudioEntry ? ' ✓' : ''}`}
           </button>
           <button
             type="button"

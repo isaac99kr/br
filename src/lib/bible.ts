@@ -57,9 +57,10 @@ function versesFromSegment(book: BibleBook, seg: RangeSegment): Verse[] {
       .sort((a, b) => a - b)
 
     for (const v of verseNums) {
-      if (ch === seg.startChapter && seg.startVerse != null && v < seg.startVerse) continue
+      const verseEnd = book.combinedVerses?.[String(ch)]?.[String(v)] ?? v
+      if (ch === seg.startChapter && seg.startVerse != null && verseEnd < seg.startVerse) continue
       if (ch === seg.endChapter && seg.endVerse != null && v > seg.endVerse) continue
-      out.push({ abbr, chapter: ch, verse: v, text: chapter[String(v)] })
+      out.push({ abbr, chapter: ch, verse: v, verseEnd, text: chapter[String(v)] })
     }
   }
   return out
@@ -102,6 +103,8 @@ export async function loadVersesForRange(
       missing.push(seg.abbr)
       continue
     }
+    const hasVerse = (ch: number, v: number) => String(v) in book.chapters[String(ch)] ||
+      Object.entries(book.combinedVerses?.[String(ch)] ?? {}).some(([first, end]) => Number(first) <= v && v <= end)
     if (strict) {
       if (seg.endChapter > Object.keys(book.chapters).length) {
         throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${seg.endChapter}장`)
@@ -109,8 +112,8 @@ export async function loadVersesForRange(
       for (let ch = seg.startChapter; ch <= seg.endChapter; ch++) {
         if (!book.chapters[String(ch)]) throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${ch}장`)
       }
-      if ((seg.startVerse != null && !(String(seg.startVerse) in book.chapters[String(seg.startChapter)])) ||
-          (seg.endVerse != null && !(String(seg.endVerse) in book.chapters[String(seg.endChapter)]))) {
+      if ((seg.startVerse != null && !hasVerse(seg.startChapter, seg.startVerse)) ||
+          (seg.endVerse != null && !hasVerse(seg.endChapter, seg.endVerse))) {
         throw new Error(`존재하지 않는 절입니다: ${seg.abbr}`)
       }
     }

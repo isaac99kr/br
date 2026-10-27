@@ -17,6 +17,8 @@
 8. [07-bible-tts-plan.md](07-bible-tts-plan.md) — Qwen3-TTS 성경 음원 기능 기획
 9. [08-bible-tts-investigation.md](08-bible-tts-investigation.md) — TTS 조사·§11 산출물 (용량·권리·질문)
 10. [09-new-audio-playback-plan.md](09-new-audio-playback-plan.md) — 220~246일차 신규음성(MP3) 재생·재생성 기준
+11. [10-chapter-audio-migration-plan.md](10-chapter-audio-migration-plan.md) — 성경 전체 분할 생성·중단/재개·장별 음원 전환·모아 읽기 공통 재생 계획
+12. [11-chapter-audio-progress.md](11-chapter-audio-progress.md) — 장별 음원 구현·생성 운영 진행 기록
 
 ## 참조 자료 위치
 
