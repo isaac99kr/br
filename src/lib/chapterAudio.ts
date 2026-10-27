@@ -34,7 +34,11 @@ export type ChapterAsset = {
 export type ChapterManifest = { schemaVersion: 1; releaseId: string; chapters: ChapterAsset[] }
 export type LoadedChapter = { asset: ChapterAsset; timing: ChapterTiming }
 export const chapterKey = (translation: string, abbr: string, chapter: number) => `${translation}:${abbr}:${chapter}`
-const base = import.meta.env.VITE_CHAPTER_AUDIO_BASE_URL || `${import.meta.env.BASE_URL}audio/chapters/`
+// GitHub Pages builds do not provide runtime environment variables. Keep the
+// public R2 origin as a non-secret fallback; Vite env can still override it
+// for another deployment target.
+const base = import.meta.env.VITE_CHAPTER_AUDIO_BASE_URL
+  || 'https://pub-a583efe19bfb425694885e4391291f39.r2.dev/'
 
 export function assetUrl(path: string, root: string): string {
   const url = new URL(path, root)
