@@ -116,6 +116,7 @@ export function ReaderScreen({
   const [rangeOpen, setRangeOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
   const [newAudioEntry, setNewAudioEntry] = useState<AudioQueue | null>(null)
+  const [newAudioStartAt, setNewAudioStartAt] = useState<{ verseIndex: number; nonce: number } | null>(null)
   const audioRequest = useRef<AbortController | null>(null)
   const audioActionVersion = useRef(0)
   const [newAudioLoading, setNewAudioLoading] = useState(false)
@@ -565,9 +566,9 @@ export function ReaderScreen({
     setAudioOpen(true)
   }
 
-  const handleNewAudioClick = async () => {
+  const handleNewAudioClick = async (verseIndex?: number) => {
     audioActionVersion.current++
-    if (newAudioEntry) {
+    if (newAudioEntry && verseIndex == null) {
       closeNewAudioPanel()
       clearChromeHideTimer()
       setChromeHidden(false)
@@ -593,7 +594,9 @@ export function ReaderScreen({
       const queue = buildAudioQueue(translationId, verses, chapters)
       if (autoScrollOnRef.current) stopAutoScroll(true)
       if (audioOpen) closeAudioPanel()
+      setNewAudioStartAt(verseIndex == null ? null : { verseIndex, nonce: Date.now() })
       setNewAudioEntry(queue)
+      if (verseIndex != null) setSelected(new Set())
     } catch (cause) {
       if (audioRequest.current === request) {
         if (timedOut) setToast('음원 서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.')
@@ -755,7 +758,14 @@ export function ReaderScreen({
         <div className="copy-bar">
           <span className="copy-count">{selected.size}개 선택</span>
           <button type="button" className="copy-btn copy-btn-listen" onClick={() => void handleListenFromSelected()}>
-            여기부터 듣기
+            듣기
+          </button>
+          <button type="button" className="copy-btn copy-btn-listen" disabled={newAudioLoading}
+            onClick={() => {
+              const index = verses.findIndex(v => selected.has(verseKey(v)))
+              if (index >= 0) void handleNewAudioClick(index)
+            }}>
+            {newAudioLoading ? '확인 중…' : '신규음성'}
           </button>
           <button type="button" className="copy-btn" onClick={handleCopy}>
             복사
@@ -784,6 +794,7 @@ export function ReaderScreen({
         {newAudioEntry && (
           <NewAudioPlayer
             entry={newAudioEntry}
+            startAt={newAudioStartAt}
             onActiveChapter={setActiveChapter}
             onActiveVerse={setActiveVerse}
             onPlayingChange={handlePlayingChange}
@@ -842,6 +853,9 @@ export function ReaderScreen({
           >
             {newAudioLoading ? '음원 확인 중…' : `신규음성${newAudioEntry ? ' ✓' : ''}`}
           </button>
+          {collection ? (
+            <button type="button" onClick={onClose}>범위 다시 입력</button>
+          ) : <>
           <button
             type="button"
             onClick={() => progress.setDayStatus(day, 'in_progress')}
@@ -872,9 +886,9 @@ export function ReaderScreen({
               완료 표시 ✓
             </button>
           )}
+          </>}
         </div>
-        <div className="reader-actions">
-          {collection ? <button type="button" onClick={onClose}>범위 다시 입력</button> : <>
+        {!collection && <div className="reader-actions">
           <button type="button" disabled={day <= 1} onClick={() => onChangeDay(day - 1)}>
             ← 이전
           </button>
@@ -885,8 +899,7 @@ export function ReaderScreen({
           >
             다음 →
           </button>
-          </>}
-        </div>
+        </div>}
       </footer>
 
       {toast && <div className="toast">{toast}</div>}

@@ -6,6 +6,7 @@ import { ChapterPlayback, type PlaybackState } from '../lib/chapterPlayback'
 const RATES = [0.75, 1, 1.25, 1.5, 2]
 type Props = {
   entry: AudioQueue
+  startAt?: { verseIndex: number; nonce: number } | null
   onActiveChapter?: (cue: AudioChapterCue | null) => void
   onActiveVerse?: (cue: AudioVerseCue | null) => void
   onPlayingChange?: (playing: boolean) => void
@@ -54,6 +55,15 @@ export function NewAudioPlayer(props: Props) {
       callbacks.current.onActiveVerse?.(null)
     }
   }, [entry])
+  useEffect(() => {
+    if (!props.startAt || !player.current) return
+    const verseIndex = props.startAt.verseIndex
+    const item = entry.items.find(item => item.cues.some(cue => cue.verseIndex === verseIndex))
+    const cue = item?.cues.find(cue => cue.verseIndex === verseIndex)
+    if (!item || !cue) return
+    player.current.seek(item.queueStart + cue.start - item.start)
+    void player.current.play()
+  }, [entry, props.startAt])
   const positions = entry.items.flatMap(item => item.cues.map(cue => ({
     time: item.queueStart + cue.start - item.start, index: cue.verseIndex,
     label: `${item.chapter.timing.abbr} ${item.chapter.timing.chapter}:${cue.verse}${cue.verseEnd > cue.verse ? `-${cue.verseEnd}` : ''}`,
@@ -62,7 +72,6 @@ export function NewAudioPlayer(props: Props) {
   const loading = state.status === 'loading'
   return (
     <div className="audio-player new-audio-player">
-      {entry.combined && <p role="note">합절 본문은 선택한 절을 포함하는 합절 전체를 재생합니다.</p>}
       {state.error && <p role="alert">{state.error}</p>}
       <div className="audio-player-controls">
         <button type="button" className="audio-btn" onClick={() => playing || loading ? player.current?.pause() : void player.current?.play()}>
