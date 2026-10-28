@@ -582,6 +582,11 @@ export function ReaderScreen({
     const request = new AbortController()
     audioRequest.current = request
     setNewAudioLoading(true)
+    let timedOut = false
+    const timeout = window.setTimeout(() => {
+      timedOut = true
+      request.abort()
+    }, 20_000)
     try {
       const chapters = await loadChapters(translationId, verses, request.signal)
       if (request.signal.aborted) return
@@ -590,9 +595,16 @@ export function ReaderScreen({
       if (audioOpen) closeAudioPanel()
       setNewAudioEntry(queue)
     } catch (cause) {
-      if (!request.signal.aborted) setToast(cause instanceof Error ? cause.message : '음원을 불러오지 못했습니다.')
+      if (audioRequest.current === request) {
+        if (timedOut) setToast('음원 서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.')
+        else if (!request.signal.aborted) setToast(cause instanceof Error ? cause.message : '음원을 불러오지 못했습니다.')
+      }
     } finally {
-      if (audioRequest.current === request) setNewAudioLoading(false)
+      window.clearTimeout(timeout)
+      if (audioRequest.current === request) {
+        audioRequest.current = null
+        setNewAudioLoading(false)
+      }
     }
   }
 

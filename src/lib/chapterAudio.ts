@@ -38,7 +38,7 @@ export const chapterKey = (translation: string, abbr: string, chapter: number) =
 // public R2 origin as a non-secret fallback; Vite env can still override it
 // for another deployment target.
 const base = import.meta.env.VITE_CHAPTER_AUDIO_BASE_URL
-  || 'https://pub-a583efe19bfb425694885e4391291f39.r2.dev/'
+  || 'https://audio.ntiapp.web.id/'
 
 export function assetUrl(path: string, root: string): string {
   const url = new URL(path, root)
