@@ -70,10 +70,62 @@ const BOOK_NAMES: Record<string, string> = {
   계: '요한계시록',
 }
 
+// 숫자·서수 표기. "요1장"은 요한복음 1장이라 여기 넣지 않는다.
+const NUMBERED_EPISTLE_ALIASES: Record<string, string> = {
+  요1서: '요일',
+  요2서: '요이',
+  요3서: '요삼',
+  요한1서: '요일',
+  요한2서: '요이',
+  요한3서: '요삼',
+  요한첫째서: '요일',
+  요한둘째서: '요이',
+  요한셋째서: '요삼',
+  요한일: '요일',
+  요한이: '요이',
+  요한삼: '요삼',
+  '1요한서': '요일',
+  '2요한서': '요이',
+  '3요한서': '요삼',
+  '1요한': '요일',
+  '2요한': '요이',
+  '3요한': '요삼',
+  '1요': '요일',
+  '2요': '요이',
+  '3요': '요삼',
+}
+
 export function getBookName(abbr: string): string {
   return BOOK_NAMES[abbr] ?? abbr
 }
 
 export function getBookAbbr(name: string): string {
   return Object.entries(BOOK_NAMES).find(([abbr, full]) => name === abbr || name === full)?.[0] ?? name
+}
+
+const BOOK_ALIASES: { alias: string; abbr: string }[] = (() => {
+  const list: { alias: string; abbr: string }[] = []
+  const seen = new Set<string>()
+  const add = (alias: string, abbr: string) => {
+    if (!alias || seen.has(alias)) return
+    seen.add(alias)
+    list.push({ alias, abbr })
+  }
+  for (const [abbr, full] of Object.entries(BOOK_NAMES)) {
+    add(abbr, abbr)
+    if (full !== abbr) add(full, getBookAbbr(full))
+  }
+  for (const [alias, abbr] of Object.entries(NUMBERED_EPISTLE_ALIASES)) add(alias, abbr)
+  list.sort((a, b) => b.alias.length - a.alias.length)
+  return list
+})()
+
+/** Longest book name at the start of a normalized reference. Rest is the chapter/verse spec. */
+export function matchBookAlias(part: string): { abbr: string; rest: string } | null {
+  for (const { alias, abbr } of BOOK_ALIASES) {
+    if (!part.startsWith(alias)) continue
+    const rest = part.slice(alias.length)
+    if (rest === '' || /^[0-9]/.test(rest)) return { abbr, rest }
+  }
+  return null
 }

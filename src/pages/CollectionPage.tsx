@@ -70,6 +70,7 @@ export function CollectionPage({ initialRange, translationId, onOpenReader }: {
         </div>
         <p id="collection-examples" className="section-desc">
           예: 창1-3장, 요3:16-18, 시34·56편<br />
+          책 이름만 입력하면 그 책 전체를 읽어요. 예: <span className="nobreak">요한일서</span>, <span className="nobreak">요1서</span>, <span className="nobreak">요일</span><br />
           괄호로 감싼 범위도 입력할 수 있어요: (행18:23-19:22), (고전1-6장)
         </p>
         {error && <p role="alert" className="collection-error">{error}</p>}

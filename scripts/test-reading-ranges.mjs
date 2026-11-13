@@ -31,6 +31,44 @@ try {
   }
   assert.deepEqual(refs(await loadVersesForRange('요3장16-18절', 'krv', true)), ['요3:16', '요3:17', '요3:18'])
   assert.equal(parseReadingRange('창1장-3장', true)[0].endChapter, 3)
+  assert.equal(parseReadingRange('요1장', true)[0].abbr, '요')
+  assert.equal(parseReadingRange('요1서', true)[0].abbr, '요일')
+  assert.equal(parseReadingRange('요1서', true)[0].wholeBook, true)
+  assert.equal(parseReadingRange('요3서', true)[0].abbr, '요삼')
+  const letters = '요일1-5장, 요이1장, 요삼1장'
+  for (const translation of ['krv', 'rnksv']) {
+    const expected = refs(await loadVersesForRange(letters, translation, true))
+    for (const input of [
+      '요한일서, 요한이서, 요한삼서',
+      '요1서, 요2서, 요3서',
+      '요일,요이,요삼',
+      '요한1서, 요한2서, 요한3서',
+      '요한첫째서, 요한둘째서, 요한셋째서',
+      '1요한, 2요한, 3요한',
+      '1요한서, 2요한서, 3요한서',
+      '요 1 서, 요 2 서, 요 3 서',
+      letters,
+    ]) {
+      assert.deepEqual(refs(await loadVersesForRange(input, translation, true)), expected, `${translation} ${input}`)
+    }
+    assert.equal(expected[0], '요일1:1')
+    assert.ok(expected.at(-1).startsWith('요삼1:'), expected.at(-1))
+    assert.ok(expected.some((ref) => ref.startsWith('요일5:')), translation)
+    assert.ok(expected.some((ref) => ref.startsWith('요이1:')), translation)
+  }
+  const onlyChapter = refs(await loadVersesForRange('요한일서1장', 'krv', true))
+  assert.equal(onlyChapter[0], '요일1:1')
+  assert.ok(onlyChapter.every((ref) => ref.startsWith('요일1:')))
+  assert.deepEqual(
+    refs(await loadVersesForRange('요1서1:1-3', 'krv', true)),
+    ['요일1:1', '요일1:2', '요일1:3'],
+  )
+  assert.deepEqual(
+    refs(await loadVersesForRange('유다서', 'krv', true)),
+    refs(await loadVersesForRange('유1장', 'krv', true)),
+  )
+  assert.equal(refs(await loadVersesForRange('요3장', 'krv', true))[0], '요3:1')
+  assert.equal(refs(await loadVersesForRange('요3서', 'krv', true))[0], '요삼1:1')
   for (const input of ['', '창0장', '창3-1장', '요3:18-16', '창1장, 틀린입력', '(창1장', '창1장)', '시1·2-3-4편']) {
     assert.throws(() => parseReadingRange(input, true), undefined, input)
   }
