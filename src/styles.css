@@ -357,6 +357,10 @@ p {
   line-height: 1.45;
 }
 
+.nobreak {
+  white-space: nowrap;
+}
+
 .filters {
   display: flex;
   gap: 8px;

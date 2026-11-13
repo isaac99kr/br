@@ -103,21 +103,32 @@ export async function loadVersesForRange(
       missing.push(seg.abbr)
       continue
     }
+    const chapterCount = meta.books.find((b) => b.abbr === fileAbbr)?.chapterCount
+      ?? Object.keys(book.chapters).length
+    const resolved: RangeSegment = seg.wholeBook
+      ? {
+          abbr: fileAbbr,
+          startChapter: 1,
+          startVerse: null,
+          endChapter: chapterCount,
+          endVerse: null,
+        }
+      : { ...seg, abbr: fileAbbr }
     const hasVerse = (ch: number, v: number) => String(v) in book.chapters[String(ch)] ||
       Object.entries(book.combinedVerses?.[String(ch)] ?? {}).some(([first, end]) => Number(first) <= v && v <= end)
     if (strict) {
-      if (seg.endChapter > Object.keys(book.chapters).length) {
-        throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${seg.endChapter}장`)
+      if (resolved.endChapter > Object.keys(book.chapters).length) {
+        throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${resolved.endChapter}장`)
       }
-      for (let ch = seg.startChapter; ch <= seg.endChapter; ch++) {
+      for (let ch = resolved.startChapter; ch <= resolved.endChapter; ch++) {
         if (!book.chapters[String(ch)]) throw new Error(`존재하지 않는 장입니다: ${seg.abbr}${ch}장`)
       }
-      if ((seg.startVerse != null && !hasVerse(seg.startChapter, seg.startVerse)) ||
-          (seg.endVerse != null && !hasVerse(seg.endChapter, seg.endVerse))) {
+      if ((resolved.startVerse != null && !hasVerse(resolved.startChapter, resolved.startVerse)) ||
+          (resolved.endVerse != null && !hasVerse(resolved.endChapter, resolved.endVerse))) {
         throw new Error(`존재하지 않는 절입니다: ${seg.abbr}`)
       }
     }
-    const chunk = versesFromSegment(book, { ...seg, abbr: fileAbbr })
+    const chunk = versesFromSegment(book, resolved)
     if (!chunk.length) {
       missing.push(`${seg.abbr}${seg.startChapter}`)
       continue
